@@ -16,6 +16,7 @@
       buildInputs = with pkgs; [
         gcc
         gnumake
+        python3
       ];
     };
   };
