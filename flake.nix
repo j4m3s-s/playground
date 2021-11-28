@@ -17,6 +17,7 @@
         gcc
         gnumake
         python3
+        gtest
       ];
     };
   };
