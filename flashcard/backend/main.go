@@ -9,6 +9,7 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
+	"github.com/gorilla/handlers"
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/mattn/go-sqlite3"
@@ -112,7 +113,7 @@ func main() {
 
 	log.Println("Listening ...")
 	srv := &http.Server{
-		Handler: r,
+		Handler: handlers.CORS()(r),
 		Addr: "localhost:8000",
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout: 15 * time.Second,
