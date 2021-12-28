@@ -3,15 +3,15 @@ create schema if not exists api;
 -- models
 drop table api.recipes cascade;
 create table api.recipes (
-	id serial primary key,
-	name text,
-	search_name tsvector,
-	cook_time interval,
-	prep_time interval,
-	perform_time interval,
-	total_time interval,
-	created date,
-	modified date
+    id serial primary key,
+    name text,
+    search_name tsvector,
+    cook_time interval,
+    prep_time interval,
+    perform_time interval,
+    total_time interval,
+    created date,
+    modified date
 );
 
 insert into api.recipes
@@ -22,9 +22,9 @@ values
 
 drop table api.ingredients cascade;
 create table api.ingredients (
-	id serial primary key,
-	name text,
-	search_name tsvector
+    id serial primary key,
+    name text,
+    search_name tsvector
 );
 insert into api.ingredients
 (name, search_name)
