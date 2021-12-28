@@ -38,13 +38,32 @@ values
 
 drop table api.ingredients_recipe cascade;
 create table api.ingredients_recipe (
-	recipe_id serial references api.recipes(id),
-	ingredient_id serial references api.ingredients(id)
+    recipe_id serial references api.recipes(id),
+    ingredient_id serial references api.ingredients(id)
 );
 insert into api.ingredients_recipe
 (select api.recipes.id, api.ingredients.id from api.recipes, api.ingredients where api.recipes.name = 'Patato potato' and api.ingredients.name = 'Potato');
 insert into api.ingredients_recipe
 (select api.recipes.id, api.ingredients.id from api.recipes, api.ingredients where api.recipes.name = 'Patato potato' and api.ingredients.name = 'carotte');
+
+drop table if exists api.ustensils cascade;
+create table api.ustensils (
+    id serial primary key,
+    name text,
+    search_name tsvector
+);
+insert into api.ustensils
+(name, search_name)
+values
+('maryse', 'maryse');
+
+drop table api.ustensils_recipe cascade;
+create table api.ustensils_recipe (
+    ustensil_id serial references api.ustensils(id),
+    recipe_id serial references api.recipes(id)
+);
+insert into api.ustensils_recipe
+(select api.ustensils.id, api.recipes.id from api.recipes, api.ustensils where api.recipes.name = 'Patato potato' and api.ustensils.name = 'maryse');
 
 -- roles and bindings
 --- Anonymous bindings RO
@@ -54,6 +73,8 @@ grant usage on schema api to web_anon;
 grant select on api.recipes to web_anon;
 grant select on api.ingredients to web_anon;
 grant select on api.ingredients_recipe to web_anon;
+grant select on api.ustensils to web_anon;
+grant select on api.ustensils_recipe to web_anon;
 
 create role authenticator noinherit login password 'mysecretpassword';
 grant web_anon to authenticator;
