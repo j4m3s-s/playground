@@ -4,7 +4,7 @@ create schema if not exists api;
 create table api.recipes (
     id serial primary key,
     name text,
-    search_name tsvector,
+    search_name tsvector GENERATED ALWAYS AS (to_tsvector('french', name)) STORED,
     cook_time interval,
     prep_time interval,
     perform_time interval,
@@ -16,7 +16,7 @@ create table api.recipes (
 create table api.ingredients (
     id serial primary key,
     name text,
-    search_name tsvector
+    search_name tsvector GENERATED ALWAYS AS (to_tsvector('french', name)) STORED
 );
 
 create table api.ingredients_recipe (
@@ -27,7 +27,7 @@ create table api.ingredients_recipe (
 create table api.ustensils (
     id serial primary key,
     name text,
-    search_name tsvector
+    search_name tsvector GENERATED ALWAYS AS (to_tsvector('french', name)) STORED
 );
 
 create table api.ustensils_recipe (
