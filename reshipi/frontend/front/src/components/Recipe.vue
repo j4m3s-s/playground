@@ -31,11 +31,12 @@ export default Vue.extend({
   props: ['id'],
   data () {
     return {
-        recipe: null
+        recipe: null,
+        recipe_id: this.id
     }
   },
   mounted: function() {
-      axios.get("http://localhost:3000/recipes?select=*,ingredients(*),ustensils(*),steps(*)")
+      axios.get(`http://localhost:3000/recipes?id=eq.${this.recipe_id}&select=*,ingredients(*),ustensils(*),steps(*)`)
         .then((resp) => {
             this.recipe = resp.data[0]
             console.log(this.recipe)

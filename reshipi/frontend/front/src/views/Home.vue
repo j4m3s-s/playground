@@ -1,16 +1,16 @@
 <template>
   <div class="home">
-  <Recipe id="1" />
+  <Glossary id="1" />
   </div>
 </template>
 
 <script>
-import Recipe from '@/components/Recipe.vue'
+import Glossary from '@/components/Glossary.vue'
 
 export default {
   name: 'Home',
   components: {
-      Recipe
+      Glossary
   }
 }
 </script>
