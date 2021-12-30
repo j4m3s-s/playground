@@ -35,7 +35,7 @@ export default Vue.extend({
     }
   },
   mounted: function() {
-      axios.get("http://localhost:3000/recipes?select=*,ingredients(*),ustensils(*)")
+      axios.get("http://localhost:3000/recipes?select=*,ingredients(*),ustensils(*),steps(*)")
         .then((resp) => {
             this.recipe = resp.data[0]
             console.log(this.recipe)
