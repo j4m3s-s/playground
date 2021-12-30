@@ -8,3 +8,6 @@ drop table if exists api.ustensils cascade;
 
 drop table api.ustensils_recipe cascade;
 
+drop table api.steps cascade;
+
+drop table api.steps_recipe cascade;

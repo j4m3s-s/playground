@@ -26,3 +26,10 @@ values
 insert into api.ustensils_recipe
 (select api.ustensils.id, api.recipes.id from api.recipes, api.ustensils where api.recipes.name = 'Patato potato' and api.ustensils.name = 'maryse');
 
+insert into api.steps
+(text)
+values
+('Pour cette étape, rajouter le chocolat chaud avec la moutarde');
+
+insert into api.steps_recipe
+(select api.steps.id, api.recipes.id from api.recipes, api.steps where api.recipes.name = 'Patato potato' and api.steps.text = 'Pour cette étape, rajouter le chocolat chaud avec la moutarde');

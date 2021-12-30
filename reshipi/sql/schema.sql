@@ -34,3 +34,15 @@ create table api.ustensils_recipe (
     ustensil_id serial references api.ustensils(id),
     recipe_id serial references api.recipes(id)
 );
+
+create table api.steps (
+    id serial primary key,
+    text text
+);
+
+create table api.steps_recipe (
+    step_id serial references api.steps(id),
+    recipe_id serial references api.recipes(id),
+    -- steps are ordered
+    position serial
+);
