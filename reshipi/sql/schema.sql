@@ -20,8 +20,8 @@ create table api.ingredients (
 );
 
 create table api.ingredients_recipe (
-    recipe_id serial references api.recipes(id),
-    ingredient_id serial references api.ingredients(id)
+    ingredient_id serial references api.ingredients(id),
+    recipe_id serial references api.recipes(id)
 );
 
 create table api.ustensils (
