@@ -4,6 +4,7 @@ import GlossaryView from '../views/GlossaryView.vue'
 import RecipeView from '../views/RecipeView.vue'
 import UstensilView from '../views/UstensilView.vue'
 import IngredientsView from '../views/IngredientsView.vue'
+import IngredientEditionView from '../views/IngredientEditionView.vue'
 
 Vue.use(VueRouter)
 
@@ -27,6 +28,11 @@ const routes = [
     path: '/ingredients',
     name: 'Ingredients',
     component: IngredientsView
+  },
+  {
+    path: '/ingredient-edit',
+    name: 'IngredientEditionView',
+    component: IngredientEditionView
   }
 ]
 
