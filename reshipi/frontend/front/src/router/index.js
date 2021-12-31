@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
+import GlossaryView from '../views/GlossaryView.vue'
 import RecipeView from '../views/RecipeView.vue'
 import UstensilView from '../views/UstensilView.vue'
 import IngredientsView from '../views/IngredientsView.vue'
@@ -10,8 +10,8 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    name: 'Home',
-    component: Home
+    name: 'GlossaryView',
+    component: GlossaryView
   },
   {
     path: '/recipe/:id',

@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div>
   <Glossary id="1" />
   </div>
 </template>
@@ -8,7 +8,7 @@
 import Glossary from '@/components/Glossary.vue'
 
 export default {
-  name: 'Home',
+  name: 'GlossaryView',
   components: {
       Glossary
   }
