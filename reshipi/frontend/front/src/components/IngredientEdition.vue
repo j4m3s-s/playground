@@ -1,5 +1,11 @@
 <template>
-    <div>
+    <div v-if="!posted">
+        <input type="text" v-model="name" />
+        <button v-on:click="createIngredient"> Créer </button>
+    </div>
+    <div v-else>
+      Successfuly posted
+      <button v-on:click="reset"> Créer un nouvel ingrédient </button>
     </div>
 </template>
 
@@ -11,8 +17,27 @@ export default Vue.extend({
   name: 'IngredientEdition',
   data () {
     return {
-        ingredient: null,
+        name: "",
+        posted: false
     }
+  },
+  methods: {
+      createIngredient () {
+          axios.post("http://localhost:3000/ingredients", {
+              name: this.name
+          })
+          .then((response) => {
+            console.log(response)
+            this.posted = true
+          })
+          .catch((error) => {
+            console.log(error)
+          })
+      },
+      reset () {
+          this.name = ""
+          this.posted = false
+      }
   }
 })
 </script>
