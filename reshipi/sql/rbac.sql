@@ -7,9 +7,17 @@ grant select on api.recipes to web_anon;
 grant all on api.ingredients to web_anon;
 grant usage, select on api.ingredients_id_seq to web_anon;
 grant all on api.ingredients_recipe to web_anon;
+grant usage, select on api.ingredients_recipe_recipe_id_seq to web_anon;
+grant usage, select on api.ingredients_recipe_ingredient_id_seq to web_anon;
 
 grant select on api.ustensils to web_anon;
+grant all on api.ustensils to web_anon;
+grant select, usage on api.ustensils_id_seq to web_anon;
 grant select on api.ustensils_recipe to web_anon;
+grant all on api.ustensils_recipe to web_anon;
+grant select, usage on api.ustensils_recipe_recipe_id_seq to web_anon;
+grant select, usage on api.ustensils_recipe_ustensil_id_seq to web_anon;
+
 grant select on api.steps to web_anon;
 grant select on api.steps_recipe to web_anon;
 
