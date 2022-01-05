@@ -6,6 +6,7 @@ import UstensilView from '../views/UstensilView.vue'
 import IngredientsView from '../views/IngredientsView.vue'
 import IngredientEditionView from '../views/IngredientEditionView.vue'
 import UstensilEditionView from '../views/UstensilEditionView.vue'
+import RecipeEditionView from '../views/RecipeEditionView.vue'
 
 Vue.use(VueRouter)
 
@@ -39,7 +40,13 @@ const routes = [
     path: '/ustensil-edit',
     name: 'UstensilEditionView',
     component: UstensilEditionView
+  },
+  {
+    path: '/recipe-edit',
+    name: 'RecipeEditionView',
+    component: RecipeEditionView
   }
+
 ]
 
 const router = new VueRouter({
