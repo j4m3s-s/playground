@@ -21,6 +21,7 @@ grant select, usage on api.ustensils_recipe_ustensil_id_seq to web_anon;
 
 grant all on api.steps to web_anon;
 grant usage, select on api.steps_id_seq to web_anon;
+grant usage, select on api.steps_position_seq to web_anon;
 
 create role authenticator noinherit login password 'mysecretpassword';
 grant web_anon to authenticator;
