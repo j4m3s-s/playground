@@ -28,6 +28,27 @@
         </ul>
 
         <!-- Ingredients -->
+        <h2> Ingredients </h2>
+        <h4> Sélectionnés </h4>
+
+        <ul>
+            <li v-for="(ingredient, i) in ingredients" v-bind:key="i" >
+                {{ ingredient.name }} <button @click="removeFromIngredients(i)"> - </button>
+            </li>
+        </ul>
+
+        <h4> Recherche </h4>
+        <form @submit="ingredientSearch">
+            <input type="text" v-model="ingredient_search_name" />
+            <button> Chercher l'ingrédient </button>
+        </form>
+
+        <h4> Résultats de la recherche </h4>
+        <ul>
+            <li v-for="(ingredient, i) in ingredients_searched" v-bind:key="i">
+                {{ ingredient.name }} <button @click="addToIngredient(i)"> + </button>
+            </li>
+        </ul>
         <!-- Steps -->
         <button v-on:click="createRecipe"> Créer la recette </button>
     </div>
@@ -51,6 +72,9 @@ export default Vue.extend({
         ustensils: [],
         ustensils_searched: [],
         ustensil_search_name: "",
+        ingredients: [],
+        ingredients_searched: [],
+        ingredient_search_name: "",
         posted: false
     }
   },
@@ -60,6 +84,9 @@ export default Vue.extend({
           console.log(this.ustensils)
           this.ustensils.splice(index, 1)
       },
+      removeFromIngredients (index) {
+          this.ingredients.splice(index, 1)
+      },
       addToUstensils (index) {
           for (let i = 0; i < this.ustensils.length; i++) {
             if (this.ustensils[i].id === this.ustensils_searched[index].id)
@@ -68,6 +95,16 @@ export default Vue.extend({
 
           this.ustensils.push(this.ustensils_searched[index])
           this.ustensils.sort(function(a, b) { return a.id - b.id })
+      },
+      addToIngredient (index) {
+          for (let i = 0; i < this.ingredients.length; i++) {
+            if (this.ingredients[i].id === this.ingredients_searched[index].id)
+                return
+          }
+
+          this.ingredients.push(this.ingredients_searched[index])
+          this.ingredients.sort(function(a, b) { return a.id - b.id })
+
       },
       ustensilSearch(e) {
           e.preventDefault()
@@ -88,6 +125,25 @@ export default Vue.extend({
             console.log(error)
           })
 
+      },
+      ingredientSearch(e) {
+          e.preventDefault()
+
+          axios.get("http://localhost:3000/ingredients")
+          .then((response) => {
+            console.log(response.data)
+
+            let result_arr = []
+            for (let i = 0; i < response.data.length; i++) {
+                if (response.data[i].name.startsWith(this.ingredient_search_name)) {
+                    result_arr.push(response.data[i])
+                }
+            }
+            this.ingredients_searched = result_arr
+          })
+          .catch((error) => {
+            console.log(error)
+          })
       },
       createRecipe () {
           axios.post("http://localhost:3000/recipes", {
