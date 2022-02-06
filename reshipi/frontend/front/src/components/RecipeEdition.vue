@@ -161,72 +161,66 @@ export default Vue.extend({
             console.log(error)
           })
       },
-      createRecipe () {
-          axios.post("http://localhost:3000/recipes", {
+      async createRecipe () {
+          await axios.post("http://localhost:3000/recipes", {
               name: this.name,
-          }).catch((error) => {
-              console.log(error)
           })
 
-          axios.get(`http://localhost:3000/recipes?name=eq.${this.name}`, {
+          let recipe_create = axios.get(`http://localhost:3000/recipes?name=eq.${this.name}`, {
               name: this.name,
-          }).then((response) => {
-              console.log("getponse")
-              console.log(response.data)
-              let recipe_id = response.data[0].id
-
-              this.ustensils.map((ustensil) => {
-                  axios.post("http://localhost:3000/ustensils_recipe", {
-                      ustensil_id: ustensil.id,
-                      recipe_id: recipe_id
-                  }).then((response) => {
-                      console.log(response)
-                  }).catch((error) => {
-                      console.log(error)
-                  })
-              })
-
-
-              this.ingredients.map((ingredient) => {
-                  axios.post("http://localhost:3000/ingredients_recipe", {
-                      ingredient_id: ingredient.id,
-                      recipe_id: recipe_id
-                  }).then((response) => {
-                      console.log(response)
-                  }).catch((error) => {
-                      console.log(error)
-                  })
-              })
-
-              this.steps.map((step) => {
-                  console.log(`Step : ${step}`)
-                  axios.post("http://localhost:3000/steps", {
-                      text: step,
-                      recipe_id: recipe_id
-                  }).catch((error) => {
-                      console.log(error)
-                  })
-              })
-
-              let position = 0
-              this.steps_id.map((step) => {
-                      axios.post("http://localhost:3000/steps_recipe", {
-                          step_id: step,
-                          recipe_id: recipe_id,
-                          position: position
-                  }).then((response) => {
-                      position++
-                      console.log(response)
-                  }).catch((error) => {
-                      console.log(error)
-                  })
-              })
-
-          }).catch((error) => {
-              console.log(error)
-              return
           })
 
+          let recipe_create_response = await recipe_create
+          console.log(recipe_create_response)
+          // TODO: don't ignore multiple answers to call
+          let recipe_id = recipe_create_response.data[0].id
+
+          this.ustensils.map((ustensil) => {
+              axios.post("http://localhost:3000/ustensils_recipe", {
+                  ustensil_id: ustensil.id,
+                  recipe_id: recipe_id
+              }).then((response) => {
+                  console.log(response)
+              }).catch((error) => {
+                  console.log(error)
+              })
+          })
+
+
+          this.ingredients.map((ingredient) => {
+              axios.post("http://localhost:3000/ingredients_recipe", {
+                  ingredient_id: ingredient.id,
+                  recipe_id: recipe_id
+              }).then((response) => {
+                  console.log(response)
+              }).catch((error) => {
+                  console.log(error)
+              })
+          })
+
+          this.steps.map((step) => {
+              console.log(`Step : ${step}`)
+              axios.post("http://localhost:3000/steps", {
+                  text: step,
+                  recipe_id: recipe_id
+              }).catch((error) => {
+                  console.log(error)
+              })
+          })
+
+          let position = 0
+          this.steps_id.map((step) => {
+                  axios.post("http://localhost:3000/steps_recipe", {
+                      step_id: step,
+                      recipe_id: recipe_id,
+                      position: position
+              }).then((response) => {
+                  position++
+                  console.log(response)
+              }).catch((error) => {
+                  console.log(error)
+              })
+          })
           this.posted = true
       },
       reset () {
