@@ -23,7 +23,7 @@ export default Vue.extend({
   },
   methods: {
       createUstensil () {
-          axios.post("http://localhost:3000/ustensils", {
+          axios.post(`${process.env.VUE_APP_API_ENDPOINT_URL}/ustensils`, {
               name: this.name
           })
           .then((response) => {

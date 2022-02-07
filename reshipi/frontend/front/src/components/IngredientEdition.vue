@@ -23,7 +23,7 @@ export default Vue.extend({
   },
   methods: {
       createIngredient () {
-          axios.post("http://localhost:3000/ingredients", {
+          axios.post(`${process.env.VUE_APP_API_ENDPOINT_URL}/ingredients`, {
               name: this.name
           })
           .then((response) => {

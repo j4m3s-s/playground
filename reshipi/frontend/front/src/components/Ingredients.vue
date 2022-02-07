@@ -18,7 +18,7 @@ export default Vue.extend({
     }
   },
   mounted: function() {
-      axios.get(`http://localhost:3000/ingredients`)
+      axios.get(`${process.env.VUE_APP_API_ENDPOINT_URL}/ingredients`)
         .then((resp) => {
             this.ingredients = resp.data
             console.log(this.ingredients)

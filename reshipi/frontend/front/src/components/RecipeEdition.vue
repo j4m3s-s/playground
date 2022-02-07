@@ -125,7 +125,7 @@ export default Vue.extend({
       ustensilSearch(e) {
           e.preventDefault()
 
-          axios.get("http://localhost:3000/ustensils")
+          axios.get(`${process.env.VUE_APP_API_ENDPOINT_URL}/ustensils`)
           .then((response) => {
             console.log(response.data)
 
@@ -145,7 +145,7 @@ export default Vue.extend({
       ingredientSearch(e) {
           e.preventDefault()
 
-          axios.get("http://localhost:3000/ingredients")
+          axios.get(`${process.env.VUE_APP_API_ENDPOINT_URL}/ingredients`)
           .then((response) => {
             console.log(response.data)
 
@@ -162,11 +162,11 @@ export default Vue.extend({
           })
       },
       async createRecipe () {
-          await axios.post("http://localhost:3000/recipes", {
+          await axios.post(`${process.env.VUE_APP_API_ENDPOINT_URL}/recipes`, {
               name: this.name,
           })
 
-          let recipe_create = axios.get(`http://localhost:3000/recipes?name=eq.${this.name}`, {
+          let recipe_create = axios.get(`${process.env.VUE_APP_API_ENDPOINT_URL}/recipes?name=eq.${this.name}`, {
               name: this.name,
           })
 
@@ -176,7 +176,7 @@ export default Vue.extend({
           let recipe_id = recipe_create_response.data[0].id
 
           this.ustensils.map((ustensil) => {
-              axios.post("http://localhost:3000/ustensils_recipe", {
+              axios.post(`${process.env.VUE_APP_API_ENDPOINT_URL}/ustensils_recipe`, {
                   ustensil_id: ustensil.id,
                   recipe_id: recipe_id
               }).then((response) => {
@@ -188,7 +188,7 @@ export default Vue.extend({
 
 
           this.ingredients.map((ingredient) => {
-              axios.post("http://localhost:3000/ingredients_recipe", {
+              axios.post(`${process.env.VUE_APP_API_ENDPOINT_URL}/ingredients_recipe`, {
                   ingredient_id: ingredient.id,
                   recipe_id: recipe_id
               }).then((response) => {
@@ -200,7 +200,7 @@ export default Vue.extend({
 
           this.steps.map((step) => {
               console.log(`Step : ${step}`)
-              axios.post("http://localhost:3000/steps", {
+              axios.post(`${process.env.VUE_APP_API_ENDPOINT_URL}/steps`, {
                   text: step,
                   recipe_id: recipe_id
               }).catch((error) => {
@@ -210,7 +210,7 @@ export default Vue.extend({
 
           let position = 0
           this.steps_id.map((step) => {
-                  axios.post("http://localhost:3000/steps_recipe", {
+                  axios.post(`${process.env.VUE_APP_API_ENDPOINT_URL}/steps_recipe`, {
                       step_id: step,
                       recipe_id: recipe_id,
                       position: position

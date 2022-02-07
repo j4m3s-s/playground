@@ -21,7 +21,7 @@ export default Vue.extend({
     }
   },
   mounted: function() {
-      axios.get("http://localhost:3000/recipes?select=id,name")
+      axios.get(`${process.env.VUE_APP_API_ENDPOINT_URL}/recipes?select=id,name`)
         .then((resp) => {
             this.recipes = resp.data
             console.log(this.recipes)

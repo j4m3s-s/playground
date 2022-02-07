@@ -18,7 +18,7 @@ export default Vue.extend({
     }
   },
   mounted: function() {
-      axios.get(`http://localhost:3000/ustensils`)
+      axios.get(`${process.env.VUE_APP_API_ENDPOINT_URL}/ustensils`)
         .then((resp) => {
             this.ustensils = resp.data
             console.log(this.ustensils)
