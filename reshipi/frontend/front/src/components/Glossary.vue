@@ -2,7 +2,7 @@
     <div v-if="recipes">
         <ul>
             <li v-for="(recipe, index) in this.recipes" v-bind:key="index">
-                <a :href="'recipe/' + recipe.id"> {{ recipe.name }} </a>
+                <router-link :to="{name: 'Recipe', params: { id: recipe.id } }"> {{ recipe.name }} </router-link>
             </li>
         </ul>
     </div>
