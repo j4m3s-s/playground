@@ -1,6 +1,12 @@
 # Generally available (DONE)
 
 # Public Preview (Shipped and improving)
+- Recipes Listing
+- Ingredients Listing
+- Ustensils Listing
+- Recipes Add
+- Ingredients Add
+- Ustensils Add
 
 # In progress (max 3)
 
