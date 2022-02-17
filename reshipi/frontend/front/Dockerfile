@@ -15,6 +15,6 @@ ARG VUE_APP_API_ENDPOINT_URL
 
 RUN VUE_APP_API_ENDPOINT_URL=$VUE_APP_API_ENDPOINT_URL yarn build
 
-FROM nginx
+FROM nginx:1.21
 
 COPY --from=build /build/dist/ /usr/share/nginx/html
