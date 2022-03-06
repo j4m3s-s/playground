@@ -1,12 +1,12 @@
 (ns stuff.core
   (:gen-class)
-  (:require [clojure.string :refer [split]]))
+  (:require
+   [clojure.string :refer [split]]))
 
 (defn hello
   "I don't do a whole lot ... yet."
   [& args]
   "Hello, World!")
-
 
 ; time cooking
 (def expected-time 40)
@@ -38,13 +38,13 @@
 
 (defn learning-list []
   (->>
-      (new-list)
-      (add-language "Clojure")
-      (add-language "Lisp")
-      (remove-language)
-      (add-language "Java")
-      (add-language "Javascript")
-      (count-languages)))
+   (new-list)
+   (add-language "Clojure")
+   (add-language "Lisp")
+   (remove-language)
+   (add-language "Java")
+   (add-language "Javascript")
+   (count-languages)))
 
 ; Bird watcher
 (def last-week
@@ -73,13 +73,13 @@
 
 (defn n-days-count-2 [lst cnt]
   (second (reduce (fn [x y]
-            (let
-              [counter (first x)
-               adder (second x)]
-              (if (= counter cnt)
-                (list counter adder)
-                (list (inc counter) (+ adder y)))))
-          (list 0 0) lst)))
+                    (let
+                     [counter (first x)
+                      adder (second x)]
+                      (if (= counter cnt)
+                        (list counter adder)
+                        (list (inc counter) (+ adder y)))))
+                  (list 0 0) lst)))
 
 (def book (slurp "war-and-peace"))
 
