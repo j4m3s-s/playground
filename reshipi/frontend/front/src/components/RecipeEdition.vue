@@ -84,7 +84,6 @@ export default Vue.extend({
         ingredients_searched: [],
         ingredient_search_name: "",
         steps: [],
-        steps_id: [],
         posted: false
     }
   },
@@ -198,28 +197,17 @@ export default Vue.extend({
               })
           })
 
+          let position = 0
           this.steps.map((step) => {
-              console.log(`Step : ${step}`)
+              console.log(`Step : ${position} : ${step}`)
               axios.post(`${process.env.VUE_APP_API_ENDPOINT_URL}/steps`, {
                   text: step,
-                  recipe_id: recipe_id
+                  recipe_id: recipe_id,
+                  position: position
               }).catch((error) => {
                   console.log(error)
               })
-          })
-
-          let position = 0
-          this.steps_id.map((step) => {
-                  axios.post(`${process.env.VUE_APP_API_ENDPOINT_URL}/steps_recipe`, {
-                      step_id: step,
-                      recipe_id: recipe_id,
-                      position: position
-              }).then((response) => {
-                  position++
-                  console.log(response)
-              }).catch((error) => {
-                  console.log(error)
-              })
+              position++
           })
           this.posted = true
       },

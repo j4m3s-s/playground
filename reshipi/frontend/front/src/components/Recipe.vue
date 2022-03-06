@@ -39,8 +39,9 @@ export default Vue.extend({
       axios.get(`${process.env.VUE_APP_API_ENDPOINT_URL}/recipes?id=eq.${this.recipe_id}&select=*,ingredients(*),ustensils(*),steps(*)`)
         .then((resp) => {
             this.recipe = resp.data[0]
+            this.recipe.steps.sort(function (a,b) { return a.position - b.position })
             console.log(this.recipe)
-        })
+      })
   }
 })
 </script>
