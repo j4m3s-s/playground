@@ -39,5 +39,6 @@ create table api.steps (
     recipe_id serial references api.recipes(id),
     text text,
     -- steps are ordered
-    position serial
+    position serial,
+    id serial primary key
 );
