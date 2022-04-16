@@ -2,6 +2,6 @@
   (:require [clojure.test :refer :all]
             [jms.core :refer :all]))
 
-;(deftest a-test
-;  (testing "FIXME, I fail."
-;    (is (= 0 1))))
+(deftest test-has-windows-line-ending?
+  (is (= (has-windows-line-ending? "toto\r\n") true)
+      ))
