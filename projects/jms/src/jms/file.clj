@@ -16,10 +16,11 @@
                 lines (str/split content #"\r\n")]
             (first (and (map is-line-windows-line-ending? lines))))))
 
+; recursive list of files from a point
 (defn recursive-listing
-  [folderpath]
-  (let [fd (io/file folderpath)]
-    (file-seq fd)))
+  [folderpaths]
+  (let [rec-listing #(file-seq (io/file %))]
+    (flatten (map rec-listing folderpaths))))
 
 ; print help
 (defn subcommand-file-help
@@ -39,7 +40,7 @@
         args-rest (rest args)]
     (cond
       ; TODO: accept multiple directories here
-      (= subcommand "has-crlf") (let [files (recursive-listing (first args-rest))
+      (= subcommand "has-crlf") (let [files (recursive-listing args-rest)
                                       crlf-files (filter has-windows-line-ending? files)]
                                   (if (= 0 (count crlf-files))
                                     (println "There's no windows ending files")
