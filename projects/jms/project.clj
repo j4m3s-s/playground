@@ -5,4 +5,7 @@
             :url "https://www.eclipse.org/legal/epl-2.0/"}
   :dependencies [[org.clojure/clojure "1.10.3"]
                  [org.clojure/core.match "1.0.0"]]
-  :repl-options {:init-ns jms.core})
+  :repl-options {:init-ns jms.core}
+  :profiles {:uberjar {:aot :all
+                       :jvm-opts ["-Dclojure.compiler.direct-linking=true"]}}
+  :main jms.core)
