@@ -1,24 +1,14 @@
 (ns jms.core
   (:require [clojure.string :as str])
-  (:require [clojure.java.io :as io])
   (:require [jms.file-cmd :refer [subcommand-file]])
   (:gen-class))
 
-
-(defn get-lines-with-line-number
-  [lines]
-  (let [lines-numbers (iterate inc 1)]
-    (zipmap lines-numbers lines)))
 
 ; get lines with line-numbers
 (defn get-lines-with-line-number
   [lines]
   (let [lines-numbers (iterate inc 1)]
-    (mapv #(let [line-number (first %)
-                 line-content (second %)]
-             {:line-number line-number
-              :line-content line-content})
-          (zipmap lines-numbers lines))))
+    (zipmap lines-numbers lines)))
 
 ; trailing whitespace lines
 (defn get-trailing-whitespace-lines

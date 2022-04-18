@@ -1,6 +1,7 @@
 (ns jms.core-test
   (:require [clojure.test :refer [deftest is]]
-            [jms.core :refer [has-windows-line-ending?]]))
+            [clojure.string :as str]
+            [jms.file :refer [has-windows-line-ending?]]))
 
 (def lines
   (->

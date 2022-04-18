@@ -14,7 +14,7 @@
     (.isDirectory filename) false
     :else (let [content (slurp filename)
                 lines (str/split content #"\r\n")]
-            (first (and (map is-line-windows-line-ending? lines))))))
+            (apply 'and (map is-line-windows-line-ending? lines)))))
 
 ; recursive list of files from a point
 (defn recursive-listing
