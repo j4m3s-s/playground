@@ -1,5 +1,4 @@
 (ns jms.core
-  (:require [clojure.string :as str])
   (:require [jms.file-cmd :refer [subcommand-file]])
   (:gen-class))
 
