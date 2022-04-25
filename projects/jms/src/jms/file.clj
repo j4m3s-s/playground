@@ -60,3 +60,28 @@
   [folderpaths]
   (let [rec-listing #(file-seq (io/file %))]
     (flatten (map rec-listing folderpaths))))
+
+; get files to analyze that are in (sub)directory related to marker-file
+(defn get-files-to-analyze
+  [paths
+   ; marker file is the file used to filter directory
+   marker-file]
+  (let [rec-list (recursive-listing paths)
+        filter-list (->>
+                     rec-list
+                     (map str)
+                     (filter #(str/ends-with? % marker-file))
+                     (map #(str/replace % marker-file "")))]
+    (loop [rec-list rec-list
+           res '()
+           filter-list filter-list]
+      (if (empty? filter-list)
+        ; Finished
+        (flatten res)
+        ; recursion
+        (let [first-filter (first filter-list)
+              filtered-list (->>
+                             rec-list
+                             (map str)
+                             (filter #(str/starts-with? % first-filter)))]
+          (recur rec-list (conj filtered-list) (rest filter-list)))))))
