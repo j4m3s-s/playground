@@ -2,7 +2,6 @@
   (:require [jms.file-cmd :refer [subcommand-file]])
   (:gen-class))
 
-
 ; Entrypoint
 (defn -main [& args]
   (let [subcommand (first args)

@@ -12,9 +12,9 @@
 (defn get-trailing-whitespace-lines
   [lines]
   (filter
-    #(let
-      [_line-number (first %)
-       line-content (second %)]
+   #(let
+     [_line-number (first %)
+      line-content (second %)]
       (< 0 (count (re-seq #"\s+$" line-content)))
       lines)))
 

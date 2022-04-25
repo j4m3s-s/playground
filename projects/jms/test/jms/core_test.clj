@@ -6,9 +6,7 @@
 (def lines
   (->
    "nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnntoto\ntata  \n"
-   str/split-lines
-   ))
+   str/split-lines))
 
 (deftest test-has-windows-line-ending?
-  (is (= (has-windows-line-ending? "toto\r\n") true)
-      ))
+  (is (= (has-windows-line-ending? "toto\r\n") true)))
