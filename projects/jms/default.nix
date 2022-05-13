@@ -1,11 +1,21 @@
-{ pkgs, ... }:
+{ pkgs, gitignoreSource, ... }:
+
+with pkgs.lib;
 
 let
   deps = import ./deps.nix {
     inherit (pkgs) fetchMavenArtifact fetchgit lib;
   };
 
-  mkJar = name: opts:
+  depsPaths = deps.makePaths { };
+
+  #resources = builtins.filterSource (_: type: type != "symlink") ./resources;
+
+  classpath.prod = concatStringsSep ":" (
+    (map gitignoreSource [ ./src ./test ]) ++ depsPaths # [ resources ] ++
+  );
+
+  mkJar = name: mainClass:
   with pkgs;
   #assert (hasSuffix ".jar" name);
   stdenv.mkDerivation rec {
@@ -13,14 +23,15 @@ let
     dontUnpack = true;
     buildPhase = ''
       export HOME=$(pwd)
-      cp ${./pom.xml} pom.xml
-      cp ${./deps.edn} deps.edn
+      cp -rf ${./.}/* .
+      # cambada edits pom.xml
+      chmod +w pom.xml
       ${clojure}/bin/clojure \
-      -Scp ${classpath.prod} \
-      -A:uberjar \
-      ${name} \
-      -C ${opts}
-    '';
+        -Scp ${classpath.prod} \
+        -M:uberjar \
+        ${name} \
+        -C -m ${mainClass}
+      '';
 
   doCheck = true;
 
@@ -33,4 +44,4 @@ let
     cp ${name} $out
   '';
 };
-in mkJar "jms.jar" "-m jms.core"
+in mkJar "jms.jar" "jms.core"

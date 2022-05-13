@@ -80,6 +80,19 @@ let repos = [
     paths = [ src ];
   }
 
+  rec {
+    name = "depstar/seancorfield";
+    src = fetchMavenArtifact {
+      inherit repos;
+      artifactId = "depstar";
+      groupId = "seancorfield";
+      sha512 = "0f4458b39b8b1949755bc2fe64b239673a9efa3a0140998464bbbcab216ec847344c1b8920611f7c9ca07261850f3a08144ae221cc2c41813a080189e32f9c10";
+      version = "1.0.94";
+      
+    };
+    paths = [ src ];
+  }
+
   ];
   }
   
