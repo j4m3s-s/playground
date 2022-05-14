@@ -1,4 +1,4 @@
-{ pkgs, gitignoreSource, ... }:
+{ pkgs, gitignoreSource, stdenv, ... }:
 
 with pkgs.lib;
 
@@ -44,5 +44,39 @@ let
         cp ${name} $out
       '';
     };
+
+  mkNativeFromJar = name: entryJar: reflectionConfig:
+    stdenv.mkDerivation rec {
+      inherit name;
+
+      dontUnpack = true;
+      # ReportExceptionStackTraces : to get an idea of where reflection is used
+      # no-fallback : don't build a slow image is reflection is used
+      # Reflection configuration contains class to load that use reflection
+      buildPhase = ''
+        ${pkgs.graalvm17-ce}/bin/native-image \
+        -cp ${classpath.prod} \
+        -jar ${entryJar} \
+        ${name} \
+        --initialize-at-build-time \
+        -H:+ReportExceptionStackTraces \
+        -H:ReflectionConfigurationFiles=${reflectionConfig} \
+        --no-fallback
+      '';
+
+      doCheck = true;
+      checkPhase = ''
+        echo "checking for existence of ${name}"
+        [ -f ${name} ]
+        ./${name}
+      '';
+
+      installPhase = ''
+        cp ${name} $out
+      '';
+    };
 in
-mkJar "jms.jar" "jms.core"
+rec {
+  jms-jar = mkJar "jms.jar" "jms.core";
+  jms = mkNativeFromJar "jms" jms-jar ./reflect-cfg.json;
+}
