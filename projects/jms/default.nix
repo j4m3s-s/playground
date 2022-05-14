@@ -16,32 +16,33 @@ let
   );
 
   mkJar = name: mainClass:
-  with pkgs;
-  #assert (hasSuffix ".jar" name);
-  stdenv.mkDerivation rec {
-    inherit name;
-    dontUnpack = true;
-    buildPhase = ''
-      export HOME=$(pwd)
-      cp -rf ${./.}/* .
-      # cambada edits pom.xml
-      chmod +w pom.xml
-      ${clojure}/bin/clojure \
-        -Scp ${classpath.prod} \
-        -M:uberjar \
-        ${name} \
-        -C -m ${mainClass}
+    with pkgs;
+    #assert (hasSuffix ".jar" name);
+    stdenv.mkDerivation rec {
+      inherit name;
+      dontUnpack = true;
+      buildPhase = ''
+        export HOME=$(pwd)
+        cp -rf ${./.}/* .
+        # cambada edits pom.xml
+        chmod +w pom.xml
+        ${clojure}/bin/clojure \
+          -Scp ${classpath.prod} \
+          -M:uberjar \
+          ${name} \
+          -C -m ${mainClass}
       '';
 
-  doCheck = true;
+      doCheck = true;
 
-  checkPhase = ''
-    echo "checking for existence of ${name}"
-    [ -f ${name} ]
-  '';
+      checkPhase = ''
+        echo "checking for existence of ${name}"
+        [ -f ${name} ]
+      '';
 
-  installPhase = ''
-    cp ${name} $out
-  '';
-};
-in mkJar "jms.jar" "jms.core"
+      installPhase = ''
+        cp ${name} $out
+      '';
+    };
+in
+mkJar "jms.jar" "jms.core"
