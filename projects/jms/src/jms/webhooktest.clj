@@ -1,4 +1,5 @@
 (ns jms.webhooktest
+  (:gen-class)
   (:require [io.pedestal.http :as http]
             [environ.core :refer [env]]
             [io.pedestal.http.route :as route]
@@ -12,9 +13,9 @@
                           {:post `respond-hello }]]]))
 
 (def service-map {::http/routes routes
-             ::http/type   :jetty
-             ::http/host   "0.0.0.0"
-             ::http/join?  false
-             ::http/port   (Integer. (or (env :port) 5000))}) ; Service map
+                  ::http/type   :jetty
+                  ::http/host   "0.0.0.0"
+                  ::http/join?  false
+                  ::http/port   (Integer. (or (env :port) 5000))})
 
-(defn -main [& _] (-> service-map http/create-server http/start)) ; Server Instance
+(defn -main [& _] (-> service-map http/create-server http/start))

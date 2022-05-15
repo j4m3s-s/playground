@@ -76,5 +76,6 @@ let
 in
 rec {
   jms-jar = mkJar "jms.jar" "jms.core";
+  webhooktest-jar = mkJar "jms.jar" "jms.webhooktest";
   jms = mkNativeFromJar "jms" jms-jar ./reflect-cfg.json;
 }

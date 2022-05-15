@@ -21,6 +21,6 @@
                   :extra-deps  {lambdaisland/kaocha {:mvn/version "0.0-529"}}
                   :main-opts   ["-m" "kaocha.runner"]}
            :uberjar {:extra-deps {seancorfield/depstar {:mvn/version "1.0.94"}}
-                     :main-opts [ "-m" "hf.depstar.uberjar" "jms.jar" "-C" "-m" "jms.core"]}
+                     :main-opts [ "-m" "hf.depstar.uberjar"]}
            :uberjarwebhook {:extra-deps {seancorfield/depstar {:mvn/version "1.0.94"}}
-                     :main-opts [ "-m" "hf.depstar.uberjar" "jms.jar" "-C" "-m" "jms.webhooktest"]}}}
+                            :main-opts [ "-m" "hf.depstar.uberjar" "jms.jar" "-C" "-m" "jms.webhooktest"]}}}
