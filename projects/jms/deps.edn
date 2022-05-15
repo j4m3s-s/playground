@@ -8,10 +8,23 @@
         ;; Spec -- not sure why it's needed but runtime needs it
         org.clojure/spec.alpha {:mvn/version "0.2.194"}
         org.clojure/core.specs.alpha {:mvn/version "0.2.56"}
-        }
+
+        ;; For web API
+        io.pedestal/pedestal.service {:mvn/version "0.5.10"}
+        io.pedestal/pedestal.route {:mvn/version "0.5.10"}
+        io.pedestal/pedestal.jetty {:mvn/version "0.5.10"}
+
+        ;; Logging
+        org.slf4j/slf4j-simple {:mvn/version "1.7.36"}
+
+        ;; Configuration
+        environ/environ {:mvn/version "1.2.0"}}
 
  :aliases {:test {:extra-paths ["test/jms"]
                   :extra-deps  {lambdaisland/kaocha {:mvn/version "0.0-529"}}
                   :main-opts   ["-m" "kaocha.runner"]}
            :uberjar {:extra-deps {seancorfield/depstar {:mvn/version "1.0.94"}}
-                     :main-opts [ "-m" "hf.depstar.uberjar" "jms.jar" "-C" "-m" "jms.core"]}}}
+                     :main-opts [ "-m" "hf.depstar.uberjar" "jms.jar" "-C" "-m" "jms.core"]}
+           :uberjarwebhook {:extra-deps {seancorfield/depstar {:mvn/version "1.0.94"}}
+                     :main-opts [ "-m" "hf.depstar.uberjar" "jms.jar" "-C" "-m" "jms.webhooktest"]}
+           }}
