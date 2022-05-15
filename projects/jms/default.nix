@@ -24,8 +24,6 @@ let
       buildPhase = ''
         export HOME=$(pwd)
         cp -rf ${./.}/* .
-        # cambada edits pom.xml
-        chmod +w pom.xml
         ${clojure}/bin/clojure \
           -Scp ${classpath.prod} \
           -M:uberjar \
