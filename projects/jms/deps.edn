@@ -2,9 +2,6 @@
  :deps { org.clojure/clojure {:mvn/version "1.10.3"}
         org.clojure/core.match {:mvn/version "1.0.0"}
 
-        ;; Uberjar
-        ;;luchiniatwork/cambada {:mvn/version "1.0.5"}
-
         ;; Spec -- not sure why it's needed but runtime needs it
         org.clojure/spec.alpha {:mvn/version "0.2.194"}
         org.clojure/core.specs.alpha {:mvn/version "0.2.56"}
@@ -26,5 +23,4 @@
            :uberjar {:extra-deps {seancorfield/depstar {:mvn/version "1.0.94"}}
                      :main-opts [ "-m" "hf.depstar.uberjar" "jms.jar" "-C" "-m" "jms.core"]}
            :uberjarwebhook {:extra-deps {seancorfield/depstar {:mvn/version "1.0.94"}}
-                     :main-opts [ "-m" "hf.depstar.uberjar" "jms.jar" "-C" "-m" "jms.webhooktest"]}
-           }}
+                     :main-opts [ "-m" "hf.depstar.uberjar" "jms.jar" "-C" "-m" "jms.webhooktest"]}}}
