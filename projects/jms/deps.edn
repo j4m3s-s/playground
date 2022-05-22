@@ -16,7 +16,24 @@
         org.slf4j/slf4j-simple {:mvn/version "1.7.36"}
 
         ;; Configuration
-        environ/environ {:mvn/version "1.2.0"}}
+        environ/environ {:mvn/version "1.2.0"}
+
+        ;; make http calls
+        clj-http/clj-http {:mvn/version "3.12.3"}
+
+        ;; Enhanced exceptions handling
+        slingshot/slingshot {:mvn/version "0.12.2"}
+
+        ;; Embedded Database sqlite
+        org.clojure/java.jdbc {:mvn/version "0.7.8"}
+        org.xerial/sqlite-jdbc {:mvn/version "3.23.1"}
+
+        ;; DSL for SQL
+        com.github.seancorfield/honeysql {:mvn/version "2.2.891"}
+
+        ;; Schema validation
+        metosin/malli {:mvn/version "0.8.4"}}
+
 
  :aliases {:test {:extra-paths ["test/jms"]
                   :extra-deps  {lambdaisland/kaocha {:mvn/version "0.0-529"}}
