@@ -25,6 +25,9 @@
                   ::http/type   :jetty
                   ::http/host   "0.0.0.0"
                   ::http/join?  false
-                  ::http/port   (Integer. (or (env :port) 5000))})
+                  ::http/port   (Integer. (or (env :port) 5000))
+                  ;; Container options contains jetty specific configuration
+                  ;; http://pedestal.io/reference/jetty
+                  ::http/container-options {:h2c true}})
 
 (defn -main [& _] (-> service-map http/create-server http/start))
