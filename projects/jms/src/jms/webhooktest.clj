@@ -1,16 +1,25 @@
 (ns jms.webhooktest
   (:gen-class)
   (:require [io.pedestal.http :as http]
+            [clojure.data.json :as json]
             [environ.core :refer [env]]
             [io.pedestal.http.route :as route]
             [io.pedestal.http.body-params :as body-params]))
 
 (defn respond-hello [req]
-  {:status 200 :body (str (:json-params req))})
+  {:status 200 :body (str (:json-params req) (:headers req))})
+
+(defn webhook-post [req]
+  (cond
+    (not (= (get-in req [:headers "x-gitea-event"]) "push"))
+      {:status 400 :body (json/write-str {:error "Not a push event"})}
+    :else {:status 200 :body (json/write-str {:event "submitted"})}))
 
 (def routes
   (route/expand-routes [[["/" ^:interceptors [(body-params/body-params)]
-                          {:post `respond-hello }]]]))
+                          {:post `respond-hello }]
+                         ["/webhook" ^:interceptors [(body-params/body-params)]
+                          {:post `webhook-post}]]]))
 
 (def service-map {::http/routes routes
                   ::http/type   :jetty

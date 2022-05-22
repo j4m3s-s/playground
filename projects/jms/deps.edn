@@ -1,6 +1,7 @@
 {:paths [ "src" ]
  :deps { org.clojure/clojure {:mvn/version "1.10.3"}
         org.clojure/core.match {:mvn/version "1.0.0"}
+        org.clojure/data.json {:mvn/version "2.4.0"}
 
         ;; Spec -- not sure why it's needed but runtime needs it
         org.clojure/spec.alpha {:mvn/version "0.2.194"}

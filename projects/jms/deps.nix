@@ -42,6 +42,19 @@ let repos = [
   }
 
   rec {
+    name = "data.json/org.clojure";
+    src = fetchMavenArtifact {
+      inherit repos;
+      artifactId = "data.json";
+      groupId = "org.clojure";
+      sha512 = "04b7c0c90cb26d643a0b3e7e1ffa2d2d423e977c1454ee5ea7c2e75547ecbc113838df17b797902a975f5ea2184a81a45b605a4d82970805e2bbb02feebc578d";
+      version = "2.4.0";
+      
+    };
+    paths = [ src ];
+  }
+
+  rec {
     name = "clojure/org.clojure";
     src = fetchMavenArtifact {
       inherit repos;
