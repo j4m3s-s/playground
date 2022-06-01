@@ -6,6 +6,7 @@
             [io.pedestal.http.route :as route]
             [io.pedestal.http.body-params :as body-params]
             [malli.core :as m]
+            [malli.provider :as mp]
             [clojure.walk :as walk]
             [slingshot.slingshot :refer [try+]]))
 
@@ -13,16 +14,17 @@
 ;; for reference : https://github.com/metosin/malli
 ;; TODO: verify exactly why {:closed true} can't be put on those :map
 (def user-schema
-  [:map
+  [:map {:closed true}
    [:name     :string]
    [:email    :string] ;; TODO: parse email
    [:username :string]])
 
 (def gitea-user
-  [:map
+  [:map {:closed true}
    [:id         :int]
    [:login      :string]
    [:full_name  :string]
+   [:email      :string]
    [:avatar_url :string] ;; TODO: parse URL
    [:username   :string]])
 
@@ -182,4 +184,4 @@
   }
 }"))
 
-(= (m/validate gitea-webhook-schema webhook-json-example) true)
+(= true (m/validate gitea-webhook-schema (walk/keywordize-keys webhook-json-example)))
