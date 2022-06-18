@@ -32,7 +32,10 @@
         com.github.seancorfield/honeysql {:mvn/version "2.2.891"}
 
         ;; Schema validation
-        metosin/malli {:mvn/version "0.8.4"}}
+        metosin/malli {:mvn/version "0.8.4"}
+
+        ;; Joda time wrapper
+        clj-time/clj-time {:mvn/version "0.15.2"}}
 
 
  :aliases {:test {:extra-paths ["test/jms"]
