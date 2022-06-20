@@ -53,10 +53,16 @@
 
 ;; Insertion
 ;; default values
-(db/insert! db :page_update
- {:name "boku no hero academia"
-  ;; starting point
-  :number "354"})
+(slg/try+
+  (db/insert! db :page_update
+   {:name "boku no hero academia"
+    ;; starting point
+    :number "354"})
+  ; If it's already inside the DB, it breaks on unicity constraint
+  ; but we don't care since we only care about empty DB
+  ; TODO: Use more precised Exception
+  (catch Exception _
+    (println "Failed to insert initial bhna value")))
 
 (defn get-last-chapter-checked
   [name]
