@@ -51,6 +51,9 @@
 ;; Init
 (init-db)
 
+;; Foreign keys
+;; (db/execute! db "PRAGMA foreign_keys = ON")
+
 ;; Insertion
 ;; default values
 (slg/try+
