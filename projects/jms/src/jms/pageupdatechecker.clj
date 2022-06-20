@@ -103,6 +103,7 @@
     :post-hook "toto"}
    ])
 
+; TODO: use https://github.com/finity-ai/clj-cron-parse
 (def timed-tasks-array-example
   "Internal array for scheduler execution"
   (atom [{:next-schedule ((:timer-fn (first tasks-example)))
