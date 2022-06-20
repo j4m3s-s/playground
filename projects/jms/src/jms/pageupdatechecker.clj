@@ -20,6 +20,7 @@
    [clj-time.core :as t]
    [clj-time.coerce :as tc]))
 
+; Manga Functions
 (defn is-bha-available? [nb]
   (not
     (str/includes?
