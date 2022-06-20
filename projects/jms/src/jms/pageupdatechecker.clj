@@ -31,6 +31,23 @@
          "not available"))
        "not available")))
 
+; TODO: for other mangas
+; - BHNA
+; - DBS
+; - Black Clover
+; - Hero I quit a long time ago
+; - Radiant
+; - Shikkaku Mon
+; - Girl And Science
+; - boruto
+; - Tensei Shitara Slime Datta Ken
+; - GATE
+; - jujutsu kaisen
+; - Owari no seraph
+; - Tate no Yuusha no Nariagari
+; - The World'ss best assassin
+
+
 (def db
   {:classname "org.sqlite.JDBC"
    :subprotocol "sqlite"
