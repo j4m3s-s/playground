@@ -46,6 +46,7 @@
 ; - Owari no seraph
 ; - Tate no Yuusha no Nariagari
 ; - The World'ss best assassin
+; - 100 years quest, fairy tail
 
 
 (def db
