@@ -21,3 +21,6 @@ class Card(Model):
 class CardTag(Model):
     card = models.ForeignKey(Card, on_delete=models.DO_NOTHING)
     tag  = models.ForeignKey(Tag, on_delete=models.DO_NOTHING)
+
+    class Meta:
+        unique_together = ('card', 'tag')
