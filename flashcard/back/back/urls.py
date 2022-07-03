@@ -5,6 +5,18 @@ from django.contrib import admin
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/v1/tags', views.TagListCreate.as_view()),
+    # Tags
+    path('api/v1/tags', views.TagList.as_view()),
+    path('api/v1/tag/', views.TagCreate.as_view()),
+    path('api/v1/tag/<int:pk>', views.TagEdit.as_view()),
+
+    # Cards
+    path('api/v1/cards', views.CardList.as_view()),
+    path('api/v1/card/', views.CardCreate.as_view()),
+    path('api/v1/card/<int:pk>', views.CardEdit.as_view()),
+
+    # CardTag
+    path('api/v1/cardtags/', views.CardTagList.as_view()),
+
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]
