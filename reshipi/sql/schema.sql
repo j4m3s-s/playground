@@ -21,8 +21,14 @@ create table api.ingredients (
 
 create table api.ingredients_recipe (
     ingredient_id serial references api.ingredients(id),
-    recipe_id serial references api.recipes(id)
+    recipe_id serial references api.recipes(id),
+    unit text,
+    quantity integer
 );
+-- units :
+-- - mg (although shown as g)
+-- - ml (shown as cl ?)
+-- - number
 
 create table api.ustensils (
     id serial primary key,
