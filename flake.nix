@@ -16,8 +16,13 @@
       buildInputs = with pkgs; [
         gcc
         gnumake
-        python3
         gtest
+
+        # tmpl
+        python3
+        poetry
+        yarn
+        nodejs
       ];
     };
   };
