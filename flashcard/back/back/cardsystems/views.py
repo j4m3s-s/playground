@@ -1,8 +1,8 @@
-from collections import OrderedDict
+from collections import OrderedDict, defaultdict
 
 from django.shortcuts import render
 from django.db.models import Q
-from django.http import Http404
+from django.http import HttpResponseBadRequest
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, generics
@@ -57,26 +57,60 @@ class CardTagCreate(generics.CreateAPIView):
     serializer_class = CardTagSerializer
 
 # FIXME: authenticated endpoint
-# TODO: filter by tags?
 class CardTagList(APIView):
     def get(self, request, format=None):
-        # prefetch in one query related queries
-        cardstags = CardTag.objects.all().select_related('card').select_related('tag')
+        # We need at least one tag
+        if not (tag1 := self.request.query_params.get('tag1')):
+            return HttpResponseBadRequest()
 
-        # FIXME: not optimized (technically we should *not* query the whole db
-        # everytime)
+        # Get tags
+        tags = Q(tag__name__exact=tag1)
+        tags_dict = { tag1: 0 }
+        for tag in ["tag2", "tag3", "tag4", "tag5", "tag6"]:
+            if not (tagvalue := self.request.query_params.get(tag, None)):
+                break
+            tags_dict[tagvalue] = 0
+            tags |= Q(tag__name__exact=tagvalue)
+
+
+        # Get all Card that corresponds to tags
+        cardstags_from_tags = CardTag.objects.filter(tags).select_related('card')
+
+        cards_tags_filter = defaultdict(lambda: {})
+        for cardstag in cardstags_from_tags:
+            cards_tags_filter[cardstag.card.id][cardstag.tag.name] = 0
+
+            # Not sure how to initialize next loop otherwise
+            last_id = cardstag.card.id
+
+        cards_filtered = {}
+        for card_id, tags in cards_tags_filter.items():
+            if tags != tags_dict:
+                continue
+
+            cards_filtered[card_id] = 0
+
+        cards = Q(card__id__exact=last_id)
+        for card_id, _ in cards_filtered.items():
+            cards |= Q(card__id__exact=card_id)
+
+        # Get all tags associated with those tags
+        cardstags = CardTag.objects.filter(cards).select_related('card').select_related('tag')
+
         cards_related_tags = OrderedDict()
         for cardtag in cardstags:
             card_serializer = CardSerializer(cardtag.card)
             card = card_serializer.data
 
+            # Create dict for cards
             if cardtag.card.id not in cards_related_tags:
                 cards_related_tags[cardtag.card.id] = card
                 cards_related_tags[cardtag.card.id]['tags'] = []
 
             tag_serializer = TagSerializer(cardtag.tag)
-            tag = tag_serializer.data
+            tag = tag_serializer.data['name']
 
+            # Add related tags to each card
             cards_related_tags[cardtag.card.id]['tags'].append(tag)
 
         result = []
