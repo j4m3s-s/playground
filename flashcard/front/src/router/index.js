@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import CardsView from '../views/CardsView.vue'
 import TagsView from '../views/TagsView.vue'
+import TagEditView from '../views/TagEditView.vue'
 
 Vue.use(VueRouter)
 
@@ -17,9 +18,9 @@ const routes = [
     component: TagsView
   },
   {
-    path: '/cards',
-    name: 'Cards',
-    component: CardsView
+    path: '/tag-edit/:id',
+    name: 'TagEdit',
+    component: TagEditView
   }
 ]
 
