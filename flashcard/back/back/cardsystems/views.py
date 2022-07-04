@@ -76,6 +76,8 @@ class CardTagList(APIView):
 
         # Get all Card that corresponds to tags
         cardstags_from_tags = CardTag.objects.filter(tags).select_related('card')
+        if not len(cardstags_from_tags):
+            return HttpResponseBadRequest()
 
         cards_tags_filter = defaultdict(lambda: {})
         for cardstag in cardstags_from_tags:
@@ -90,6 +92,7 @@ class CardTagList(APIView):
                 continue
 
             cards_filtered[card_id] = 0
+            last_id = card_id
 
         cards = Q(card__id__exact=last_id)
         for card_id, _ in cards_filtered.items():
