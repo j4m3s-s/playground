@@ -57,6 +57,20 @@ class CardTagCreate(generics.CreateAPIView):
     queryset = CardTag.objects.all()
     serializer_class = CardTagSerializer
 
+class CardTagGet(APIView):
+    def get(self, request, id=None):
+        if id is None:
+            return HttpResponseBadRequest()
+        cardtags = CardTag.objects.filter(card__id__exact=id).select_related('tag').select_related('card')
+        tags_result = []
+        for cardtag in cardtags:
+            tags_result.append({
+                "id": cardtag.id,
+                "name": cardtag.tag.name
+            })
+
+        return Response(tags_result)
+
 # FIXME: authenticated endpoint
 class CardTagList(APIView):
     def get(self, request, format=None):
