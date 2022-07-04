@@ -1,12 +1,14 @@
-from django.shortcuts import render
 from collections import OrderedDict
-from back.cardsystems.models import Tag, Card, CardTag
-from back.cardsystems.serializers import TagSerializer, CardSerializer, CardTagSerializer
 
+from django.shortcuts import render
+from django.db.models import Q
 from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, generics
+
+from back.cardsystems.models import Tag, Card, CardTag
+from back.cardsystems.serializers import TagSerializer, CardSerializer, CardTagSerializer
 
 # FIXME: authenticated endpoint
 class TagList(generics.ListAPIView):
