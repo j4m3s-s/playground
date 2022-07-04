@@ -14,7 +14,6 @@ class Card(Model):
     front = models.CharField(max_length=500)
     back = models.CharField(max_length=500)
 
-
     def __str__(self):
         return f'{self.front} - {self.back}'
 
