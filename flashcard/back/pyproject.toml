@@ -8,6 +8,7 @@ license = "AGPLv3"
 [tool.poetry.dependencies]
 python = "^3.9"
 djangorestframework-filters = "^0.11.1"
+django-cors-headers = "^3.13.0"
 
 [tool.poetry.dev-dependencies]
 
