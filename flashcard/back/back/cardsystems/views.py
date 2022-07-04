@@ -23,6 +23,7 @@ class TagCreate(generics.RetrieveUpdateDestroyAPIView):
 
 
 # FIXME: authenticated endpoint
+# TODO: remove this to avoid querying the whole db
 class TagEdit(generics.RetrieveUpdateDestroyAPIView):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
