@@ -23,3 +23,6 @@ class CardTag(Model):
 
     class Meta:
         unique_together = ('card', 'tag')
+
+    def __str__(self):
+        return f'{str(self.card)} -- {self.tag.name}'
