@@ -14,6 +14,11 @@ class Card(Model):
     front = models.CharField(max_length=500)
     back = models.CharField(max_length=500)
 
+    # For SM2 algorithm
+    sm2_interval = models.DateField()
+    sm2_repetition_number = models.IntegerField(default=0)
+    sm2_easiness_factor = models.FloatField(default=2.5)
+
     def __str__(self):
         return f'{self.front} - {self.back}'
 

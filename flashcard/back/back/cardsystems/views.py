@@ -1,4 +1,5 @@
 from collections import OrderedDict, defaultdict
+from math import floor
 
 from django.shortcuts import render
 from django.db.models import Q
@@ -135,3 +136,44 @@ class CardTagList(APIView):
         for k, v in cards_related_tags.items():
             result.append(v)
         return Response(result)
+
+
+# FIXME: use only named arguments
+# Algorithm originated from supermemo, similar is used by Anki with values for
+# interval that are tweaked.
+def sm2(user_grade, repetition_number, easiness_factor, interval):
+    """
+    Answer :
+    - 0: "Total blackout", complete failure to recall the information.
+    - 1: Incorrect response, but upon seeing the correct answer it felt familiar.
+    - 2: Incorrect response, but upon seeing the correct answer it seemed easy to remember.
+    - 3: Correct response, but required significant effort to recall.
+    - 4: Correct response, after some hesitation.
+    - 5: Correct response with perfect recall.
+    """
+    # Good answer
+    if user_grade >= 3:
+        # Maybe tweak those values
+        if repetition_number == 0:
+            interval = 1
+        elif repetition_number == 1:
+            # Default is 6, I've chosen 3 to ease the learning phase
+            interval = 3
+        else:
+            interval = floor(interval * easiness_factor)
+        repetition_number += 1
+    # Incorrect response
+    else:
+        repetition_number = 0
+        interval = 1
+
+    easiness_factor = easiness_factor + \
+        (0.1 - (5 - user_grade) * (0.08 + (5 - user_grade) * 0.02))
+    if easiness_factor < 1.3:
+        easiness_factor = 1.3
+
+    return {
+        "repetition_number": repetition_number,
+        "easiness_factor": easiness_factor,
+        "interval": interval
+    }
