@@ -15,7 +15,7 @@ class Card(Model):
     back = models.CharField(max_length=500)
 
     # For SM2 algorithm
-    sm2_interval = models.DateField()
+    sm2_interval = models.DateField(auto_now=True)
     sm2_repetition_number = models.IntegerField(default=0)
     sm2_easiness_factor = models.FloatField(default=2.5)
 
@@ -31,3 +31,11 @@ class CardTag(Model):
 
     def __str__(self):
         return f'{str(self.card)} -- {self.tag.name}'
+
+
+class TestWorkflow(Model):
+    date = models.DateField(auto_now=True)
+
+class TestWorkflowQuestions(Model):
+    card = models.ForeignKey(Card, on_delete=models.DO_NOTHING)
+    test_workflow = models.ForeignKey(TestWorkflow, on_delete=models.DO_NOTHING)
