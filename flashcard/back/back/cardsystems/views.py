@@ -1,14 +1,16 @@
 from collections import OrderedDict, defaultdict
 from math import floor
+from datetime import date, timedelta
 
 from django.shortcuts import render
 from django.db.models import Q
+from django.db import transaction
 from django.http import HttpResponseBadRequest
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, generics
 
-from back.cardsystems.models import Tag, Card, CardTag
+from back.cardsystems.models import Tag, Card, CardTag, TestWorkflow, TestWorkflowQuestion
 from back.cardsystems.serializers import TagSerializer, CardSerializer, CardTagSerializer
 
 # FIXME: authenticated endpoint
@@ -177,3 +179,80 @@ def sm2(user_grade, repetition_number, easiness_factor, interval):
         "easiness_factor": easiness_factor,
         "interval": interval
     }
+
+# FIXME: authenticated endpoint
+# FIXME: make endpoint algorithm agnostic
+class TestingWorkflowSM2(APIView):
+    # FIXME: add tags support to filter questions -- refacto function tags
+    # extraction?
+    def post(self, request, format=None):
+        with transaction.atomic():
+            # Let's take 20 questions
+            cards = Card.objects.filter(sm2_next_date__lte=date.today())[:20]
+
+            # Create a workflow
+            test_workflow = TestWorkflow()
+            test_workflow.save()
+
+            # Associate questions with it
+            for card in cards:
+                question = TestWorkflowQuestion(card=card, test_workflow=test_workflow)
+                question.save()
+
+        # This is used by client to query questions afterwards
+        return Response({ "id": test_workflow.id})
+
+class TestingWorkflowQuestionsSM2(APIView):
+    def post(self, request, id=None):
+        # TODO: use serializer here
+        card_id = self.request.query_params.get("card_id", None)
+        user_grade = int(self.request.query_params.get("user_grade", None))
+        test_workflow_question_id = self.request.query_params.get("test_workflow_question_id", None)
+
+        # card id, testworkflow id, answer = [0 5]
+        if (card_id is None or
+            test_workflow_question_id is None or
+            user_grade is None):
+            return HttpResponseBadRequest()
+
+        card = Card.objects.filter(id__exact=card_id)[:1][0]
+        test_workflow_question = \
+        TestWorkflowQuestion.objects.filter(test_workflow__id__exact=test_workflow_question_id,
+                                            card_id__exact=card_id)[:1][0]
+
+        with transaction.atomic():
+            repetition_number = card.sm2_repetition_number
+            easiness_factor = card.sm2_easiness_factor
+            interval = card.sm2_interval
+
+            res = sm2(user_grade=user_grade,
+                      repetition_number=repetition_number,
+                      easiness_factor=easiness_factor,
+                      interval=interval)
+
+            card.sm2_repetition_number = res["repetition_number"]
+            card.sm2_easiness_factor = res["easiness_factor"]
+            card.sm2_interval = res["interval"]
+            card.sm2_next_date = timedelta(days=res["interval"]) + date.today()
+
+            test_workflow_question.done = True
+            card.save()
+            print(test_workflow_question)
+            test_workflow_question.save()
+            print("toto")
+
+
+        return Response({})
+
+    def get(self, request, id=None):
+        if id is None:
+            return HttpResponseBadRequest()
+
+        test_workflow = TestWorkflow.objects.filter(id__exact=id)[:1]
+        # Get all questions yet to ask
+        question = \
+        TestWorkflowQuestion.objects.filter(test_workflow__exact=test_workflow, done__exact=False).select_related('card')[:1]
+        if len(question) == 0:
+            return Response({})
+
+        return Response({ "id": question[0].id })

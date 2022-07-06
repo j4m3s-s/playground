@@ -19,5 +19,12 @@ urlpatterns = [
     path('api/v1/cardtags/', views.CardTagList.as_view()),
     path('api/v1/cardtag/<int:id>', views.CardTagGet.as_view()),
 
+    # TestingWorkflow
+    path('api/v1/testingworkflow/sm2/', views.TestingWorkflowSM2.as_view()),
+
+
+    # TestingworkflowQuestions
+    path('api/v1/testingworkflowquestions/sm2/<int:id>', views.TestingWorkflowQuestionsSM2.as_view()),
+
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]
