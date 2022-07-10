@@ -51,7 +51,7 @@ INSTALLED_APPS = [
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:8080',
     # FIXME: we can properly do this
-    'https://flashcard.j4m3s.eu',
+    'https://api.flashcard.j4m3s.eu',
 ]
 
 MIDDLEWARE = [
