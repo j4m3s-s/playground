@@ -21,13 +21,13 @@ export default Vue.extend({
   methods: {
     submit: function () {
       // FIXME: url
-      axios.patch(`http://localhost:8000/api/v1/card/${this.$route.params.id}`, this.item)
+      axios.patch(`${process.env.VUE_APP_API_ENDPOINT_URL}/api/v1/card/${this.$route.params.id}`, this.item)
     }
   },
   mounted () {
     axios
       // FIXME: url
-      .get(`http://localhost:8000/api/v1/card/${this.$route.params.id}`)
+      .get(`${process.env.VUE_APP_API_ENDPOINT_URL}/api/v1/card/${this.$route.params.id}`)
       .then(response => (this.item = response.data))
   }
 })

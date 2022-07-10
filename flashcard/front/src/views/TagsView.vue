@@ -22,7 +22,7 @@ export default Vue.extend({
   },
   mounted () {
     axios
-      .get('http://localhost:8000/api/v1/tags')
+      .get(`${process.env.VUE_APP_API_ENDPOINT_URL}/api/v1/tags`)
       // FIXME: paging
       .then(response => (this.items = response.data.results))
   }
