@@ -31,7 +31,8 @@ else:
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = is_dev_environment()
 
-ALLOWED_HOSTS = []
+# FIXME: allow only for production (env/file ?)
+ALLOWED_HOSTS = [ 'flashcard.ewigkraft.eu' ]
 
 
 # Application definition
