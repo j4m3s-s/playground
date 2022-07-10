@@ -11,19 +11,25 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
+from os import getenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+def is_dev_environment():
+    return getenv('DJANGO_ENV') == "dev" or getenv('DJANGO_ENV')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-(r$!g^&kx$ntjg@9d51+iy=yopvj*o-iv$n-a42a$ob#%g8p04'
+if is_dev_environment():
+    SECRET_KEY = 'django-insecure-(r$!g^&kx$ntjg@9d51+iy=yopvj*o-iv$n-a42a$ob#%g8p04'
+else:
+    SECRET_KEY = getenv('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = is_dev_environment()
 
 ALLOWED_HOSTS = []
 
@@ -41,8 +47,11 @@ INSTALLED_APPS = [
     'corsheaders',
     'back',
 ]
+
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:8080',
+    # FIXME: we can properly do this
+    'https://flashcard.j4m3s.eu',
 ]
 
 MIDDLEWARE = [
@@ -83,7 +92,7 @@ WSGI_APPLICATION = 'back.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3' if is_dev_environment() else '/var/db/db.sqlite3'
     }
 }
 
