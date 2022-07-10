@@ -17,7 +17,7 @@ from os import getenv
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 def is_dev_environment():
-    return getenv('DJANGO_ENV') == "dev" or getenv('DJANGO_ENV')
+    return getenv('DJANGO_ENV') == "dev"
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
