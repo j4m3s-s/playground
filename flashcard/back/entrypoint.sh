@@ -8,4 +8,4 @@ python manage.py migrate
 #python manage.py collectstatic --noinput
 
 # FIXME: wsgi or something ?
-exec python manage.py runserver
+exec python manage.py runserver 0.0.0.0
