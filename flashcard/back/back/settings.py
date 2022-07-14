@@ -32,7 +32,7 @@ else:
 DEBUG = is_dev_environment()
 
 # FIXME: allow only for production (env/file ?)
-ALLOWED_HOSTS = [ 'flashcard.ewigkraft.eu' ]
+ALLOWED_HOSTS = [ 'flashcard.ewigkraft.eu', 'localhost' ]
 
 
 # Application definition
@@ -52,7 +52,7 @@ INSTALLED_APPS = [
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:8080',
     # FIXME: we can properly do this
-    'https://api.flashcard.j4m3s.eu',
+    'https://flashcard.j4m3s.eu',
 ]
 
 MIDDLEWARE = [
