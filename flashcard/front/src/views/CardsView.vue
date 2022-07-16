@@ -6,6 +6,7 @@
         {{ item.front }}
         ----
         {{ item.back }}
+        <router-link :to="{ name: 'CardEdit', params: { id: item.id } }"> Edit </router-link>
         <div v-for="tag in item.tags" :key="tag.id"> #{{ tag }} </div>
       </li>
     </ul>
