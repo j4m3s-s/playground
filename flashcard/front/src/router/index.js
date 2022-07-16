@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 
 import CardsView from '../views/CardsView.vue'
 import CardEditView from '../views/CardEditView.vue'
+import CardAddView from '../views/CardAddView.vue'
 import TagsView from '../views/TagsView.vue'
 import TagEditView from '../views/TagEditView.vue'
 
@@ -18,6 +19,11 @@ const routes = [
     path: '/card-edit/:id',
     name: 'CardEdit',
     component: CardEditView
+  },
+  {
+    path: '/card-add/',
+    name: 'CardAdd',
+    component: CardAddView
   },
   {
     path: '/tags',
