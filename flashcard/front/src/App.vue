@@ -4,6 +4,7 @@
       <router-link :to="{ name: 'Cards' }">Cards</router-link> |
       <router-link :to="{ name: 'Tags' }">Tags</router-link> |
       <router-link :to="{ name: 'CardAdd' }">Add Card</router-link> |
+      <router-link :to="{ name: 'TestWorkflow' }">TestWorkflow</router-link>
     </nav>
     <router-view/>
   </div>

@@ -6,6 +6,7 @@ import CardEditView from '../views/CardEditView.vue'
 import CardAddView from '../views/CardAddView.vue'
 import TagsView from '../views/TagsView.vue'
 import TagEditView from '../views/TagEditView.vue'
+import TestWorkflowView from '../views/TestWorkflowView.vue'
 
 Vue.use(VueRouter)
 
@@ -34,6 +35,11 @@ const routes = [
     path: '/tag-edit/:id',
     name: 'TagEdit',
     component: TagEditView
+  },
+  {
+    path: '/testworkflow',
+    name: 'TestWorkflow',
+    component: TestWorkflowView
   }
 ]
 
