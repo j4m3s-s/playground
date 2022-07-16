@@ -1,6 +1,7 @@
 from collections import OrderedDict, defaultdict
 from math import floor
 from datetime import date, timedelta
+import json
 
 from django.shortcuts import render
 from django.db.models import Q
@@ -205,15 +206,23 @@ class TestingWorkflowSM2(APIView):
 class TestingWorkflowQuestionsSM2(APIView):
     def post(self, request, id=None):
         # TODO: use serializer here
-        card_id = self.request.query_params.get("card_id", None)
-        user_grade = int(self.request.query_params.get("user_grade", None))
-        test_workflow_question_id = self.request.query_params.get("test_workflow_question_id", None)
+        #card_id = self.request.query_params.get("card_id", None)
+        #user_grade = self.request.query_params.get("user_grade", None)
+        #test_workflow_question_id = self.request.query_params.get("test_workflow_question_id", None)
+        # FIXME: use serializer as this is unsafe
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
+        card_id = body['card_id']
+        user_grade = body['user_grade']
+        test_workflow_question_id = body['test_workflow_question_id']
 
         # card id, testworkflow id, answer = [0 5]
         if (card_id is None or
             test_workflow_question_id is None or
             user_grade is None):
             return HttpResponseBadRequest()
+
+        user_grade = int(user_grade)
 
         card = Card.objects.filter(id__exact=card_id)[:1][0]
         test_workflow_question = \
