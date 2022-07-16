@@ -5,13 +5,13 @@ from rest_framework.serializers import ModelSerializer
 class TagSerializer(ModelSerializer):
     class Meta:
         model = Tag
-        fields = [ 'name' ]
+        fields = [ 'name', 'id' ]
 
 
 class CardSerializer(ModelSerializer):
     class Meta:
         model = Card
-        fields = [ 'front', 'back' ]
+        fields = [ 'front', 'back', 'id' ]
 
 
 class CardTagSerializer(ModelSerializer):
