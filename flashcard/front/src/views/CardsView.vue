@@ -26,8 +26,8 @@ export default Vue.extend({
   },
   mounted () {
     axios
-      .get(`${process.env.VUE_APP_API_ENDPOINT_URL}/api/v1/cardtags/?tag1=tata`)
-      .then(response => (this.items = response.data))
+      .get(`${process.env.VUE_APP_API_ENDPOINT_URL}/api/v1/cards`)
+      .then(response => (this.items = response.data.results))
   }
 })
 </script>
