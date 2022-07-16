@@ -3,7 +3,7 @@
     <h1>Tags' list</h1>
     <ul>
       <li v-for="item in items" :key="item.id">
-        {{ item.name }}
+        <router-link :to="{ name: 'TagEdit', params: { id: item.id } }"> {{ item.name }} </router-link>
       </li>
     </ul>
   </div>
