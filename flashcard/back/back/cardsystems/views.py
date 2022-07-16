@@ -246,10 +246,7 @@ class TestingWorkflowQuestionsSM2(APIView):
 
             test_workflow_question.done = True
             card.save()
-            print(test_workflow_question)
             test_workflow_question.save()
-            print("toto")
-
 
         return Response({})
 
