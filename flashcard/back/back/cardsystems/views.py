@@ -261,4 +261,4 @@ class TestingWorkflowQuestionsSM2(APIView):
         if len(question) == 0:
             return Response({})
 
-        return Response({ "id": question[0].id })
+        return Response({ "id": question[0].card.id })
