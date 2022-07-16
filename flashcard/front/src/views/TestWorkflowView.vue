@@ -61,6 +61,7 @@ export default Vue.extend({
               }
               axios.get(`${process.env.VUE_APP_API_ENDPOINT_URL}/api/v1/card/${response.data.id}`)
                 .then(response => {
+                  this.show_card = false
                   this.card.id = response.data.id
                   this.card.front = response.data.front
                   this.card.back = response.data.back
