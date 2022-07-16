@@ -29,10 +29,10 @@ else:
     SECRET_KEY = getenv('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = is_dev_environment()
+DEBUG = is_dev_environment() or getenv('DEBUG') is not None
 
 # FIXME: allow only for production (env/file ?)
-ALLOWED_HOSTS = [ 'flashcard.ewigkraft.eu', 'localhost' ]
+ALLOWED_HOSTS = [ 'api.flashcard.ewigkraft.eu', 'localhost' ]
 
 
 # Application definition
@@ -49,11 +49,17 @@ INSTALLED_APPS = [
     'back',
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:8080',
-    # FIXME: we can properly do this
-    'https://flashcard.j4m3s.eu',
-]
+#CORS_ALLOWED_ORIGINS = [
+#    'http://localhost:8080',
+#    # FIXME: we can properly do this
+#    'https://flashcard.ewigkraft.eu',
+#    # FIXME: no hardcode ?
+#    # This is needed for admin for csrf checks
+#    'https://api.flashcard.ewigkraft.eu',
+#]
+
+# FIXME: add correct CORS
+CORS_ALLOW_ALL_ORIGINS = True
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
