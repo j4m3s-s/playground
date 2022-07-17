@@ -194,7 +194,7 @@ class TestingWorkflowSM2(APIView):
     def post(self, request, format=None):
         with transaction.atomic():
             # Let's take 20 questions
-            cards = Card.objects.filter(sm2_next_date__lte=date.today())[:20]
+            cards = Card.objects.filter(sm2_next_date__lte=date.today()).order_by('sm2_next_date')[:20]
 
             # Nothing to test today!
             if not cards:
