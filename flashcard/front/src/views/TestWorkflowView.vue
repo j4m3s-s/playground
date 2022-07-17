@@ -85,6 +85,9 @@ export default Vue.extend({
                 this.card.back = response.data.back
               })
           })
+      }).catch((_) => {
+        // FIXME: add
+        this.$router.push({ name: 'Cards' })
       })
   }
 })
