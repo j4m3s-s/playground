@@ -24,7 +24,7 @@ class Card(Model):
         return f'{self.front} - {self.back}'
 
 class CardTag(Model):
-    card = models.ForeignKey(Card, on_delete=models.DO_NOTHING)
+    card = models.ForeignKey(Card, on_delete=models.CASCADE)
     tag  = models.ForeignKey(Tag, on_delete=models.DO_NOTHING)
 
     class Meta:
@@ -38,6 +38,6 @@ class TestWorkflow(Model):
     date = models.DateField(auto_now=True)
 
 class TestWorkflowQuestion(Model):
-    card = models.ForeignKey(Card, on_delete=models.DO_NOTHING)
+    card = models.ForeignKey(Card, on_delete=models.CASCADE)
     test_workflow = models.ForeignKey(TestWorkflow, on_delete=models.DO_NOTHING)
     done = models.BooleanField(default=False)
