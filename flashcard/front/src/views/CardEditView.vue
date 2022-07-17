@@ -21,6 +21,7 @@ export default Vue.extend({
   methods: {
     submit: function () {
       axios.patch(`${process.env.VUE_APP_API_ENDPOINT_URL}/api/v1/card/${this.$route.params.id}`, this.item)
+      this.$router.push({ name: 'Cards' })
     }
   },
   mounted () {
