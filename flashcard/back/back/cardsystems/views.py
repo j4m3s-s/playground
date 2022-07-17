@@ -196,6 +196,10 @@ class TestingWorkflowSM2(APIView):
             # Let's take 20 questions
             cards = Card.objects.filter(sm2_next_date__lte=date.today())[:20]
 
+            # Nothing to test today!
+            if not cards:
+                return HttpResponseBadRequest()
+
             # Create a workflow
             test_workflow = TestWorkflow()
             test_workflow.save()
