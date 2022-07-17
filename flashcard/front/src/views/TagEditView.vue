@@ -19,13 +19,11 @@ export default Vue.extend({
   },
   methods: {
     submit: function () {
-      // FIXME: url
       axios.patch(`${process.env.VUE_APP_API_ENDPOINT_URL}/api/v1/tag/${this.$route.params.id}`, this.item)
     }
   },
   mounted () {
     axios
-      // FIXME: url
       .get(`${process.env.VUE_APP_API_ENDPOINT_URL}/api/v1/tag/${this.$route.params.id}`)
       // FIXME: paging
       .then(response => (this.item = response.data))
