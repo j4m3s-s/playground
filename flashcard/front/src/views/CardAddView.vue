@@ -2,7 +2,7 @@
   <div>
     <h1>Add Card</h1>
     <input v-model="item.front" />
-    <input v-model="item.back" />
+    <input v-model="item.back" @keyup.enter="submit" />
     <button @click="submit"> submit </button>
   </div>
 </template>
