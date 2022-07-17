@@ -27,6 +27,7 @@ export default Vue.extend({
   mounted () {
     axios
       .get(`${process.env.VUE_APP_API_ENDPOINT_URL}/api/v1/cards`)
+      // FIXME: paging
       .then(response => (this.items = response.data.results))
   }
 })
