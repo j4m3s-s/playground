@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>Add Card</h1>
-    <input autofocus v-model="item.front" />
+    <input ref="front_input" v-model="item.front">
     <input v-model="item.back" @keyup.enter="submit">
     <button @click="submit"> submit </button>
   </div>
@@ -13,6 +13,10 @@ import axios from 'axios'
 
 export default Vue.extend({
   name: 'CardEdit',
+  mounted () {
+    // Autofocus front input on component load
+    this.$refs.front_input.focus()
+  },
   data () {
     return {
       item: {
