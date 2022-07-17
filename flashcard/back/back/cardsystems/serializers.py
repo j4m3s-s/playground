@@ -1,3 +1,5 @@
+from datetime import date
+
 from back.cardsystems.models import Tag, Card, CardTag
 from rest_framework.serializers import ModelSerializer
 
@@ -12,6 +14,9 @@ class CardSerializer(ModelSerializer):
     class Meta:
         model = Card
         fields = [ 'front', 'back', 'id' ]
+
+    def create(self, validated_data):
+        return Card(**validated_data, sm2_next_date=date.today())
 
 
 class CardTagSerializer(ModelSerializer):
