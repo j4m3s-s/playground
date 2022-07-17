@@ -26,5 +26,7 @@ urlpatterns = [
     # TestingworkflowQuestions
     path('api/v1/testingworkflowquestions/sm2/<int:id>', views.TestingWorkflowQuestionsSM2.as_view()),
 
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+
+    path('__debug__/', include('debug_toolbar.urls')),
 ]
