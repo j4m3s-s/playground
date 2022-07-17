@@ -40,10 +40,15 @@ class CardList(generics.ListAPIView):
 
 
 # FIXME: authenticated endpoint
-class CardCreate(generics.CreateAPIView):
-    queryset = Card.objects.all()
-    serializer_class = CardSerializer
+class CardCreate(APIView):
+    def post(self, request):
+        serializer = CardSerializer(data=request.data)
+        if not serializer.is_valid():
+            return HttpResponseBadRequest()
 
+        # Save result -- we use a custom serializer to append default date
+        serializer.save().save()
+        return Response({})
 
 # FIXME: authenticated endpoint
 class CardEdit(generics.RetrieveUpdateDestroyAPIView):

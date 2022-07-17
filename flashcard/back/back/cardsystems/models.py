@@ -15,7 +15,7 @@ class Card(Model):
     back = models.CharField(max_length=500)
 
     # For SM2 algorithm
-    sm2_next_date = models.DateField(auto_now=True)
+    sm2_next_date = models.DateField()
     sm2_interval = models.IntegerField(default=0)
     sm2_repetition_number = models.IntegerField(default=0)
     sm2_easiness_factor = models.FloatField(default=2.5)
