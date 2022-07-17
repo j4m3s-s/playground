@@ -7,6 +7,7 @@
         ----
         {{ item.back }}
         <router-link :to="{ name: 'CardEdit', params: { id: item.id } }"> Edit </router-link>
+        <button @click="deleteCard(item.id)"> Delete </button>
         <div v-for="tag in item.tags" :key="tag.id"> #{{ tag }} </div>
       </li>
     </ul>
@@ -22,6 +23,18 @@ export default Vue.extend({
   data () {
     return {
       items: null
+    }
+  },
+  methods: {
+    deleteCard (id) {
+      axios
+        .delete(`${process.env.VUE_APP_API_ENDPOINT_URL}/api/v1/card/${id}`).then((_) => {
+          // Refresh to re-retrieve items (and thus remove deleted one)
+          axios
+            .get(`${process.env.VUE_APP_API_ENDPOINT_URL}/api/v1/cards`)
+            // FIXME: paging
+            .then(response => (this.items = response.data.results))
+        })
     }
   },
   mounted () {
