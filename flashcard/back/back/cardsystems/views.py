@@ -10,6 +10,8 @@ from django.http import HttpResponseBadRequest
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, generics
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
 
 from back.cardsystems.models import Tag, Card, CardTag, TestWorkflow, TestWorkflowQuestion
 from back.cardsystems.serializers import TagSerializer, CardSerializer, CardTagSerializer
@@ -34,10 +36,14 @@ class TagEdit(generics.RetrieveUpdateDestroyAPIView):
 
 
 # FIXME: authenticated endpoint
+# Add caching since this is the most latency sensitive endpoint
 class CardList(generics.ListAPIView):
     queryset = Card.objects.all()
     serializer_class = CardSerializer
 
+    @method_decorator(cache_page(60))
+    def get(self, request):
+        return super().get(request)
 
 # FIXME: authenticated endpoint
 class CardCreate(APIView):
