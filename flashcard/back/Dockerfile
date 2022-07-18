@@ -16,6 +16,7 @@ FROM build
 ENV PATH="/var/back/.venv/bin:$PATH"
 COPY --from=poetry /var/back .
 COPY . .
+RUN ./manage.py collectstatic
 
 USER 1000
 ENTRYPOINT [ "/var/back/entrypoint.sh" ]
