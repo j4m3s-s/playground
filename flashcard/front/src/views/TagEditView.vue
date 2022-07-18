@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>Tag Edit</h1>
-    <input v-model="item.name" />
+    <input ref="item" v-model="item.name" @keyup.enter="submit">
     <button @click="submit"> submit </button>
   </div>
 </template>
@@ -18,15 +18,17 @@ export default Vue.extend({
     }
   },
   methods: {
-    submit: function () {
-      axios.patch(`${process.env.VUE_APP_API_ENDPOINT_URL}/api/v1/tag/${this.$route.params.id}`, this.item)
+    submit: async function () {
+      await axios.patch(`${process.env.VUE_APP_API_ENDPOINT_URL}/api/v1/tag/${this.$route.params.id}`, this.item)
+      this.$router.push({ name: 'Cards' })
     }
   },
-  mounted () {
-    axios
+  async mounted () {
+    await axios
       .get(`${process.env.VUE_APP_API_ENDPOINT_URL}/api/v1/tag/${this.$route.params.id}`)
       // FIXME: paging
       .then(response => (this.item = response.data))
+    this.$refs.item.focus()
   }
 })
 </script>
