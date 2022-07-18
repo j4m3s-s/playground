@@ -1,0 +1,22 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  nodes = [
+    { :name => "node-1",   :ip => "192.168.133.21", :mem => 2048 },
+  ]
+
+  config.vm.box = "generic/ubuntu2004"
+  nodes.each do |node|
+    config.vm.define node[:name] do |c|
+
+      c.vm.hostname = node[:name]
+      c.vm.network "private_network",  ip: node[:ip]
+
+      c.vm.provider "libvirt" do |domain|
+        domain.memory = node[:mem]
+      end
+    end
+  end
+end
+
