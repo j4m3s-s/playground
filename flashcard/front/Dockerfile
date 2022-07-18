@@ -12,3 +12,4 @@ RUN NODE_ENV=production VUE_APP_API_ENDPOINT_URL=https://api.flashcard.ewigkraft
 
 FROM nginx:1.23
 COPY --from=builder /app/dist/ /usr/share/nginx/html/
+COPY ./nginx.conf /etc/nginx/conf.d/default.conf
