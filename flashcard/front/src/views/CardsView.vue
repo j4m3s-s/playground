@@ -42,7 +42,9 @@ export default Vue.extend({
   },
   // HACK: Called everytime this component is accessed
   async setup () {
-    await this.fetchItems()
+    if (this != null) {
+      await this.fetchItems()
+    }
   },
   methods: {
     async fetchItems () {
