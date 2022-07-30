@@ -1,8 +1,8 @@
 <template>
   <div>
     <h1>Card Edit</h1>
-    <input v-model="item.front" />
-    <input v-model="item.back" />
+    <textarea v-model="item.front"></textarea>
+    <textarea v-model="item.back"></textarea>
     <button @click="submit"> submit </button>
   </div>
 </template>
