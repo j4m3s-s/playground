@@ -1,8 +1,8 @@
 <template>
   <div>
     <h1>Card Edit</h1>
-    <textarea v-model="item.front"></textarea>
-    <textarea v-model="item.back"></textarea>
+    <textarea ref="front_input" v-model="item.front"></textarea>
+    <textarea v-model="item.back" @keyup.enter="submit"></textarea>
     <button @click="submit"> submit </button>
   </div>
 </template>
@@ -15,7 +15,10 @@ export default Vue.extend({
   name: 'CardEdit',
   data () {
     return {
-      item: null
+      item: {
+        front: '',
+        back: ''
+      }
     }
   },
   methods: {
@@ -25,6 +28,8 @@ export default Vue.extend({
     }
   },
   mounted () {
+    // Autofocus front input on component load
+    this.$refs.front_input.focus()
     axios
       .get(`${process.env.VUE_APP_API_ENDPOINT_URL}/api/v1/card/${this.$route.params.id}`)
       .then(response => (this.item = response.data))
