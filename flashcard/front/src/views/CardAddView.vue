@@ -1,8 +1,8 @@
 <template>
   <div>
     <h1>Add Card</h1>
-    <input ref="front_input" v-model="item.front">
-    <input v-model="item.back" @keyup.enter="submit">
+    <textarea ref="front_input" v-model="item.front"></textarea>
+    <textarea v-model="item.back" @keyup.enter="submit"></textarea>
     <button @click="submit"> submit </button>
   </div>
 </template>
