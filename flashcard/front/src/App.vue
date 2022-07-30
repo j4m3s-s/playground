@@ -4,7 +4,10 @@
       <router-link :to="{ name: 'Cards' }">Cards</router-link> |
       <router-link :to="{ name: 'Tags' }">Tags</router-link> |
       <router-link :to="{ name: 'CardAdd' }">Add Card</router-link> |
-      <router-link :to="{ name: 'TestWorkflow' }">TestWorkflow</router-link>
+      <router-link :to="{ name: 'TestWorkflow' }">TestWorkflow</router-link> |
+      <!-- FIXME: show Only if not connected, store (?) -->
+      <router-link :to="{ name: 'Login' }">Login</router-link>
+      <!-- FIXME: Show "login" is connected -->
     </nav>
     <router-view/>
   </div>
