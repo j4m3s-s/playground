@@ -29,4 +29,9 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 
     path('__debug__/', include('debug_toolbar.urls')),
+
+    # Users (for front authentication)
+    path("api/v1/users/me/", views.UserMeView.as_view(), name="me"),
+    path("api/v1/users/auth/", views.AuthenticationView.as_view(), name="auth"),
+    path("api/v1/users/disconnect/", views.DisconnectView.as_view(), name="disconnect"),
 ]

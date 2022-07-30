@@ -7,14 +7,20 @@ from django.shortcuts import render
 from django.db.models import Q
 from django.db import transaction
 from django.http import HttpResponseBadRequest
+from django.contrib.auth import authenticate, login, logout
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.exceptions import AuthenticationFailed
 from rest_framework import status, generics
+from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView
 from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
 from back.cardsystems.models import Tag, Card, CardTag, TestWorkflow, TestWorkflowQuestion
-from back.cardsystems.serializers import TagSerializer, CardSerializer, CardTagSerializer
+from back.cardsystems.serializers import TagSerializer, CardSerializer, \
+     CardTagSerializer, AuthenticationSerializer, UserSerializer
 
 # FIXME: authenticated endpoint
 class TagList(generics.ListAPIView):
@@ -277,3 +283,49 @@ class TestingWorkflowQuestionsSM2(APIView):
             return Response({})
 
         return Response({ "id": question[0].card.id })
+
+# Authentication
+class UserMeView(RetrieveUpdateAPIView):
+    serializer_class = UserSerializer
+    permission_classes = [
+        IsAuthenticated,
+    ]
+
+    def get_object(self):
+        return self.request.user
+
+
+class AuthenticationView(CreateAPIView):
+    # TODO: fix swagger response type
+    serializer_class = AuthenticationSerializer
+
+    def post(self, request):
+        # TODO: check for CSRF token
+        serializer = self.get_serializer(data=request.data)
+        if not serializer.is_valid():
+            raise AuthenticationFailed(detail="Bad credentials")
+
+        validated_data = serializer.data
+        user = authenticate(
+            request=request,
+            username=validated_data["username"],
+            password=validated_data["password"],
+        )
+
+        # FIXME: some kinda rate limiting or something?
+        # We use the same error code as above so we don't leak any information.
+        # This is important for security purposes because otherwise an adversary
+        # can deduce some informations about user without having access to the DB
+        # Technically we should also make login constant time to avoid having
+        # timing side channels attacks. Unsupported for now.
+        if user is None:
+            raise AuthenticationFailed(detail="Bad credentials")
+
+        login(request, user)
+        return Response()
+
+
+class DisconnectView(APIView):
+    def get(self, request):
+        logout(request)
+        return Response()
