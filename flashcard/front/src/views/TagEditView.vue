@@ -19,13 +19,13 @@ export default Vue.extend({
   },
   methods: {
     submit: async function () {
-      await axios.patch(`${process.env.VUE_APP_API_ENDPOINT_URL}/api/v1/tag/${this.$route.params.id}`, this.item)
+      await axios.patch(`${process.env.VUE_APP_API_ENDPOINT_URL}/api/v1/tag/${this.$route.params.id}`, this.item, { withCredentials: true })
       this.$router.push({ name: 'Cards' })
     }
   },
   async mounted () {
     await axios
-      .get(`${process.env.VUE_APP_API_ENDPOINT_URL}/api/v1/tag/${this.$route.params.id}`)
+      .get(`${process.env.VUE_APP_API_ENDPOINT_URL}/api/v1/tag/${this.$route.params.id}`, { withCredentials: true })
       // FIXME: paging
       .then(response => (this.item = response.data))
     this.$refs.item.focus()

@@ -27,7 +27,7 @@ export default Vue.extend({
   },
   methods: {
     submit: function () {
-      axios.post(`${process.env.VUE_APP_API_ENDPOINT_URL}/api/v1/card/`, this.item)
+      axios.post(`${process.env.VUE_APP_API_ENDPOINT_URL}/api/v1/card/`, this.item, { withCredentials: true })
       this.$router.push({ name: 'Cards' })
     }
   }

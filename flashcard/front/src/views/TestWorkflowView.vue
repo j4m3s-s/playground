@@ -49,17 +49,18 @@ export default Vue.extend({
             card_id: this.card.id,
             user_grade: userGrade,
             test_workflow_question_id: this.testing_workflow_id
-          }
+          },
+          { withCredentials: true }
         )
         .then(response => {
-          axios.get(`${process.env.VUE_APP_API_ENDPOINT_URL}/api/v1/testingworkflowquestions/sm2/${this.testing_workflow_id}`)
+          axios.get(`${process.env.VUE_APP_API_ENDPOINT_URL}/api/v1/testingworkflowquestions/sm2/${this.testing_workflow_id}`, { withCredentials: true })
             .then(response => {
               if (response.data.id === undefined) {
                 this.$router.push({
                   name: 'Cards'
                 })
               }
-              axios.get(`${process.env.VUE_APP_API_ENDPOINT_URL}/api/v1/card/${response.data.id}`)
+              axios.get(`${process.env.VUE_APP_API_ENDPOINT_URL}/api/v1/card/${response.data.id}`, { withCredentials: true })
                 .then(response => {
                   this.show_card = false
                   this.card.id = response.data.id
@@ -76,9 +77,9 @@ export default Vue.extend({
       .post(`${process.env.VUE_APP_API_ENDPOINT_URL}/api/v1/testingworkflow/sm2/`)
       .then(response => {
         this.testing_workflow_id = response.data.id
-        axios.get(`${process.env.VUE_APP_API_ENDPOINT_URL}/api/v1/testingworkflowquestions/sm2/${this.testing_workflow_id}`)
+        axios.get(`${process.env.VUE_APP_API_ENDPOINT_URL}/api/v1/testingworkflowquestions/sm2/${this.testing_workflow_id}`, { withCredentials: true })
           .then(response => {
-            axios.get(`${process.env.VUE_APP_API_ENDPOINT_URL}/api/v1/card/${response.data.id}`)
+            axios.get(`${process.env.VUE_APP_API_ENDPOINT_URL}/api/v1/card/${response.data.id}`, { withCredentials: true })
               .then(response => {
                 this.card.id = response.data.id
                 this.card.front = response.data.front

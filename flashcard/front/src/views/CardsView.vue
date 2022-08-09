@@ -24,7 +24,7 @@ async function fetchItems () {
   let results = []
   while (next != null) {
     const res = await axios
-      .get(`${process.env.VUE_APP_API_ENDPOINT_URL}/api/v1/cards?page=${count}`)
+      .get(`${process.env.VUE_APP_API_ENDPOINT_URL}/api/v1/cards?page=${count}`, { withCredentials: true })
     results = results.concat(...res.data.results)
 
     next = res.data.next
@@ -52,7 +52,7 @@ export default Vue.extend({
     },
     async deleteCard (id) {
       await axios
-        .delete(`${process.env.VUE_APP_API_ENDPOINT_URL}/api/v1/card/${id}`)
+        .delete(`${process.env.VUE_APP_API_ENDPOINT_URL}/api/v1/card/${id}`, { withCredentials: true })
       await this.fetchItems()
     }
   },

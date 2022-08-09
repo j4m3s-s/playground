@@ -24,12 +24,14 @@ from back.cardsystems.serializers import TagSerializer, CardSerializer, \
 
 # FIXME: authenticated endpoint
 class TagList(generics.ListAPIView):
+    permission_classes = [ IsAuthenticated ]
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
 
 
 # FIXME: authenticated endpoint
 class TagCreate(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [ IsAuthenticated ]
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
 
@@ -37,6 +39,7 @@ class TagCreate(generics.RetrieveUpdateDestroyAPIView):
 # FIXME: authenticated endpoint
 # TODO: remove this to avoid querying the whole db
 class TagEdit(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [ IsAuthenticated ]
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
 
@@ -44,6 +47,7 @@ class TagEdit(generics.RetrieveUpdateDestroyAPIView):
 # FIXME: authenticated endpoint
 # Add caching since this is the most latency sensitive endpoint
 class CardList(generics.ListAPIView):
+    permission_classes = [ IsAuthenticated ]
     queryset = Card.objects.all()
     serializer_class = CardSerializer
 
@@ -53,6 +57,7 @@ class CardList(generics.ListAPIView):
 
 # FIXME: authenticated endpoint
 class CardCreate(APIView):
+    permission_classes = [ IsAuthenticated ]
     def post(self, request):
         serializer = CardSerializer(data=request.data)
         if not serializer.is_valid():
@@ -64,21 +69,25 @@ class CardCreate(APIView):
 
 # FIXME: authenticated endpoint
 class CardEdit(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [ IsAuthenticated ]
     queryset = Card.objects.all()
     serializer_class = CardSerializer
 
 
 # FIXME: authenticated endpoint
 class CardTagDelete(generics.DestroyAPIView):
+    permission_classes = [ IsAuthenticated ]
     queryset = CardTag.objects.all()
     serializer_class = CardTagSerializer
 
 # FIXME: authenticated endpoint
 class CardTagCreate(generics.CreateAPIView):
+    permission_classes = [ IsAuthenticated ]
     queryset = CardTag.objects.all()
     serializer_class = CardTagSerializer
 
 class CardTagGet(APIView):
+    permission_classes = [ IsAuthenticated ]
     def get(self, request, id=None):
         if id is None:
             return HttpResponseBadRequest()
@@ -94,6 +103,7 @@ class CardTagGet(APIView):
 
 # FIXME: authenticated endpoint
 class CardTagList(APIView):
+    permission_classes = [ IsAuthenticated ]
     def get(self, request, format=None):
         # We need at least one tag
         if not (tag1 := self.request.query_params.get('tag1')):
@@ -201,6 +211,7 @@ def sm2(user_grade, repetition_number, easiness_factor, interval):
 # FIXME: authenticated endpoint
 # FIXME: make endpoint algorithm agnostic
 class TestingWorkflowSM2(APIView):
+    permission_classes = [ IsAuthenticated ]
     # FIXME: add tags support to filter questions -- refacto function tags
     # extraction?
     def post(self, request, format=None):
@@ -225,6 +236,7 @@ class TestingWorkflowSM2(APIView):
         return Response({ "id": test_workflow.id})
 
 class TestingWorkflowQuestionsSM2(APIView):
+    permission_classes = [ IsAuthenticated ]
     def post(self, request, id=None):
         # TODO: use serializer here
         #card_id = self.request.query_params.get("card_id", None)
