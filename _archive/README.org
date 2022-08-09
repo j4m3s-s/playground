@@ -1,0 +1,8 @@
+* Archive
+Projects in this subdirectory are either archived because they're unused / not
+maintained anymore or because they have been promoted to another repository
+like my main monorepo.
+
+** Promoted projects
+- flashcard
+** Archived projects
