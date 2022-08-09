@@ -59,8 +59,8 @@ INSTALLED_APPS = [
 #    'https://api.flashcard.ewigkraft.eu',
 #]
 
-# FIXME: add correct CORS
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOW_CREDENTIALS = True
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
