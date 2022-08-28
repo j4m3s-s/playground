@@ -12,7 +12,6 @@
 
 ;; Gitea Webhook JSON Malli Schema
 ;; for reference : https://github.com/metosin/malli
-;; TODO: verify exactly why {:closed true} can't be put on those :map
 (def user-schema
   [:map {:closed true}
    [:name     :string]
