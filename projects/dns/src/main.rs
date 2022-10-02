@@ -114,3 +114,47 @@ fn main() {
         println!("It's a query!");
     }
 }
+
+// These are just basic sanity tests. Much advanced testing (and maybe fuzzing) would be required to
+// make sure everything works correctly.
+// Also, we need e2e tests to verify correct behavior.
+mod tests {
+    // Importing names from outer tests scope.
+    use super::*;
+
+    static PACKET: &[u8; 30] = byte_strings::concat_bytes!(
+        b"\x7a\xc6\x01\x00\x00\x01",
+        b"\x00\x00\x00\x00\x00\x01\x01\x64\x00\x00\x01\x00\x01\x00\x00\x29",
+        b"\x04\xb0\x00\x00\x00\x00\x00\x00",
+    );
+
+    #[test]
+    fn is_a_query() {
+        let hdr = get_header(PACKET).unwrap();
+        assert!(is_query(&hdr));
+    }
+
+    #[test]
+    fn qd_count() {
+        let hdr = get_header(PACKET).unwrap();
+        assert_eq!(hdr.qd_count, 1);
+    }
+
+    #[test]
+    fn an_count() {
+        let hdr = get_header(PACKET).unwrap();
+        assert_eq!(hdr.an_count, 0);
+    }
+
+    #[test]
+    fn ns_count() {
+        let hdr = get_header(PACKET).unwrap();
+        assert_eq!(hdr.ns_count, 0);
+    }
+
+    #[test]
+    fn ar_count() {
+        let hdr = get_header(PACKET).unwrap();
+        assert_eq!(hdr.ar_count, 1);
+    }
+}
