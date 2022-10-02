@@ -30,6 +30,7 @@ fn get_header(packet: &[u8]) -> Option<DNSHeader> {
 }
 
 fn is_query(hdr: &DNSHeader) -> bool {
+    // query flag is the top most bit of the flags field
     hdr.flags & (0x1 << 15) == 0
 }
 
