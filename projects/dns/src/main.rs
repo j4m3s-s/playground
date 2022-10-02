@@ -19,6 +19,7 @@ struct DNSHeader {
     ar_count: u16,
 }
 
+#[derive(Eq, PartialEq, Debug)]
 enum QueryType {
     Query,
     InverseQuery,
@@ -26,6 +27,7 @@ enum QueryType {
     // Others are reserved for future use
 }
 
+#[derive(Eq, PartialEq, Debug)]
 enum ResponseCode {
     NoError,
     FormatError,
@@ -37,7 +39,7 @@ enum ResponseCode {
 }
 
 struct Flags {
-    query_response: bool,
+    is_response: bool,
     // HACK: use an enum
     opcode: QueryType,
     authoritative_server: bool,
@@ -61,6 +63,81 @@ struct Header {
     answer_count: u16,
     nameserver_count: u16,
     additional_records_count: u16,
+}
+
+// Using a result might make errors easier to deal with upstream
+fn get_querytype(hdr: &DNSHeader) -> Option<QueryType> {
+    let flags = hdr.flags;
+    let query_type = (flags >> 11) & 0b10000;
+    match query_type {
+        0 => Some(QueryType::Query),
+        1 => Some(QueryType::InverseQuery),
+        2 => Some(QueryType::Status),
+        _ => None
+    }
+}
+
+fn is_authoritative(hdr: &DNSHeader) -> bool {
+    // authoritative byte is the eleventh
+    hdr.flags & (0x1 << 11) == 1
+}
+
+fn is_truncated(hdr: &DNSHeader) -> bool {
+    hdr.flags & (0x1 << 10) == 1
+}
+
+fn is_recursion_desired(hdr: &DNSHeader) -> bool {
+    hdr.flags & (0x1 << 9) == 1
+}
+
+fn is_recursion_available(hdr: &DNSHeader) -> bool {
+    hdr.flags & (0x1 << 8) == 1
+}
+
+// Use result to propagate error
+fn get_response_code(hdr: &DNSHeader) -> Option<ResponseCode> {
+    let flags = hdr.flags;
+    let rcode = flags & 0b1111;
+    match rcode {
+        0 => Some(ResponseCode::NoError),
+        1 => Some(ResponseCode::FormatError),
+        2 => Some(ResponseCode::ServerFailure),
+        3 => Some(ResponseCode::NameError),
+        4 => Some(ResponseCode::NotImplemented),
+        5 => Some(ResponseCode::Refused),
+        _ => None,
+    }
+}
+
+// use result and propagate error
+fn flags_from_u16(hdr: &DNSHeader) -> Flags {
+    let mut res = Flags {
+        is_response: !is_query(&hdr),
+        // Use result and propagate error
+        opcode: get_querytype(&hdr).unwrap(),
+        authoritative_server: is_authoritative(hdr),
+        truncated: is_truncated(&hdr),
+        recursion_desired: is_recursion_desired(&hdr),
+        recursion_available: is_recursion_available(&hdr),
+        rcode: get_response_code(&hdr).unwrap(),
+    };
+    res
+}
+
+impl DNSHeader {
+    // FIXME: make it the whole struct, not just the header
+    fn serialize(&self) -> Header {
+        let mut res = Header{
+            id: self.id,
+            flags: flags_from_u16(self),
+            question_count: self.qd_count,
+            answer_count: self.an_count,
+            nameserver_count: self.ns_count,
+            additional_records_count: self.ar_count,
+        };
+
+        res
+    }
 }
 
 // Custom formatter to be able to print in hexadecimal
@@ -156,5 +233,19 @@ mod tests {
     fn ar_count() {
         let hdr = get_header(PACKET).unwrap();
         assert_eq!(hdr.ar_count, 1);
+    }
+
+
+    #[test]
+    fn test_serialized_header() {
+        let hdr = get_header(PACKET).unwrap();
+
+        let flags = flags_from_u16(&hdr);
+        assert!(!flags.is_response);
+        assert_eq!(flags.opcode, QueryType::Query);
+        assert!(!flags.authoritative_server);
+        assert!(!flags.truncated);
+        assert!(!flags.recursion_desired);
+        assert_eq!(flags.rcode, ResponseCode::NoError);
     }
 }
