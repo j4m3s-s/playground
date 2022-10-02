@@ -111,7 +111,7 @@ fn get_response_code(hdr: &ExternalDNSHeader) -> Option<ResponseCode> {
 
 // use result and propagate error
 fn flags_from_u16(hdr: &ExternalDNSHeader) -> Flags {
-    let mut res = Flags {
+    Flags {
         is_response: !is_query(&hdr),
         // Use result and propagate error
         opcode: get_querytype(&hdr).unwrap(),
@@ -120,23 +120,20 @@ fn flags_from_u16(hdr: &ExternalDNSHeader) -> Flags {
         recursion_desired: is_recursion_desired(&hdr),
         recursion_available: is_recursion_available(&hdr),
         rcode: get_response_code(&hdr).unwrap(),
-    };
-    res
+    }
 }
 
 impl ExternalDNSHeader {
     // FIXME: make it the whole struct, not just the header
     fn serialize(&self) -> Header {
-        let mut res = Header{
+        Header{
             id: self.id,
             flags: flags_from_u16(self),
             question_count: self.qd_count,
             answer_count: self.an_count,
             nameserver_count: self.ns_count,
             additional_records_count: self.ar_count,
-        };
-
-        res
+        }
     }
 }
 
@@ -175,15 +172,18 @@ fn is_query(hdr: &ExternalDNSHeader) -> bool {
     hdr.flags & (0x1 << 15) == 0
 }
 
-#[derive(Eq, PartialEq, Debug)
+/*
+// Probably mostly unused since we usually use QClass
+#[derive(Eq, PartialEq, Debug)]
 enum Class {
     IN, // Internet
     CS, // CSNet
     CH, // Chaos
     HS, // Hesiod
 }
+*/
 
-#[derive(Eq, PartialEq, Debug)]
+#[derive(Eq, PartialEq)]
 enum QClass {
     IN, // Internet
     CS, // CSNet
@@ -193,6 +193,7 @@ enum QClass {
 }
 
 fn qclass_from_u16(qclass: u16) -> Option<QClass> {
+    use QClass::*;
     match qclass {
         1 => Some(IN),
         2 => Some(CS),
@@ -203,6 +204,8 @@ fn qclass_from_u16(qclass: u16) -> Option<QClass> {
     }
 }
 
+/*
+// Probably mostly unused since we usually use QType
 #[derive(Eq, PartialEq, Debug)]
 enum Type {
     A,
@@ -222,8 +225,9 @@ enum Type {
     MX,
     TXT,
 }
+*/
 
-#[derive(Eq, PartialEq, Debug)]
+#[derive(Eq, PartialEq)]
 enum QType {
     A,
     NS,
@@ -250,6 +254,7 @@ enum QType {
 }
 
 fn qtype_from_u16(qtype: u16) -> Option<QType> {
+    use QType::*;
     match qtype {
         1 => Some(A),
         2 => Some(NS),
@@ -353,6 +358,7 @@ mod tests {
         assert!(!flags.authoritative_server);
         assert!(!flags.truncated);
         assert!(!flags.recursion_desired);
+        assert!(!flags.recursion_available);
         assert_eq!(flags.rcode, ResponseCode::NoError);
     }
 
