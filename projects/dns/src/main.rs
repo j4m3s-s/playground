@@ -13,12 +13,72 @@ struct DNSHeader {
     id: u16,
     // This contains bitfields of flags
     flags: u16,
+    qd_count: u16,
+    an_count: u16,
+    ns_count: u16,
+    ar_count: u16,
+}
+
+enum QueryType {
+    Query,
+    InverseQuery,
+    Status,
+    // Others are reserved for future use
+}
+
+enum ResponseCode {
+    NoError,
+    FormatError,
+    ServerFailure,
+    NameError,
+    NotImplemented,
+    Refused,
+    // reserved for future use
+}
+
+struct Flags {
+    query_response: bool,
+    // HACK: use an enum
+    opcode: QueryType,
+    authoritative_server: bool,
+    truncated: bool,
+    recursion_desired: bool,
+    recursion_available: bool,
+    // z unused here, 3 bits
+    rcode: ResponseCode,
+}
+
+// This is the internal way of representing a DNS Header. This might not be as optimized in space,
+// however this makes query much easier to deal with by mutating a Header internally and
+// serializing/deserializing at the edge.
+// Last time I wrote such a DNS parser, having to deal internally with BigEndian (network byte
+// order) was extremely annoying. Hence here using a very simple internal representation and
+// transforming it into an external network version.
+struct Header {
+    id: u16,
+    flags: Flags,
+    question_count: u16,
+    answer_count: u16,
+    nameserver_count: u16,
+    additional_records_count: u16,
 }
 
 // Custom formatter to be able to print in hexadecimal
 impl fmt::Display for DNSHeader {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "id: {:#02X}, flags: {:#02b}", self.id, self.flags)
+        write!(f, "id: {:#02X}, \
+                   flags: {:#02b} \
+                   qd_count: {},
+                   an_count: {},
+                   ns_count: {},
+                   ar_count: {},
+                   ",
+               self.id,
+               self.flags,
+               self.qd_count,
+               self.an_count,
+               self.ns_count,
+               self.ar_count)
     }
 }
 
@@ -26,6 +86,10 @@ fn get_header(packet: &[u8]) -> Option<DNSHeader> {
     Some(DNSHeader {
         id: u16::from_be_bytes(packet[0..2].try_into().unwrap()),
         flags: u16::from_be_bytes(packet[2..4].try_into().unwrap()),
+        qd_count: u16::from_be_bytes(packet[4..6].try_into().unwrap()),
+        an_count: u16::from_be_bytes(packet[6..8].try_into().unwrap()),
+        ns_count: u16::from_be_bytes(packet[8..10].try_into().unwrap()),
+        ar_count: u16::from_be_bytes(packet[10..12].try_into().unwrap()),
     })
 }
 
