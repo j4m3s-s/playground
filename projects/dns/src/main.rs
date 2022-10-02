@@ -8,7 +8,7 @@ use std::fmt;
 // This represents the header of a DNS packet.
 #[repr(C)]
 #[derive(Copy, Clone)]
-struct DNSHeader {
+struct ExternalDNSHeader {
     // This is a unique ID for each request.
     id: u16,
     // This contains bitfields of flags
@@ -66,7 +66,7 @@ struct Header {
 }
 
 // Using a result might make errors easier to deal with upstream
-fn get_querytype(hdr: &DNSHeader) -> Option<QueryType> {
+fn get_querytype(hdr: &ExternalDNSHeader) -> Option<QueryType> {
     let flags = hdr.flags;
     let query_type = (flags >> 11) & 0b10000;
     match query_type {
@@ -77,25 +77,25 @@ fn get_querytype(hdr: &DNSHeader) -> Option<QueryType> {
     }
 }
 
-fn is_authoritative(hdr: &DNSHeader) -> bool {
+fn is_authoritative(hdr: &ExternalDNSHeader) -> bool {
     // authoritative byte is the eleventh
     hdr.flags & (0x1 << 11) == 1
 }
 
-fn is_truncated(hdr: &DNSHeader) -> bool {
+fn is_truncated(hdr: &ExternalDNSHeader) -> bool {
     hdr.flags & (0x1 << 10) == 1
 }
 
-fn is_recursion_desired(hdr: &DNSHeader) -> bool {
+fn is_recursion_desired(hdr: &ExternalDNSHeader) -> bool {
     hdr.flags & (0x1 << 9) == 1
 }
 
-fn is_recursion_available(hdr: &DNSHeader) -> bool {
+fn is_recursion_available(hdr: &ExternalDNSHeader) -> bool {
     hdr.flags & (0x1 << 8) == 1
 }
 
 // Use result to propagate error
-fn get_response_code(hdr: &DNSHeader) -> Option<ResponseCode> {
+fn get_response_code(hdr: &ExternalDNSHeader) -> Option<ResponseCode> {
     let flags = hdr.flags;
     let rcode = flags & 0b1111;
     match rcode {
@@ -110,7 +110,7 @@ fn get_response_code(hdr: &DNSHeader) -> Option<ResponseCode> {
 }
 
 // use result and propagate error
-fn flags_from_u16(hdr: &DNSHeader) -> Flags {
+fn flags_from_u16(hdr: &ExternalDNSHeader) -> Flags {
     let mut res = Flags {
         is_response: !is_query(&hdr),
         // Use result and propagate error
@@ -124,7 +124,7 @@ fn flags_from_u16(hdr: &DNSHeader) -> Flags {
     res
 }
 
-impl DNSHeader {
+impl ExternalDNSHeader {
     // FIXME: make it the whole struct, not just the header
     fn serialize(&self) -> Header {
         let mut res = Header{
@@ -141,7 +141,7 @@ impl DNSHeader {
 }
 
 // Custom formatter to be able to print in hexadecimal
-impl fmt::Display for DNSHeader {
+impl fmt::Display for ExternalDNSHeader {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "id: {:#02X}, \
                    flags: {:#02b} \
@@ -159,8 +159,8 @@ impl fmt::Display for DNSHeader {
     }
 }
 
-fn get_header(packet: &[u8]) -> Option<DNSHeader> {
-    Some(DNSHeader {
+fn get_header(packet: &[u8]) -> Option<ExternalDNSHeader> {
+    Some(ExternalDNSHeader {
         id: u16::from_be_bytes(packet[0..2].try_into().unwrap()),
         flags: u16::from_be_bytes(packet[2..4].try_into().unwrap()),
         qd_count: u16::from_be_bytes(packet[4..6].try_into().unwrap()),
@@ -170,7 +170,7 @@ fn get_header(packet: &[u8]) -> Option<DNSHeader> {
     })
 }
 
-fn is_query(hdr: &DNSHeader) -> bool {
+fn is_query(hdr: &ExternalDNSHeader) -> bool {
     // query flag is the top most bit of the flags field
     hdr.flags & (0x1 << 15) == 0
 }
