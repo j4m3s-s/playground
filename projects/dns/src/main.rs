@@ -175,6 +175,113 @@ fn is_query(hdr: &ExternalDNSHeader) -> bool {
     hdr.flags & (0x1 << 15) == 0
 }
 
+#[derive(Eq, PartialEq, Debug)
+enum Class {
+    IN, // Internet
+    CS, // CSNet
+    CH, // Chaos
+    HS, // Hesiod
+}
+
+#[derive(Eq, PartialEq, Debug)]
+enum QClass {
+    IN, // Internet
+    CS, // CSNet
+    CH, // Chaos
+    HS, // Hesiod
+    ALL, // *
+}
+
+fn qclass_from_u16(qclass: u16) -> Option<QClass> {
+    match qclass {
+        1 => Some(IN),
+        2 => Some(CS),
+        3 => Some(CH),
+        4 => Some(HS),
+        255 => Some(ALL),
+        _ => None,
+    }
+}
+
+#[derive(Eq, PartialEq, Debug)]
+enum Type {
+    A,
+    NS,
+    MD, // Obsolete
+    MF, // Obsolete
+    CNAME,
+    SOA,
+    MB,
+    MG,
+    MR,
+    NULL,
+    WKS,
+    PTR,
+    HINFO,
+    MINFO,
+    MX,
+    TXT,
+}
+
+#[derive(Eq, PartialEq, Debug)]
+enum QType {
+    A,
+    NS,
+    MD, // Obsolete
+    MF, // Obsolete
+    CNAME,
+    SOA,
+    MB,
+    MG,
+    MR,
+    NULL,
+    WKS,
+    PTR,
+    HINFO,
+    MINFO,
+    MX,
+    TXT,
+
+    // QType specific types
+    AXFR,
+    MAILB,
+    MAILA,
+    ALL, // *
+}
+
+fn qtype_from_u16(qtype: u16) -> Option<QType> {
+    match qtype {
+        1 => Some(A),
+        2 => Some(NS),
+        3 => Some(MD),
+        4 => Some(MF),
+        5 => Some(CNAME),
+        6 => Some(SOA),
+        7 => Some(MB),
+        8 => Some(MG),
+        9 => Some(MR),
+        10 => Some(NULL),
+        11 => Some(WKS),
+        12 => Some(PTR),
+        13 => Some(HINFO),
+        14 => Some(MINFO),
+        15 => Some(MX),
+        16 => Some(TXT),
+        // qtype specific
+        252 => Some(AXFR),
+        253 => Some(MAILB),
+        254 => Some(MAILA),
+        255 => Some(ALL),
+        _ => None,
+    }
+}
+
+struct Question {
+    qname: String,
+    qtype: QType,
+    qclass: QClass,
+}
+
 fn main() {
     // this is an example packet dumped from tcpdump / wireshark
     // commands : tcpdump -i lo -w toto.pcap ; wireshark toto.pcap
