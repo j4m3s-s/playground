@@ -237,7 +237,7 @@ mod tests {
 
 
     #[test]
-    fn test_serialized_header() {
+    fn test_serialized_flags() {
         let hdr = get_header(PACKET).unwrap();
 
         let flags = flags_from_u16(&hdr);
@@ -247,5 +247,26 @@ mod tests {
         assert!(!flags.truncated);
         assert!(!flags.recursion_desired);
         assert_eq!(flags.rcode, ResponseCode::NoError);
+    }
+
+    #[test]
+    fn test_serialized_header() {
+        let hdr = get_header(PACKET).unwrap();
+        let serialized_hdr = hdr.serialize();
+
+        // Same as above tests, should I refacto?
+        let flags = serialized_hdr.flags;
+        assert!(!flags.is_response);
+        assert_eq!(flags.opcode, QueryType::Query);
+        assert!(!flags.authoritative_server);
+        assert!(!flags.truncated);
+        assert!(!flags.recursion_desired);
+        assert_eq!(flags.rcode, ResponseCode::NoError);
+
+        assert_eq!(serialized_hdr.id, 0x7ac6);
+        assert_eq!(serialized_hdr.question_count, 1);
+        assert_eq!(serialized_hdr.answer_count, 0);
+        assert_eq!(serialized_hdr.nameserver_count, 0);
+        assert_eq!(serialized_hdr.additional_records_count, 1);
     }
 }
