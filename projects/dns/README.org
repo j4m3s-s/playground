@@ -1,0 +1,10 @@
+#+title: Readme
+
+This is an Experiment in learning Rust while writing slightly low level,
+performant, correct code.
+
+This is a DNS server.
+Currently :
+
+* tasks [0/1]
+** TODO serializer
