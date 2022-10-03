@@ -33,7 +33,7 @@ enum QueryType {
     // Others are reserved for future use
 }
 
-#[derive(Eq, PartialEq, Debug)]
+#[derive(Eq, PartialEq, Debug, FromPrimitive, ToPrimitive)]
 enum ResponseCode {
     NoError,
     FormatError,
@@ -71,11 +71,18 @@ struct Header {
     additional_records_count : u16,
 }
 
+#[derive(Debug, Eq, PartialEq)]
+enum Error {
+    ErrorQueryType,
+    ErrorResponseCode,
+    ErrorQClass,
+}
+
 // Using a result might make errors easier to deal with upstream
-fn get_querytype(hdr: &ExternalDNSHeader) -> Option<QueryType> {
+fn get_querytype(hdr: &ExternalDNSHeader) -> Result<QueryType, Error> {
     let flags = hdr.flags;
     let query_type = (flags >> 11) & 0b10000;
-    num::FromPrimitive::from_u16(query_type)
+    num::FromPrimitive::from_u16(query_type).ok_or(Error::ErrorQueryType)
 }
 
 fn is_authoritative(hdr: &ExternalDNSHeader) -> bool {
@@ -96,32 +103,24 @@ fn is_recursion_available(hdr: &ExternalDNSHeader) -> bool {
 }
 
 // Use result to propagate error
-fn get_response_code(hdr: &ExternalDNSHeader) -> Option<ResponseCode> {
+fn get_response_code(hdr: &ExternalDNSHeader) -> Result<ResponseCode, Error> {
     let flags = hdr.flags;
     let rcode = flags & 0b1111;
-    match rcode {
-        0 => Some(ResponseCode::NoError),
-        1 => Some(ResponseCode::FormatError),
-        2 => Some(ResponseCode::ServerFailure),
-        3 => Some(ResponseCode::NameError),
-        4 => Some(ResponseCode::NotImplemented),
-        5 => Some(ResponseCode::Refused),
-        _ => None,
-    }
+    num::FromPrimitive::from_u16(rcode).ok_or(Error::ErrorResponseCode)
 }
 
 // use result and propagate error
-fn flags_from_u16(hdr: &ExternalDNSHeader) -> Flags {
-    Flags {
+fn flags_from_u16(hdr: &ExternalDNSHeader) -> Result<Flags, Error> {
+    Ok(Flags {
         is_response: !is_query(&hdr),
         // Use result and propagate error
-        opcode: get_querytype(&hdr).unwrap(),
+        opcode: get_querytype(&hdr)?,
         authoritative_server: is_authoritative(hdr),
         truncated: is_truncated(&hdr),
         recursion_desired: is_recursion_desired(&hdr),
         recursion_available: is_recursion_available(&hdr),
-        rcode: get_response_code(&hdr).unwrap(),
-    }
+        rcode: get_response_code(&hdr)?,
+    })
 }
 
 impl ExternalDNSHeader {
@@ -157,15 +156,15 @@ impl fmt::Display for ExternalDNSHeader {
     }
 }
 
-fn get_header(packet: &[u8]) -> Option<ExternalDNSHeader> {
-    Some(ExternalDNSHeader {
+fn get_header(packet: &[u8]) -> ExternalDNSHeader {
+    ExternalDNSHeader {
         id: u16::from_be_bytes(packet[0..2].try_into().unwrap()),
         flags: u16::from_be_bytes(packet[2..4].try_into().unwrap()),
         qd_count: u16::from_be_bytes(packet[4..6].try_into().unwrap()),
         an_count: u16::from_be_bytes(packet[6..8].try_into().unwrap()),
         ns_count: u16::from_be_bytes(packet[8..10].try_into().unwrap()),
         ar_count: u16::from_be_bytes(packet[10..12].try_into().unwrap()),
-    })
+    }
 }
 
 fn is_query(hdr: &ExternalDNSHeader) -> bool {
@@ -184,7 +183,7 @@ enum Class {
 }
 */
 
-#[derive(Eq, PartialEq)]
+#[derive(Eq, PartialEq, FromPrimitive)]
 enum QClass {
     IN, // Internet
     CS, // CSNet
@@ -193,16 +192,8 @@ enum QClass {
     ALL, // *
 }
 
-fn qclass_from_u16(qclass: u16) -> Option<QClass> {
-    use QClass::*;
-    match qclass {
-        1 => Some(IN),
-        2 => Some(CS),
-        3 => Some(CH),
-        4 => Some(HS),
-        255 => Some(ALL),
-        _ => None,
-    }
+fn qclass_from_u16(qclass: u16) -> Result<QClass, Error> {
+    num::FromPrimitive::from_u16(qclass).ok_or(Error::ErrorQClass)
 }
 
 /*
@@ -297,7 +288,7 @@ fn main() {
         b"\x04\xb0\x00\x00\x00\x00\x00\x00",
     );
 
-    let hdr = get_header(packet).unwrap();
+    let hdr = get_header(packet);
     println!("{}", hdr);
 
     if is_query(&hdr) {
@@ -320,40 +311,40 @@ mod tests {
 
     #[test]
     fn is_a_query() {
-        let hdr = get_header(PACKET).unwrap();
+        let hdr = get_header(PACKET);
         assert!(is_query(&hdr));
     }
 
     #[test]
     fn qd_count() {
-        let hdr = get_header(PACKET).unwrap();
+        let hdr = get_header(PACKET);
         assert_eq!(hdr.qd_count, 1);
     }
 
     #[test]
     fn an_count() {
-        let hdr = get_header(PACKET).unwrap();
+        let hdr = get_header(PACKET);
         assert_eq!(hdr.an_count, 0);
     }
 
     #[test]
     fn ns_count() {
-        let hdr = get_header(PACKET).unwrap();
+        let hdr = get_header(PACKET);
         assert_eq!(hdr.ns_count, 0);
     }
 
     #[test]
     fn ar_count() {
-        let hdr = get_header(PACKET).unwrap();
+        let hdr = get_header(PACKET);
         assert_eq!(hdr.ar_count, 1);
     }
 
 
     #[test]
     fn test_serialized_flags() {
-        let hdr = get_header(PACKET).unwrap();
+        let hdr = get_header(PACKET);
 
-        let flags = flags_from_u16(&hdr);
+        let flags = flags_from_u16(&hdr).unwrap();
         assert!(!flags.is_response);
         assert_eq!(flags.opcode, QueryType::Query);
         assert!(!flags.authoritative_server);
@@ -365,8 +356,8 @@ mod tests {
 
     #[test]
     fn test_serialized_header() {
-        let hdr = get_header(PACKET).unwrap();
-        let serialized_hdr = hdr.serialize();
+        let hdr = get_header(PACKET);
+        let serialized_hdr = hdr.serialize().unwrap();
 
         // Same as above tests, should I refacto?
         let flags = serialized_hdr.flags;
