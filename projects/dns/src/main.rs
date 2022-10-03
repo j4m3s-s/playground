@@ -1,6 +1,12 @@
 use ::byte_strings::concat_bytes;
 use std::fmt;
 
+// This is used to transform int to enums directly
+extern crate num;
+#[macro_use]
+extern crate num_derive;
+
+
 // HACK: We use a C representation. Be careful that this means there might
 // be padding involved. Currently all of our fields are equal, thus we won't have
 // any problem.
@@ -19,9 +25,9 @@ struct ExternalDNSHeader {
     ar_count: u16,
 }
 
-#[derive(Eq, PartialEq, Debug)]
+#[derive(Eq, PartialEq, Debug, FromPrimitive, ToPrimitive)]
 enum QueryType {
-    Query,
+    Query = 0,
     InverseQuery,
     Status,
     // Others are reserved for future use
@@ -69,12 +75,7 @@ struct Header {
 fn get_querytype(hdr: &ExternalDNSHeader) -> Option<QueryType> {
     let flags = hdr.flags;
     let query_type = (flags >> 11) & 0b10000;
-    match query_type {
-        0 => Some(QueryType::Query),
-        1 => Some(QueryType::InverseQuery),
-        2 => Some(QueryType::Status),
-        _ => None
-    }
+    num::FromPrimitive::from_u16(query_type)
 }
 
 fn is_authoritative(hdr: &ExternalDNSHeader) -> bool {
