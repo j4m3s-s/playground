@@ -39,15 +39,15 @@ enum ResponseCode {
 }
 
 struct Flags {
-    is_response: bool,
-    // HACK: use an enum
-    opcode: QueryType,
-    authoritative_server: bool,
-    truncated: bool,
-    recursion_desired: bool,
-    recursion_available: bool,
+    is_response          : bool,
+    // HACK              : use an enum
+    opcode               : QueryType,
+    authoritative_server : bool,
+    truncated            : bool,
+    recursion_desired    : bool,
+    recursion_available  : bool,
     // z unused here, 3 bits
-    rcode: ResponseCode,
+    rcode                : ResponseCode,
 }
 
 // This is the internal way of representing a DNS Header. This might not be as optimized in space,
@@ -57,12 +57,12 @@ struct Flags {
 // order) was extremely annoying. Hence here using a very simple internal representation and
 // transforming it into an external network version.
 struct Header {
-    id: u16,
-    flags: Flags,
-    question_count: u16,
-    answer_count: u16,
-    nameserver_count: u16,
-    additional_records_count: u16,
+    id                       : u16,
+    flags                    : Flags,
+    question_count           : u16,
+    answer_count             : u16,
+    nameserver_count         : u16,
+    additional_records_count : u16,
 }
 
 // Using a result might make errors easier to deal with upstream
@@ -282,9 +282,9 @@ fn qtype_from_u16(qtype: u16) -> Option<QType> {
 }
 
 struct Question {
-    qname: String,
-    qtype: QType,
-    qclass: QClass,
+    qname  : String,
+    qtype  : QType,
+    qclass : QClass,
 }
 
 fn main() {
