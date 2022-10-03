@@ -258,31 +258,45 @@ struct Question {
     qclass : QClass,
 }
 
+fn get_question(packet: &[u8], offset: usize) -> Result<(Question, usize), Error> {
+    let mut offset: usize = offset;
+    let mut question_size: u8 = packet[offset];
+
+    let mut qname = String::new();
+    while question_size != 0 {
+        offset += 1;
+        qname.push_str(String::from_utf8(packet[offset..offset + question_size as usize].try_into().unwrap()).unwrap().as_str());
+        qname.push('.');
+        offset += question_size as usize;
+
+        question_size = packet[offset];
+    }
+    offset += 1;
+
+    let qtype_u16 = u16::from_be_bytes(packet[offset..offset + 2].try_into().unwrap());
+    offset += 2;
+    let qclass_u16 = u16::from_be_bytes(packet[offset..offset + 2].try_into().unwrap());
+    offset += 2;
+
+    let qtype = qtype_from_u16(qtype_u16).unwrap();
+    let qclass = qclass_from_u16(qclass_u16).unwrap();
+
+    let question = Question {
+        qname: qname,
+        qtype: qtype,
+        qclass: qclass,
+    };
+    Ok((question, offset))
+}
+
 fn get_questions_vec(packet: &[u8], question_count: u16) -> Vec<Question> {
     let mut vec = vec![];
 
     let mut offset = mem::size_of::<ExternalDNSHeader>();
-    let mut question_size: u8 = packet[offset];
-    println!("question size: {}", question_size);
-
-    offset += 1;
-    let name = String::from_utf8(packet[offset..offset + question_size as usize].try_into().unwrap()).unwrap();
-    println!("Name : {}", name);
-    offset += question_size as usize;
-    offset += 1;
-    let qtype_u16 = u16::from_be_bytes(packet[offset..offset + 2].try_into().unwrap());
-    offset += 2;
-    let qclass_u16 = u16::from_be_bytes(packet[offset..offset + 2].try_into().unwrap());
-
-    let qtype = qtype_from_u16(qtype_u16).unwrap();
-    let qclass = qclass_from_u16(qclass_u16).unwrap();
-    println!("qtype {:?} qclass {:?}", qtype, qclass);
-    let question = Question {
-        qname: name,
-        qtype: qtype,
-        qclass: qclass,
-    };
-    vec.push(question);
+    for _ in 0..question_count {
+        let (question, offset) = get_question(packet, offset).unwrap();
+        vec.push(question);
+    }
 
     vec
 }
@@ -306,6 +320,15 @@ fn main() {
     let vec = get_questions_vec(packet, hdr.qd_count);
     let elt = &vec[0];
     println!("{:?} {:?} {:?}", elt.qtype, elt.qname, elt.qclass);
+
+    let bytes = byte_strings::concat_bytes!(b"\x9a\xf8\x01\x00\x00\x01",
+                                            b"\x00\x00\x00\x00\x00\x01\x03\x77\x77\x77\x11\x74\x68\x65\x66\x72",
+                                            b"\x65\x65\x64\x69\x63\x74\x69\x6f\x6e\x61\x72\x79\x03\x63\x6f\x6d",
+                                            b"\x00\x00\x01\x00\x01\x00\x00\x29\x04\xb0\x00\x00\x00\x00\x00\x00");
+
+    let questions = get_questions_vec(bytes.as_slice().try_into().unwrap(), 1);
+    let q = &questions[0];
+    println!("{:?} {:?} {:?}", q.qtype, q.qname, q.qclass);
 }
 
 // These are just basic sanity tests. Much advanced testing (and maybe fuzzing) would be required to
@@ -395,6 +418,21 @@ mod tests {
         assert!(questions.len() == 1);
         assert_eq!(q.qclass, QClass::IN);
         assert_eq!(q.qtype, QType::A);
-        assert_eq!(q.qname, "d");
+        assert_eq!(q.qname, "d.");
+    }
+
+    #[test]
+    fn test_multi_label_question() {
+        let bytes = byte_strings::concat_bytes!(b"\x9a\xf8\x01\x00\x00\x01",
+                                                b"\x00\x00\x00\x00\x00\x01\x03\x77\x77\x77\x11\x74\x68\x65\x66\x72",
+                                                b"\x65\x65\x64\x69\x63\x74\x69\x6f\x6e\x61\x72\x79\x03\x63\x6f\x6d",
+                                                b"\x00\x00\x01\x00\x01\x00\x00\x29\x04\xb0\x00\x00\x00\x00\x00\x00");
+
+        let questions = get_questions_vec(bytes.as_slice().try_into().unwrap(), 1);
+        let q = &questions[0];
+        assert!(questions.len() == 1);
+        assert_eq!(q.qclass, QClass::IN);
+        assert_eq!(q.qtype, QType::A);
+        assert_eq!(q.qname, "www.thefreedictionary.com.");
     }
 }
