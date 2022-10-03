@@ -258,6 +258,35 @@ struct Question {
     qclass : QClass,
 }
 
+fn get_questions_vec(packet: &[u8], question_count: u16) -> Vec<Question> {
+    let mut vec = vec![];
+
+    let mut offset = mem::size_of::<ExternalDNSHeader>();
+    let mut question_size: u8 = packet[offset];
+    println!("question size: {}", question_size);
+
+    offset += 1;
+    let name = String::from_utf8(packet[offset..offset + question_size as usize].try_into().unwrap()).unwrap();
+    println!("Name : {}", name);
+    offset += question_size as usize;
+    offset += 1;
+    let qtype_u16 = u16::from_be_bytes(packet[offset..offset + 2].try_into().unwrap());
+    offset += 2;
+    let qclass_u16 = u16::from_be_bytes(packet[offset..offset + 2].try_into().unwrap());
+
+    let qtype = qtype_from_u16(qtype_u16).unwrap();
+    let qclass = qclass_from_u16(qclass_u16).unwrap();
+    println!("qtype {:?} qclass {:?}", qtype, qclass);
+    let question = Question {
+        qname: name,
+        qtype: qtype,
+        qclass: qclass,
+    };
+    vec.push(question);
+
+    vec
+}
+
 fn main() {
     // this is an example packet dumped from tcpdump / wireshark
     // commands : tcpdump -i lo -w toto.pcap ; wireshark toto.pcap
@@ -274,23 +303,9 @@ fn main() {
         println!("It's a query!");
     }
 
-    let mut offset = mem::size_of::<ExternalDNSHeader>();
-    let question_size: u8 = packet[offset];
-    println!("question size: {}", question_size);
-
-    offset += 1;
-
-    let name = String::from_utf8(packet[offset..offset + question_size as usize].try_into().unwrap()).unwrap();
-    println!("Name : {}", name);
-    offset += question_size as usize;
-    offset += 1;
-    let qtype_u16 = u16::from_be_bytes(packet[offset..offset + 2].try_into().unwrap());
-    offset += 2;
-    let qclass_u16 = u16::from_be_bytes(packet[offset..offset + 2].try_into().unwrap());
-
-    let qtype = qtype_from_u16(qtype_u16).unwrap();
-    let qclass = qclass_from_u16(qclass_u16).unwrap();
-    println!("qtype {:?} qclass {:?}", qtype, qclass);
+    let vec = get_questions_vec(packet, hdr.qd_count);
+    let elt = &vec[0];
+    println!("{:?} {:?} {:?}", elt.qtype, elt.qname, elt.qclass);
 }
 
 // These are just basic sanity tests. Much advanced testing (and maybe fuzzing) would be required to
@@ -370,5 +385,16 @@ mod tests {
         assert_eq!(serialized_hdr.answer_count, 0);
         assert_eq!(serialized_hdr.nameserver_count, 0);
         assert_eq!(serialized_hdr.additional_records_count, 1);
+    }
+
+    #[test]
+    fn test_questions_vec_simple() {
+        let hdr = get_header(PACKET);
+        let questions = get_questions_vec(PACKET, hdr.qd_count);
+        let q = &questions[0];
+        assert!(questions.len() == 1);
+        assert_eq!(q.qclass, QClass::IN);
+        assert_eq!(q.qtype, QType::A);
+        assert_eq!(q.qname, "d");
     }
 }
