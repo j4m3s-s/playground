@@ -289,7 +289,7 @@ fn get_question(packet: &[u8], offset: usize) -> Result<(Question, usize), Error
     Ok((question, offset))
 }
 
-fn get_questions_vec(packet: &[u8], question_count: u16) -> Result<Vec<Question>, Error> {
+fn get_questions_vec(packet: &[u8], question_count: u16) -> Result<(Vec<Question>, usize), Error> {
     let mut vec = vec![];
 
     let mut offset = mem::size_of::<ExternalDNSHeader>();
@@ -298,7 +298,7 @@ fn get_questions_vec(packet: &[u8], question_count: u16) -> Result<Vec<Question>
         vec.push(question);
     }
 
-    Ok(vec)
+    Ok((vec, offset))
 }
 
 struct DNSPacket {
@@ -310,7 +310,7 @@ struct DNSPacket {
 fn get_parsed_dns_packet(packet: &[u8]) -> Result<DNSPacket, Error> {
     let header = get_header(packet).serialize()?;
 
-    let questions = get_questions_vec(packet, header.question_count)?;
+    let (questions, offset) = get_questions_vec(packet, header.question_count)?;
 
     Ok(DNSPacket {
         header: header,
@@ -334,7 +334,7 @@ fn main() {
         println!("It's a query!");
     }
 
-    let vec = get_questions_vec(packet, hdr.qd_count).unwrap();
+    let (vec, _) = get_questions_vec(packet, hdr.qd_count).unwrap();
     let elt = &vec[0];
     println!("{:?} {:?} {:?}", elt.qtype, elt.qname, elt.qclass);
 
@@ -343,7 +343,7 @@ fn main() {
                                             b"\x65\x65\x64\x69\x63\x74\x69\x6f\x6e\x61\x72\x79\x03\x63\x6f\x6d",
                                             b"\x00\x00\x01\x00\x01\x00\x00\x29\x04\xb0\x00\x00\x00\x00\x00\x00");
 
-    let questions = get_questions_vec(bytes.as_slice().try_into().unwrap(), 1).unwrap();
+    let (questions, _) = get_questions_vec(bytes.as_slice().try_into().unwrap(), 1).unwrap();
     let q = &questions[0];
     println!("{:?} {:?} {:?}", q.qtype, q.qname, q.qclass);
 }
@@ -430,7 +430,7 @@ mod tests {
     #[test]
     fn test_questions_vec_simple() {
         let hdr = get_header(PACKET);
-        let questions = get_questions_vec(PACKET, hdr.qd_count).unwrap();
+        let (questions, _) = get_questions_vec(PACKET, hdr.qd_count).unwrap();
         let q = &questions[0];
         assert!(questions.len() == 1);
         assert_eq!(q.qclass, QClass::IN);
@@ -445,7 +445,7 @@ mod tests {
                                                 b"\x65\x65\x64\x69\x63\x74\x69\x6f\x6e\x61\x72\x79\x03\x63\x6f\x6d",
                                                 b"\x00\x00\x01\x00\x01\x00\x00\x29\x04\xb0\x00\x00\x00\x00\x00\x00");
 
-        let questions = get_questions_vec(bytes.as_slice().try_into().unwrap(), 1).unwrap();
+        let (questions, _) = get_questions_vec(bytes.as_slice().try_into().unwrap(), 1).unwrap();
         let q = &questions[0];
         assert!(questions.len() == 1);
         assert_eq!(q.qclass, QClass::IN);
