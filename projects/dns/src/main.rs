@@ -16,13 +16,13 @@ extern crate num_derive;
 #[derive(Copy, Clone)]
 struct ExternalDNSHeader {
     // This is a unique ID for each request.
-    id: u16,
+    id       : u16,
     // This contains bitfields of flags
-    flags: u16,
-    qd_count: u16,
-    an_count: u16,
-    ns_count: u16,
-    ar_count: u16,
+    flags    : u16,
+    qd_count : u16,
+    an_count : u16,
+    ns_count : u16,
+    ar_count : u16,
 }
 
 #[derive(Eq, PartialEq, Debug, FromPrimitive, ToPrimitive)]
