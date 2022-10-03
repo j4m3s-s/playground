@@ -289,16 +289,17 @@ fn get_question(packet: &[u8], offset: usize) -> Result<(Question, usize), Error
     Ok((question, offset))
 }
 
-fn get_questions_vec(packet: &[u8], question_count: u16) -> Vec<Question> {
+fn get_questions_vec(packet: &[u8], question_count: u16) -> Result<Vec<Question>, Error> {
     let mut vec = vec![];
 
     let mut offset = mem::size_of::<ExternalDNSHeader>();
     for _ in 0..question_count {
-        let (question, offset) = get_question(packet, offset).unwrap();
+        let (question, offset) = get_question(packet, offset)?;
         vec.push(question);
     }
 
-    vec
+    Ok(vec)
+}
 }
 
 fn main() {
@@ -317,7 +318,7 @@ fn main() {
         println!("It's a query!");
     }
 
-    let vec = get_questions_vec(packet, hdr.qd_count);
+    let vec = get_questions_vec(packet, hdr.qd_count).unwrap();
     let elt = &vec[0];
     println!("{:?} {:?} {:?}", elt.qtype, elt.qname, elt.qclass);
 
@@ -326,7 +327,7 @@ fn main() {
                                             b"\x65\x65\x64\x69\x63\x74\x69\x6f\x6e\x61\x72\x79\x03\x63\x6f\x6d",
                                             b"\x00\x00\x01\x00\x01\x00\x00\x29\x04\xb0\x00\x00\x00\x00\x00\x00");
 
-    let questions = get_questions_vec(bytes.as_slice().try_into().unwrap(), 1);
+    let questions = get_questions_vec(bytes.as_slice().try_into().unwrap(), 1).unwrap();
     let q = &questions[0];
     println!("{:?} {:?} {:?}", q.qtype, q.qname, q.qclass);
 }
