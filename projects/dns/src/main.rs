@@ -125,16 +125,16 @@ fn flags_from_u16(hdr: &ExternalDNSHeader) -> Flags {
 }
 
 impl ExternalDNSHeader {
-    // FIXME: make it the whole struct, not just the header
-    fn serialize(&self) -> Header {
-        Header{
-            id: self.id,
-            flags: flags_from_u16(self),
-            question_count: self.qd_count,
-            answer_count: self.an_count,
-            nameserver_count: self.ns_count,
-            additional_records_count: self.ar_count,
-        }
+    // FIXME                         : make it the whole struct, not just the header
+    fn serialize(&self) -> Result<Header, Error> {
+        Ok(Header{
+            id                       : self.id,
+            flags                    : flags_from_u16(self)?,
+            question_count           : self.qd_count,
+            answer_count             : self.an_count,
+            nameserver_count         : self.ns_count,
+            additional_records_count : self.ar_count,
+        })
     }
 }
 
