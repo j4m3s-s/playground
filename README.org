@@ -1,0 +1,10 @@
+#+title: Readme
+
+This is a repository that contains programming/algorithmics/architecture experiments.
+Successful experiments are usually exported and archived into _archives. This is
+done using josh (just one single history).
+
+If not indicated otherwise, all code present in this repository is :
+- GPL
+- AGPL for network software
+- LGPL for library software
