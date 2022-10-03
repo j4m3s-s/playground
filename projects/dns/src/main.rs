@@ -1,6 +1,9 @@
 use ::byte_strings::concat_bytes;
 use std::fmt;
 
+// To use with ExternalDNSHeader
+use std::mem;
+
 // This is used to transform int to enums directly
 extern crate num;
 #[macro_use]
@@ -183,7 +186,7 @@ enum Class {
 }
 */
 
-#[derive(Eq, PartialEq, FromPrimitive)]
+#[derive(Eq, PartialEq, FromPrimitive, Debug)]
 enum QClass {
     IN = 1, // Internet
     CS, // CSNet
@@ -270,6 +273,24 @@ fn main() {
     if is_query(&hdr) {
         println!("It's a query!");
     }
+
+    let mut offset = mem::size_of::<ExternalDNSHeader>();
+    let question_size: u8 = packet[offset];
+    println!("question size: {}", question_size);
+
+    offset += 1;
+
+    let name = String::from_utf8(packet[offset..offset + question_size as usize].try_into().unwrap()).unwrap();
+    println!("Name : {}", name);
+    offset += question_size as usize;
+    offset += 1;
+    let qtype_u16 = u16::from_be_bytes(packet[offset..offset + 2].try_into().unwrap());
+    offset += 2;
+    let qclass_u16 = u16::from_be_bytes(packet[offset..offset + 2].try_into().unwrap());
+
+    let qtype = qtype_from_u16(qtype_u16).unwrap();
+    let qclass = qclass_from_u16(qclass_u16).unwrap();
+    println!("qtype {:?} qclass {:?}", qtype, qclass);
 }
 
 // These are just basic sanity tests. Much advanced testing (and maybe fuzzing) would be required to
