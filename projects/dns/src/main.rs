@@ -185,7 +185,7 @@ enum Class {
 
 #[derive(Eq, PartialEq, FromPrimitive)]
 enum QClass {
-    IN, // Internet
+    IN = 1, // Internet
     CS, // CSNet
     CH, // Chaos
     HS, // Hesiod
@@ -219,9 +219,9 @@ enum Type {
 }
 */
 
-#[derive(Eq, PartialEq)]
+#[derive(Eq, PartialEq, FromPrimitive, ToPrimitive, Debug)]
 enum QType {
-    A,
+    A = 1,
     NS,
     MD, // Obsolete
     MF, // Obsolete
@@ -239,38 +239,14 @@ enum QType {
     TXT,
 
     // QType specific types
-    AXFR,
+    AXFR = 252,
     MAILB,
     MAILA,
     ALL, // *
 }
 
-fn qtype_from_u16(qtype: u16) -> Option<QType> {
-    use QType::*;
-    match qtype {
-        1 => Some(A),
-        2 => Some(NS),
-        3 => Some(MD),
-        4 => Some(MF),
-        5 => Some(CNAME),
-        6 => Some(SOA),
-        7 => Some(MB),
-        8 => Some(MG),
-        9 => Some(MR),
-        10 => Some(NULL),
-        11 => Some(WKS),
-        12 => Some(PTR),
-        13 => Some(HINFO),
-        14 => Some(MINFO),
-        15 => Some(MX),
-        16 => Some(TXT),
-        // qtype specific
-        252 => Some(AXFR),
-        253 => Some(MAILB),
-        254 => Some(MAILA),
-        255 => Some(ALL),
-        _ => None,
-    }
+fn qtype_from_u16(qtype: u16) -> Result<QType, Error> {
+    num::FromPrimitive::from_u16(qtype).ok_or(Error::ErrorQueryType)
 }
 
 struct Question {
