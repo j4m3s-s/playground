@@ -300,6 +300,22 @@ fn get_questions_vec(packet: &[u8], question_count: u16) -> Result<Vec<Question>
 
     Ok(vec)
 }
+
+struct DNSPacket {
+    header: Header,
+    questions: Vec<Question>,
+    // And more!
+}
+
+fn get_parsed_dns_packet(packet: &[u8]) -> Result<DNSPacket, Error> {
+    let header = get_header(packet).serialize()?;
+
+    let questions = get_questions_vec(packet, header.question_count)?;
+
+    Ok(DNSPacket {
+        header: header,
+        questions: questions,
+    })
 }
 
 fn main() {
