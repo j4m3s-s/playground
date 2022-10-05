@@ -1,0 +1,11 @@
+{:paths ["src"]
+ :deps {}
+ :tasks {
+         ; this is an example of tasks
+         ; see https://book.babashka.org/#tasks for more
+         ; there can be dependency around tasks
+         hello (print "Hello World!")
+         ; Call a function directly
+         main script.main/-main
+         }
+ }
