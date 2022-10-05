@@ -175,7 +175,6 @@ fn is_query(hdr: &ExternalDNSHeader) -> bool {
     hdr.flags & (0x1 << 15) == 0
 }
 
-/*
 // Probably mostly unused since we usually use QClass
 #[derive(Eq, PartialEq, Debug)]
 enum Class {
@@ -184,7 +183,6 @@ enum Class {
     CH, // Chaos
     HS, // Hesiod
 }
-*/
 
 #[derive(Eq, PartialEq, FromPrimitive, Debug)]
 enum QClass {
@@ -199,7 +197,6 @@ fn qclass_from_u16(qclass: u16) -> Result<QClass, Error> {
     num::FromPrimitive::from_u16(qclass).ok_or(Error::ErrorQClass)
 }
 
-/*
 // Probably mostly unused since we usually use QType
 #[derive(Eq, PartialEq, Debug)]
 enum Type {
@@ -220,7 +217,6 @@ enum Type {
     MX,
     TXT,
 }
-*/
 
 #[derive(Eq, PartialEq, FromPrimitive, ToPrimitive, Debug)]
 enum QType {
