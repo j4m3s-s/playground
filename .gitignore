@@ -3,3 +3,5 @@ result
 .*.sw*
 a.out
 node_modules
+.clj-kondo
+.lsp
