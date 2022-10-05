@@ -84,7 +84,7 @@ enum Error {
 // Using a result might make errors easier to deal with upstream
 fn get_querytype(hdr: &ExternalDNSHeader) -> Result<QueryType, Error> {
     let flags = hdr.flags;
-    let query_type = (flags >> 11) & 0b10000;
+    let query_type = (flags >> 11) & 0b1111;
     num::FromPrimitive::from_u16(query_type).ok_or(Error::ErrorQueryType)
 }
 
