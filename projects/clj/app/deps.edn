@@ -1,2 +1,7 @@
 {:paths ["src"]
- :deps {org.clojure/clojure {:mvn/version "1.10.3"}}}
+ :deps {org.clojure/clojure {:mvn/version "1.10.3"}
+
+        ;; For web APIs
+        io.pedestal/pedestal.service {:mvn/version "0.5.10"}
+        io.pedestal/pedestal.route {:mvn/version "0.5.10"}
+        io.pedestal/pedestal.jetty {:mvn/version "0.5.10"}}}
