@@ -46,6 +46,18 @@
                          ["/login" ^:interceptors [session-interceptor] {:get `login}]
                          ]]))
 
+;; Interceptors
+; Basically has an :enter function called on req path that does something
+; a :leave function on response path that does smth
+; If it throws, the exception is wrapped and the next interceptor with :error in
+; ctx will be called.
+;
+; Some interceptors are there by default :
+; see http://pedestal.io/reference/error-handling
+;
+; For doc on interceptors in general : http://pedestal.io/reference/interceptors
+; N.B: interceptors may not be a map of function
+
 (def service-map {::http/routes routes
                   ::http/type   :jetty
                   ::http/host   "0.0.0.0"
