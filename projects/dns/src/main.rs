@@ -4,6 +4,10 @@ use std::fmt;
 // To use with ExternalDNSHeader
 use std::mem;
 
+// for automatic error conversion
+use std::convert::From;
+use std::string::FromUtf8Error;
+
 // This is used to transform int to enums directly
 extern crate num;
 #[macro_use]
@@ -79,6 +83,9 @@ enum Error {
     ErrorQueryType,
     ErrorResponseCode,
     ErrorQClass,
+    ErrorType,
+    ErrorClass,
+    UTF8Conversion,
 }
 
 // Using a result might make errors easier to deal with upstream
@@ -176,15 +183,15 @@ fn is_query(hdr: &ExternalDNSHeader) -> bool {
 }
 
 // Probably mostly unused since we usually use QClass
-#[derive(Eq, PartialEq, Debug)]
+#[derive(Eq, PartialEq, Debug, FromPrimitive, ToPrimitive)]
 enum Class {
-    IN, // Internet
+    IN = 1, // Internet
     CS, // CSNet
     CH, // Chaos
     HS, // Hesiod
 }
 
-#[derive(Eq, PartialEq, FromPrimitive, Debug)]
+#[derive(Eq, PartialEq, FromPrimitive, ToPrimitive, Debug )]
 enum QClass {
     IN = 1, // Internet
     CS, // CSNet
@@ -197,10 +204,14 @@ fn qclass_from_u16(qclass: u16) -> Result<QClass, Error> {
     num::FromPrimitive::from_u16(qclass).ok_or(Error::ErrorQClass)
 }
 
+fn class_from_u16(class: u16) -> Result<Class, Error> {
+    num::FromPrimitive::from_u16(class).ok_or(Error::ErrorClass)
+}
+
 // Probably mostly unused since we usually use QType
-#[derive(Eq, PartialEq, Debug)]
+#[derive(Eq, PartialEq, Debug, FromPrimitive, ToPrimitive, Copy, Clone)]
 enum Type {
-    A,
+    A = 1,
     NS,
     MD, // Obsolete
     MF, // Obsolete
@@ -216,6 +227,10 @@ enum Type {
     MINFO,
     MX,
     TXT,
+
+    // Not from RFC1035, this is used so that we don't parse resource record further
+    // This is a pseudo-record for edns0
+    OPT = 41,
 }
 
 #[derive(Eq, PartialEq, FromPrimitive, ToPrimitive, Debug)]
@@ -242,6 +257,10 @@ enum QType {
     MAILB,
     MAILA,
     ALL, // *
+}
+
+fn type_from_u16(qtype: u16) -> Result<Type, Error> {
+    num::FromPrimitive::from_u16(qtype).ok_or(Error::ErrorType)
 }
 
 fn qtype_from_u16(qtype: u16) -> Result<QType, Error> {
@@ -298,10 +317,10 @@ fn get_questions_vec(packet: &[u8], question_count: u16) -> Result<(Vec<Question
     Ok((vec, offset))
 }
 
-struct DNSPacket<'buffer_life> {
+struct DNSPacket {
     header: Header,
     questions: Vec<Question>,
-    additional_records: Vec<ExternalResourceRecord<'buffer_life>>
+    additional_records: Vec<ResourceRecord>,
     // And more!
 }
 
@@ -320,9 +339,38 @@ struct ExternalResourceRecord<'buffer_life> {
     rdata: &'buffer_life [u8],
 }
 
+impl From<FromUtf8Error> for Error {
+    fn from(error: FromUtf8Error) -> Self {
+        Error::UTF8Conversion
+    }
+}
+
+impl ExternalResourceRecord<'_> {
+    fn serialize(&self) -> Result<ResourceRecord, Error> {
+        let rtype = type_from_u16(self.rtype)?;
+        println!("nm {:?} {:?}", self.name, rtype);
+        let typedrrdata = match rtype {
+            Type::A => TypedResourceRecordData::A(self.rdata.to_vec()),
+            Type::NS => TypedResourceRecordData::NS(self.rdata.to_vec()),
+            _ => TypedResourceRecordData::UNKNOWN,
+        };
+
+        Ok(ResourceRecord{
+            name: String::from_utf8(self.name.to_vec()).unwrap(),
+            rtype: rtype,
+            class: class_from_u16(self.class)?,
+            ttl: self.ttl,
+            data: typedrrdata,
+        })
+    }
+}
+
+#[derive(Debug)]
 enum TypedResourceRecordData {
-    A([u8; 4]),
-    NS(String),
+    // FIXME: exo, use lifetime here or just use copy smhw
+    A(Vec<u8>),
+    // FIXME: use string
+    NS(Vec<u8>),
     CNAME(String),
     SOA, // TODO: implement me
 
@@ -332,14 +380,16 @@ enum TypedResourceRecordData {
     UNKNOWN,
 }
 
+#[derive(Debug)]
 struct ResourceRecord {
     name: String,
     rtype: Type,
     class: Class,
     ttl: u32,
+    data: TypedResourceRecordData,
 }
 
-fn get_resource_record_vec(packet: &[u8], offset: usize) -> Result<(Vec<ExternalResourceRecord>,
+fn get_resource_record_vec(packet: &[u8], offset: usize) -> Result<(Vec<ResourceRecord>,
                                                                         usize), Error> {
     let mut res = vec![];
     let mut offset = offset;
@@ -381,11 +431,11 @@ fn get_resource_record_vec(packet: &[u8], offset: usize) -> Result<(Vec<External
         res.push(ExternalResourceRecord {
             name: name,
             rtype: rtype,
-            class: 0,
+            class: 1,
             ttl: 0,
             rdlength: 0,
             rdata: &packet[0..0]
-        });
+        }.serialize()?);
         return Ok((res, offset));
     }
 
@@ -409,7 +459,7 @@ fn get_resource_record_vec(packet: &[u8], offset: usize) -> Result<(Vec<External
         ttl: ttl,
         rdlength: rdlength,
         rdata: rdata,
-    });
+    }.serialize()?);
     Ok((res, offset))
 }
 fn get_parsed_dns_packet(packet: &[u8]) -> Result<DNSPacket, Error> {
