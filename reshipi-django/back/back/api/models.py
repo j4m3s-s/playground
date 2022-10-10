@@ -8,7 +8,11 @@ from django.db.models import Model
 # - Also ordered by ID so it makes the API easier to work with.
 # - Also has a __name__
 
-class Recipe(Model):
+class MetaObject:
+    def __str__(self):
+        return self.name if "name" in self.__dict__ else str(super())
+
+class Recipe(MetaObject, Model):
     name = models.CharField(max_length=64)
     cook_time = models.DurationField()
     prep_time = models.DurationField()
@@ -25,13 +29,17 @@ class Recipe(Model):
 
     #TODO: add author
 
-class Ingredient(Model):
+class Ingredient(MetaObject, Model):
     name = models.CharField(max_length=64)
 
-class Ustensil(Model):
+class Ustensil(MetaObject, Model):
     name = models.CharField(max_length=64)
 
-class RecipeStep(Model):
+class RecipeStep(MetaObject, Model):
     # Let's be C logical. Begins at 0, up to whatever integer size this is.
     position = models.IntegerField()
     text = models.CharField(max_length=500)
+
+    def __str__(self):
+        # Let's shorten it so that it's readable in the admin
+        return f"{self.position} - {self.text[:25]}..."
