@@ -40,6 +40,12 @@ enum QueryType {
     // Others are reserved for future use
 }
 
+impl QueryType {
+    fn to_nb(item: Self) -> u8 {
+        item as u8
+    }
+}
+
 #[derive(Eq, PartialEq, Debug, FromPrimitive, ToPrimitive)]
 enum ResponseCode {
     NoError,
@@ -49,6 +55,18 @@ enum ResponseCode {
     NotImplemented,
     Refused,
     // reserved for future use
+}
+
+impl ResponseCode {
+    fn to_nb(item: Self) -> u8 {
+        item as u8
+    }
+}
+
+impl QueryType {
+    fn to_nb(item: Self) -> u8 {
+        item as u8
+    }
 }
 
 struct Flags {
@@ -61,6 +79,21 @@ struct Flags {
     recursion_available  : bool,
     // z unused here, 3 bits
     rcode                : ResponseCode,
+}
+
+impl Flags {
+    fn to_bytes(item: Self) -> u16 {
+        let mut res: u16 = 0;
+
+        res |= item.is_response << 15;
+        res |= item.opcode.to_nb << 11;
+        res |= item.authoritative_server << 10;
+        res |= item.truncated << 9;
+        res |= item.recursion_desired << 8;
+        res |= item.rcode.to_nb;
+
+        res
+    }
 }
 
 // This is the internal way of representing a DNS Header. This might not be as optimized in space,
@@ -76,6 +109,27 @@ struct Header {
     answer_count             : u16,
     nameserver_count         : u16,
     additional_records_count : u16,
+}
+
+struct ByteHeader {
+    bytes: [u16; 6],
+}
+
+impl Header {
+    fn to_bytes(item: Self) -> ByteHeader {
+        let mut res = ByteHeader {
+            bytes: [0, 0, 0, 0, 0],
+        };
+
+        res.bytes[0] = item.id.to_be_bytes();
+        res.bytes[1] = item.flags.to_bytes.to_be_bytes();
+        res.bytes[2] = item.question_count.to_be_bytes();
+        res.bytes[3] = item.answer_count.to_be_bytes();
+        res.bytes[4] = item.nameserver_count.to_be_bytes();
+        res.bytes[5] = item.additional_records_count.to_be_bytes();
+
+        res
+    }
 }
 
 #[derive(Debug, Eq, PartialEq)]
@@ -387,6 +441,15 @@ struct ResourceRecord {
     class: Class,
     ttl: u32,
     data: TypedResourceRecordData,
+}
+
+impl ResourceRecord {
+    fn serialize(item: Self) -> ExternalResourceRecord<'a> {
+        ExternalResourceRecord {
+            name: item.to_bytes(),
+
+        }
+    }
 }
 
 fn get_resource_record_vec(packet: &[u8], offset: usize) -> Result<(Vec<ResourceRecord>,
