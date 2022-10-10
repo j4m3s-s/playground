@@ -1,0 +1,6 @@
+#+title: Readme
+
+This is the code for Reshipi (revamped) using Django and VueJS.
+
+The choice of technology for the easiest to iterate with (and maybe so that
+other people contribute to it more easily).
