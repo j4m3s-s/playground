@@ -25,7 +25,16 @@ router = routers.DefaultRouter()
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(router.urls)),
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+
+    # API
+    ## List
+    path('api/v1/recipes', views.RecipeList.as_view()),
+    path('api/v1/ustensils', views.UstensilList.as_view()),
+    path('api/v1/ingredients', views.IngredientList.as_view()),
+
+    ## Edit
+    path('api/v1/recipe/<int:pk>', views.RecipeEdit.as_view()),
+    path('api/v1/ustensil/<int:pk>', views.UstensilEdit.as_view()),
+    path('api/v1/ingredient/<int:pk>', views.IngredientEdit.as_view()),
 ]
-
-
