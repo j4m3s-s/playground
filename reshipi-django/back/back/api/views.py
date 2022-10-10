@@ -7,11 +7,10 @@ from back.api.models import Ingredient, Recipe, Ustensil
 from back.api.serializers import RecipeSerializer, IngredientSerializer, UstensilSerializer
 
 class AuthenticatedView:
-    pass
-    # permission_classes = [ IsAuthenticated ]
+    permission_classes = [ IsAuthenticated ]
 
 class RecipeList(ListAPIView):
-    queryset = Recipe.objects.all()
+    qryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
 
 class RecipeEdit(AuthenticatedView, RetrieveUpdateDestroyAPIView):
