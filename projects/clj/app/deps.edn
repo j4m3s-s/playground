@@ -10,4 +10,8 @@
         environ/environ {:mvn/version "1.2.0"}
 
         ;; Logging
-        org.slf4j/slf4j-simple {:mvn/version "1.7.36"}}}
+        org.slf4j/slf4j-simple {:mvn/version "1.7.36"}
+
+        ;; Xtdb
+        com.xtdb/xtdb-core {:mvn/version "1.22.1"}
+        com.xtdb/xtdb-rocksdb {:mvn/version "1.22.1"}}}
