@@ -1,0 +1,6 @@
+#+title: Readme
+
+This subfolder is reserved for observation of behaviors of the Go language.
+
+This is done as an exercise and a reminder of how things work.
+Some exercises are done using plain .go files, some in org babel.
