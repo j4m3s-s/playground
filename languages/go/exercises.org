@@ -1,0 +1,179 @@
+#+title: Exercises
+
+* Basics
+** Printing
+#+begin_src go :imports fmt
+fmt.Println("Hello!")
+#+end_src
+
+#+RESULTS:
+: Hello!
+* Modules
+This compares imports and package names mostly.
+See file:modules
+** Structs, fields
+Exported types begin with an Uppercase letter. Same for fields.
+** functions
+Exported functions begin with an uppercase letter
+* structs
+#+begin_src go :imports fmt
+type Toto struct {
+    a string
+}
+
+a := Toto{
+    a: "toto",
+}
+fmt.Println(a.a)
+#+end_src
+
+#+RESULTS:
+: toto
+* variable declarations
+#+begin_src go :imports fmt
+type Toto struct {
+	a string
+}
+
+var t Toto
+
+var o Toto = Toto{
+	a: "toto",
+}
+
+p := Toto{
+	a: "titi",
+}
+
+fmt.Println(t, o, p)
+#+end_src
+
+#+RESULTS:
+: {} {toto} {titi}
+
+
+** Pointer
+#+begin_src go :imports fmt
+type Toto struct {
+	a string
+}
+
+a := new(Toto)
+b := &Toto{
+	a: "toto",
+}
+
+fmt.Println(a, b)
+
+#+end_src
+
+#+RESULTS:
+: &{} &{toto}
+* Enums
+Or what the closest exists in Go
+#+begin_src go :imports fmt
+const (
+	// 1 << 10 == 1024
+	KB float64 = 1 << (10 * (iota + 1))
+	// 1 << 20 == 1 million xxx
+	MB
+	// 1 << 30 == 1 billion xxx
+	GB
+)
+
+fmt.Println(KB)
+#+end_src
+
+#+RESULTS:
+: 1024
+* Custom printing
+Or what the closest exists in Go
+#+begin_src go :imports fmt
+type ByteSize float64
+
+const (
+	// 1 << 10 == 1024
+	KB ByteSize = 1 << (10 * (iota + 1))
+	// 1 << 20 == 1 million xxx
+	MB
+	// 1 << 30 == 1 billion xxx
+	GB
+)
+
+func (b ByteSize) String() string {
+	switch {
+		case b >= GB:
+			return fmt.Sprintf("%.2fGB", b / GB)
+		case b >= MB:
+			return fmt.Sprintf("%.2fMB", b / MB)
+		case b >= KB:
+			return fmt.Sprintf("%.2fKB", b / KB)
+		default:
+			return fmt.Sprintf("%.2fB", b)
+	}
+}
+
+func main() {
+    fmt.Println(KB)
+    fmt.Println(ByteSize(111111111111))
+	  a := new(ByteSize)
+	  *a = 100000
+	  fmt.Println(a)
+}
+#+end_src
+
+#+RESULTS:
+: 1.00KB
+: 103.48GB
+: 97.66KB
+
+invalid composite litteral
+This error is found when we try to get the address of a non struct type (type alias to basic type)
+* Methods
+pointer and non pointer struct
+
+need to use pointer for internal mutability
+#+begin_src go :imports fmt
+type Toto struct {
+	a string
+}
+
+func (self *Toto) Test() {
+	fmt.Println(*self)
+}
+
+func main() {
+	a := Toto{
+		a: "toto",
+	}
+	a.Test()
+}
+#+end_src
+
+#+RESULTS:
+: {toto}
+* Interfaces
+#+begin_src go :imports fmt
+type ImplToto interface {
+	Test() string
+}
+
+type Toto struct {
+	a string
+}
+
+func (self *Toto) Test() string {
+	return self.a
+}
+
+func main() {
+	a := Toto{
+		a: "toto",
+	}
+
+	fmt.Println(a.Test())
+}
+
+#+end_src
+
+#+RESULTS:
