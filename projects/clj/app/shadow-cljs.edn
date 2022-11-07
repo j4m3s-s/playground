@@ -1,0 +1,27 @@
+;; shadow-cljs configuration
+{:source-paths
+ ["src/dev"
+  "src/main"
+  "src/test"
+  "src"]
+
+ :dependencies
+ [[reagent                   "1.1.0"]
+  [net.cgrand/macrovich      "0.2.1"]
+  [org.clojure/tools.logging "1.1.0"]
+  [day8/shadow-git-inject    "0.0.5"]
+  [re-frame "1.2.0"]]
+
+ :build-defaults
+ {:build-hooks [(shadow-git-inject.core/hook)]}
+
+ :dev-http
+ {8280 "resources/public"}
+
+ :builds
+ {:client
+  {:target     :browser
+   :output-dir "target/"
+   :modules
+   {:client
+    {:init-fn frontend.core/run}}}}}
