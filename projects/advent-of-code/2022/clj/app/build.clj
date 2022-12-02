@@ -9,13 +9,13 @@
 
 (def jar-content (str build-folder "/classes"))
 
-(def lib-name 'com.github.YOURNAME/mymath-lib)
+(def lib-name 'eu.j4m3s/playground)
 (def version "0.0.1")
 
 (def basis (b/create-basis {:project "deps.edn"}))
 (def jar-file-name (format "%s/%s-%s.jar" build-folder (name lib-name) version))  ; path for result jar file
 
-(def app-name "myapp")
+(def app-name "aoc")
 (def uber-file-name (format "%s/%s-%s-standalone.jar" build-folder app-name version)) ; path for result uber file
 
 
