@@ -2299,4 +2299,5 @@
 (defn -main
   "I don't do a whole lot."
   [& args]
-  (println "Hello, World!"))
+  (println (result-part-1 input-1))
+  (println (result-part-2 input-1)))
