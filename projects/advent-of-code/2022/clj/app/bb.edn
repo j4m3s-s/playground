@@ -1,0 +1,3 @@
+{:tasks
+ {uberjar (shell "clj -T:build uber")
+  aot (shell "native-image -jar target/aoc-0.0.1-standalone.jar --initialize-at-build-time -H:+ReportExceptionStackTraces -H:ReflectionConfigurationFiles=./reflect-cfg.json --no-fallback")}}
