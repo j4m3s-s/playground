@@ -1,28 +1,7 @@
 {:paths ["src"]
  :aliases {:outdated {:extra-deps {olical/depot {:mvn/version "1.8.4"}}
-                      :main-opts  ["-m" "depot.outdated.main" "-a" "outdated"]}}
+                      :main-opts  ["-m" "depot.outdated.main" "-a" "outdated"]}
+           :build {:deps {io.github.clojure/tools.build {:git/tag "v0.8.1" :git/sha "7d40500"}}
+                   :ns-default build}}
  :deps {org.clojure/clojure {:mvn/version "1.10.3"}
-
-        ;; For web APIs
-        io.pedestal/pedestal.service {:mvn/version "0.5.10"}
-        io.pedestal/pedestal.route {:mvn/version "0.5.10"}
-        io.pedestal/pedestal.jetty {:mvn/version "0.5.10"}
-
-        ;; Configuration
-        environ/environ {:mvn/version "1.2.0"}
-
-        ;; Logging
-        org.slf4j/slf4j-simple {:mvn/version "1.7.36"}
-
-        ;; Xtdb
-        com.xtdb/xtdb-core {:mvn/version "1.22.1"}
-        com.xtdb/xtdb-rocksdb {:mvn/version "1.22.1"}}
-
-        ;;; CLJS dependencies
-        ;; CLJS
-        org.clojure/clojurescript {:mvn/version"1.11.60"}
-
-        ;; Re-frame, CLJS frontend
-        re-frame/re-frame {:mvn/version "1.3.0"}
-        ; Associated reagent which re-frame "wraps"
-        reagent/reagent {:mvn/version "1.1.1"}}
+        seancorfield/depstar {:mvn/version "1.0.94"}}}

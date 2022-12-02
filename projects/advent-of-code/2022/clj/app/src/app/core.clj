@@ -1,5 +1,6 @@
 (ns app.core
-  (:require [clojure.string :as str]))
+  (:require [clojure.string :as str])
+  (:gen-class))
 
 (def input-1
   (slurp "inputs/1/input-1.txt"))
