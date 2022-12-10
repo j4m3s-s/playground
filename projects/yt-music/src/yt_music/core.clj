@@ -90,8 +90,6 @@
   [[["/" {:get `homepage}]
     ["/api/dl" ^:interceptors [(body-params/body-params)] {:post `dl-handler}]]])
 
-(dl-handler nil)
-
 ; FIXME: for production usage, don't expand routes on each request
 ; otherwise we'll destroy performance
 (def service-map {::http/routes #(route/expand-routes routes)
