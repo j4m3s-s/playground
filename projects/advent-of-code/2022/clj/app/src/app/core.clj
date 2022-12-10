@@ -49,5 +49,7 @@ CrZsJsPPZsGzwwsLwLmpwMDw")
   ; Day 3
   (println (d3/result-3-part-2 input-3))
   ;day 4
-  (println (d3/result-part-1 input-4))
-  (println (d3/result-part-2 input-4)))
+  (println (d4/result-part-1 input-4))
+  (println (d4/result-part-2 input-4)))
+
+#_ (-main)
