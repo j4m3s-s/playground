@@ -10,7 +10,7 @@ class AuthenticatedView:
     permission_classes = [ IsAuthenticated ]
 
 class RecipeList(ListAPIView):
-    qryset = Recipe.objects.all()
+    queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
 
 class RecipeEdit(AuthenticatedView, RetrieveUpdateDestroyAPIView):
