@@ -21,7 +21,7 @@
  :builds
  {:client
   {:target     :browser
-   :output-dir "target/"
+   :output-dir "resources/public/js"
    :modules
    {:client
     {:init-fn frontend.core/run}}}}}
