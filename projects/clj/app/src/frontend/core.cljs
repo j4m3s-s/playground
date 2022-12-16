@@ -58,12 +58,19 @@
             :value @(rf/subscribe [:time-color])
             :on-change #(rf/dispatch [:time-color-change (-> % .-target .-value)])}]])
 
+(defn generic-div-show
+  [value]
+  [:div
+   {:style {:color "darkred"}}
+   value])
+
 (defn ui
   []
   [:div
    [:h1 "hello !"]
    [clock]
-   [color-input]])
+   [color-input]
+   [generic-div-show @(rf/subscribe [:time-color])]])
 
 (defn render
   []
