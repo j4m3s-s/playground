@@ -11,3 +11,4 @@ main
 
 # clojure class cache
 .cpcache
+.shadow-cljs

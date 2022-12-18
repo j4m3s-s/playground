@@ -1,0 +1,15 @@
+;; shadow-cljs configuration
+{:deps true ;; use deps.edn
+ :build-defaults
+ {:build-hooks [(shadow-git-inject.core/hook)]}
+
+ :dev-http
+ {8280 "resources/public"}
+
+ :builds
+ {:client
+  {:target     :browser
+   :output-dir "resources/public/js"
+   :modules
+   {:client
+    {:init-fn reshipi-reframe.core/run}}}}}

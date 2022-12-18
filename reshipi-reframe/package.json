@@ -1,0 +1,15 @@
+{
+    "name": "package-name",
+    "description": "description",
+    "version": "1.0.0",
+    "author": "James <me@j4m3s.eu>",
+    "main": "app/main.js",
+    "scripts": {},
+    "devDependencies": {
+        "shadow-cljs": "^2.20.7"
+    },
+    "dependencies": {
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0"
+    }
+}
