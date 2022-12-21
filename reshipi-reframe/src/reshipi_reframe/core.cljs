@@ -54,28 +54,44 @@
 (def example-recipe-list
   (first example-recipes-list))
 
+(defn enumerate
+  [input]
+  (map vector (range) input))
+
 (defn component-step
-  [step]
-  (let [_id (:id step)
+  [input]
+  (let [step (second input)
+        react-array-position (second input)
+
+        _id (:id step)
         ; FIXME: sort by position
         _position (:position step)
         text (:text step)]
-  [:li text]))
+  [:li {:key (str react-array-position) } text]))
 
 (defn component-steps
   [steps]
-  [:div "Étapes :"
-   [:ul (map component-step steps)]])
+  ; We need to get array position in keys of a list in React
+  (let [arr (enumerate steps)]
+    [:div "Étapes :"
+     [:ul (map component-step arr)]]))
 
 (defn component-ingredient
-  [ingredient]
-  (let [name (:name ingredient)]
-    [:li name ]))
+  [input]
+  (let [ingredient (second input)
+        key (first input)
+        name (:name ingredient)]
+    ; NOTA BENE: We need a key with a number as a string for React to render
+    ; effectively components and know whenever one of them changes.
+    ; cf: https://reactjs.org/docs/lists-and-keys.html#keys
+    [:li {:key key } [:p name ]]))
 
 (defn component-ingredients
   [ingredients]
-  [:div "Ingrédients :"
-   [:ul (map component-ingredient ingredients)]])
+  ; We map here to get a zipped iterator of (position, ingredient)
+  (let [arr (enumerate ingredients)]
+    [:div "Ingrédients :"
+     [:ul (map component-ingredient arr)]]))
 
 (defn component-ustensil
   [ustensil]
@@ -84,8 +100,9 @@
 
 (defn component-ustensils
   [ustensils]
-  [:div "Ustensiles : "
-   [:ul (map component-ustensil ustensils)]])
+  (let [arr (enumerate ustensils)]
+    [:div "Ustensiles : "
+     [:ul (map component-ustensil arr)]]))
 
 (defn component-recipe
   [recipe]
@@ -104,13 +121,14 @@
         steps (:steps recipe)
         ustensils (:ustensils recipe)]
     [:div
-     [:h1 name]
-     [:div "Temps de cuisson : " cook-time]
-     [:div "Temps total : " total-time]
-     [:div "Temps de préparation : " perform-time]
+     [:h3.font-bold.text-gray-900.text-3xl.leading-tight.font-medium.mb-2 name]
+     [:div
+        [:div.text-gray-800.text-base "Temps total : " total-time]
+        [:div.text-gray-600.text-sm "Temps de cuisson : " cook-time]
+        [:div.text-gray-600.text-sm "Temps de préparation : " perform-time]]
 
-     [:div "Créé le " created]
-     [:div "Dernière modification le " modified]
+     [:div.text-gray-600.text-xs "Créé le " created]
+     [:div.text-gray-600.text-xs "Dernière modification le " modified]
 
      (component-ingredients ingredients)
      (component-ustensils ustensils)
