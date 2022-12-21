@@ -127,7 +127,6 @@
         total-time (:total-time recipe)
         perform-time (:perform-time recipe)
 
-
         ingredients (:ingredients recipe)
         steps (:steps recipe)
         ustensils (:ustensils recipe)]
