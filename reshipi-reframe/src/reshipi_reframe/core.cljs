@@ -4,11 +4,14 @@
             [cljs-http.client :as http]
             [cljs.core.async :refer [<! go]]))
 
+;; State store
 
 (rf/reg-event-db
  :data
  (fn [db [_ new]]
    (assoc db :data new)))
+
+;; State queries
 
 (rf/reg-sub
  :data
@@ -19,6 +22,8 @@
  :count
  (fn [db _]
    (get-in db [:data :count])))
+
+;; Example data
 
 (def test-data (go
                  (let [data
@@ -54,9 +59,13 @@
 (def example-recipe-list
   (first example-recipes-list))
 
+;; Utils
+
 (defn enumerate
   [input]
   (map vector (range) input))
+
+;; Components
 
 (defn component-step
   [input]
@@ -134,6 +143,8 @@
      (component-ustensils ustensils)
      (component-steps steps)
      ]))
+
+;; Main UI
 
 (defn ui
   []
