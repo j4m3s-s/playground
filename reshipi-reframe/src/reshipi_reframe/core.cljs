@@ -26,7 +26,7 @@
   (rf/dispatch [:data data]))))
 
 
-(def example-recipe-list
+(def example-recipes-list
   [{:prep-time "00:00:10",
      :name "toto",
      :steps [{:id 1, :position 0, :text "ds"}],
@@ -52,7 +52,7 @@
    ])
 
 (def example-recipe-list
-  (first example-recipe-list))
+  (first example-recipes-list))
 
 (defn component-step
   [step]
