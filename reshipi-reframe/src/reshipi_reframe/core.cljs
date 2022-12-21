@@ -113,6 +113,8 @@
     [:div "Ustensiles : "
      [:ul (map component-ustensil arr)]]))
 
+; FIXME: change title to current recipe
+; FIXME: make date "human readable" instead of "00:00:10"
 (defn component-recipe
   [recipe]
   (let [name (:name recipe)
