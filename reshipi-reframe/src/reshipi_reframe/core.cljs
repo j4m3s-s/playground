@@ -1,7 +1,6 @@
 (ns reshipi-reframe.core
   (:require [reagent.dom :as dom]
             [re-frame.core :as rf]
-            [clojure.string :as str]
             [cljs-http.client :as http]
             [cljs.core.async :refer [<! go]]))
 
