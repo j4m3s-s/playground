@@ -15,3 +15,4 @@ pom.xml.asc
 
 # Generated files
 resources/public/js
+resources/public/css
