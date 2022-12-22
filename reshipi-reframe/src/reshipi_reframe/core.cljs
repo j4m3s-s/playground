@@ -38,7 +38,9 @@
      :created "2022-12-16",
      :modified "2022-12-16",
      :cook-time "00:00:10",
-     :ingredients [{:id 1, :name "fff"}],
+     :ingredients [{:id 1, :name "fff"},
+                   {:id 2, :name "fff1"}
+                   ],
      :ustensils [{:id 1, :name "fds"}],
      :id 1,
      :total-time "00:00:10",
