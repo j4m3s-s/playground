@@ -211,6 +211,9 @@
   (dom/render [ui]
               (js/document.getElementById "app")))
 
+; FIXME: fix create root warning in console wrt React changed the way to call its
+; root render.
+
 (defn run
   []
   (render))
