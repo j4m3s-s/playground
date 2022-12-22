@@ -169,6 +169,27 @@
        (component-steps steps)
        ]]]))
 
+; TODO: maybe add a small description ?
+(defn component-recipe-list
+  [input & last]
+  (let [recipe (second input)
+        index (first input)
+        name (:name recipe)
+        total-time (:total-time recipe)]
+    [:li
+     {:key index
+      :class (str (if last "" "border-b ") "border-gray-200 w-full")}
+     [:div.px-4.py-2
+      [:h3 name]
+      [:div.text-gray-500.text-base "Temps total " total-time]]]
+  ))
+
+(defn component-recipes-list
+  [recipes]
+  [:div
+   [:ul.bg-white.rounded-lg.border.border-gray-200.w-96.text-gray-900
+    (map component-recipe-list (enumerate recipes))]])
+
 ;; Main UI
 
 (defn ui
@@ -182,6 +203,7 @@
    ;       )
    ;       ]
    [component-recipe example-recipe-list]
+   [component-recipes-list example-recipes-list]
    ])
 
 (defn render
