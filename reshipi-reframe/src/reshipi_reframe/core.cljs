@@ -70,7 +70,7 @@
 ;; Components
 
 (defn component-step
-  [input]
+  [input & last]
   (let [step (second input)
         react-array-position (second input)
 
@@ -78,42 +78,59 @@
         ; FIXME: sort by position
         _position (:position step)
         text (:text step)]
-  [:li {:key (str react-array-position) } text]))
+  [:li {:key (str react-array-position)
+        :class (str (if last "" "border-b ") "px-6 py-2 border-gray-200")}
+   text]))
 
 (defn component-steps
   [steps]
   ; We need to get array position in keys of a list in React
   (let [arr (enumerate steps)]
-    [:div "Étapes :"
-     [:ul (map component-step arr)]]))
+    (if (empty? steps)
+      [:div "Aucune étapes."]
+      [:div "Étapes :"
+       [:ul
+        (map component-step (drop-last arr))
+        (component-step (last arr) true)
+        ]])))
 
 (defn component-ingredient
-  [input]
+  [input & last]
   (let [ingredient (second input)
         key (first input)
         name (:name ingredient)]
     ; NOTA BENE: We need a key with a number as a string for React to render
     ; effectively components and know whenever one of them changes.
     ; cf: https://reactjs.org/docs/lists-and-keys.html#keys
-    [:li {:key key } [:p name ]]))
+    [:li
+     {:key key
+      :class (str (if last "" "border-b ") "px-6 py-2 border-gray-200")}
+     [:p name ]]))
 
 (defn component-ingredients
   [ingredients]
   ; We map here to get a zipped iterator of (position, ingredient)
   (let [arr (enumerate ingredients)]
     [:div "Ingrédients :"
-     [:ul (map component-ingredient arr)]]))
+     ; We separate the last iteration to make last element styling different
+     [:ul.bg-white.rounded-lg.w-96.text-gray-900
+      (map component-ingredient (drop-last arr))
+      (component-ingredient (last arr) true)]]))
 
 (defn component-ustensil
-  [ustensil]
+  [ustensil & last]
   ; Currently it uses the same schema
-  (component-ingredient ustensil))
+  (component-ingredient ustensil last))
 
 (defn component-ustensils
   [ustensils]
   (let [arr (enumerate ustensils)]
-    [:div "Ustensiles : "
-     [:ul (map component-ustensil arr)]]))
+    (if (empty? ustensils)
+      [:div]
+      [:div "Ustensiles : "
+       [:ul.bg-white.rounded-lg.w-96.text-gray-900
+        (map component-ustensil (drop-last arr))
+        (component-ustensil (last arr) true)]])))
 
 ; FIXME: change title to current recipe
 ; FIXME: make date "human readable" instead of "00:00:10"
@@ -132,20 +149,25 @@
         ingredients (:ingredients recipe)
         steps (:steps recipe)
         ustensils (:ustensils recipe)]
-    [:div
-     [:h3.font-bold.text-gray-900.text-3xl.leading-tight.font-medium.mb-2 name]
-     [:div
-        [:div.text-gray-800.text-base "Temps total : " total-time]
-        [:div.text-gray-600.text-sm "Temps de cuisson : " cook-time]
-        [:div.text-gray-600.text-sm "Temps de préparation : " perform-time]]
+    [:div.container.my-24.px-6.mx-auto
+     [:div.block.rounded-lg.shadow-lg.bg-white
+      [:div.px-6.py-6
+       [:h3.font-bold.text-gray-900.text-3xl.leading-tight.font-medium.mb-2 name]
+       [:span.flex.items-center.mb-6
+        [:div.text-gray-800.text-base.mr-4 "Total : " total-time]
+        [:div.text-gray-600.text-sm.mr-2 "Cuisson : " cook-time]
+        [:div.text-gray-600.text-sm "Préparation : " perform-time]]
 
-     [:div.text-gray-600.text-xs "Créé le " created]
-     [:div.text-gray-600.text-xs "Dernière modification le " modified]
+       [:span.flex.items-center.mb-6
+        [:div.text-gray-400.text-xs.mr-4 "Créé le " created]
+        [:div.text-gray-400.text-xs "Dernière modification le " modified]]
 
-     (component-ingredients ingredients)
-     (component-ustensils ustensils)
-     (component-steps steps)
-     ]))
+       [:div
+        (component-ingredients ingredients)]
+       [:div
+        (component-ustensils ustensils)]
+       (component-steps steps)
+       ]]]))
 
 ;; Main UI
 
