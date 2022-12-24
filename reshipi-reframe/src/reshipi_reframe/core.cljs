@@ -2,7 +2,8 @@
   (:require [reagent.dom :as dom]
             [re-frame.core :as rf]
             [cljs-http.client :as http]
-            [cljs.core.async :refer [<! go]]))
+            [cljs.core.async :refer [<! go]]
+            [reshipi-reframe.routes :as routes]))
 
 ;; State store
 
@@ -190,21 +191,57 @@
    [:ul.bg-white.rounded-lg.border.border-gray-200.w-96.text-gray-900
     (map component-recipe-list (enumerate recipes))]])
 
+(defn component-link-test
+  []
+  [:div [:button {:on-click #(rf/dispatch [:set-active-panel :home-panel])} "home" ]
+   [:button {:on-click #(rf/dispatch [:set-active-panel :about-panel])} "about" ]])
+
+(defn component-home-test
+  []
+  [:div
+   [component-link-test]
+   [:div "Home sweet home"]])
+
+(defn component-about-test
+  []
+  [:div
+   [component-link-test]
+   [:div "About Roundabout?"]])
+
+;; State handling for current panel
+
+(rf/reg-event-db
+ :set-active-panel
+ (fn [db [_ active-panel]]
+   (assoc db :active-panel active-panel)))
+
+(rf/reg-sub
+ :active-panel
+ (fn [db _]
+   (:active-panel db)))
+
+(defmulti panels identity)
+(defmethod panels :home-panel [] [component-home-test])
+(defmethod panels :about-panel [] [component-about-test])
+(defmethod panels :default [] [component-home-test])
+
 ;; Main UI
 
 (defn ui
   []
-  [:div
-   ;[:div @(rf/subscribe [:count])]
-   ;[:div (->
-   ;       (get-in @(rf/subscribe [:data]) [:results])
-   ;       first
-   ;       :name
-   ;       )
-   ;       ]
-   [component-recipe example-recipe-list]
-   [component-recipes-list example-recipes-list]
-   ])
+  (let [active-panel (rf/subscribe [:active-panel])]
+       [:div
+        ;[:div @(rf/subscribe [:count])]
+        ;[:div (->
+        ;       (get-in @(rf/subscribe [:data]) [:results])
+        ;       first
+        ;       :name
+        ;       )
+        ;       ]
+        ;[component-recipe example-recipe-list]
+        ;[component-recipes-list example-recipes-list]
+        (panels @active-panel)
+        ]))
 
 (defn render
   []
