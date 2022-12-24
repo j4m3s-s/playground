@@ -252,7 +252,8 @@
 ; FIXME small app to display FIXME/TODO in a code repository
 
 ; FIXME: fix create root warning in console wrt React changed the way to call its
-; root render.
+; root render. This needs a new version release from reagent. See (notably)
+; https://github.com/reagent-project/reagent/issues/583
 ; FIXME: routing, make the history/url part work
 ; See reitit.frontend for that. May mean we need to change router.
 
