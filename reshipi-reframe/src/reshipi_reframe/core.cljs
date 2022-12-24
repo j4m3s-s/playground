@@ -246,7 +246,10 @@
 (defn render
   []
   (dom/render [ui]
+              ; FIXME automatic hot reload
               (js/document.getElementById "app")))
+
+; FIXME small app to display FIXME/TODO in a code repository
 
 ; FIXME: fix create root warning in console wrt React changed the way to call its
 ; root render.
