@@ -1,0 +1,6 @@
+List of tasks for long-term.
+
+* Ideas
+** garden cljs for CSS
+To get better integration w/ cljs.
+** OCR to import recipes
