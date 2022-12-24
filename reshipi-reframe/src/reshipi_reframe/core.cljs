@@ -253,6 +253,8 @@
 
 ; FIXME: fix create root warning in console wrt React changed the way to call its
 ; root render.
+; FIXME: routing, make the history/url part work
+; See reitit.frontend for that. May mean we need to change router.
 
 (defn run
   []
