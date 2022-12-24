@@ -1,0 +1,5 @@
+List of tasks that are considered necessary for the MVP.
+
+* TODO [/]
+** TODO Menu styling
+** TODO recipe editing/add
