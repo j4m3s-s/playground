@@ -208,6 +208,22 @@
    [component-link-test]
    [:div "About Roundabout?"]])
 
+(defn component-button-link
+  [button-value panel-symbol css-class]
+  [:button {:on-click #(rf/dispatch [:set-active-panel panel-symbol])
+            :class css-class} button-value])
+
+;; Views
+; Technically they are just components. But in practice they're "top level"
+; components in the sense that they have boilerplate for state/events handling.
+
+(defn view-home
+  []
+  [:div
+   [component-button-link "Home" :home-panel]
+   ; FIXME: Don't hardcode the recipes list here
+   [component-recipes-list example-recipes-list]])
+
 ;; State handling for current panel
 
 (rf/reg-event-db
@@ -220,10 +236,15 @@
  (fn [db _]
    (:active-panel db)))
 
+; Examples of use for panels
+;(defmulti panels identity)
+;(defmethod panels :home-panel [] [component-home-test])
+;(defmethod panels :about-panel [] [component-about-test])
+;(defmethod panels :default [] [component-home-test])
+
 (defmulti panels identity)
-(defmethod panels :home-panel [] [component-home-test])
-(defmethod panels :about-panel [] [component-about-test])
-(defmethod panels :default [] [component-home-test])
+(defmethod panels :home-panel [] [view-home])
+(defmethod panels :default [] [view-home])
 
 ;; Main UI
 
