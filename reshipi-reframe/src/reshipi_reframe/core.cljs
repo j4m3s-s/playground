@@ -178,7 +178,7 @@
         [:div.text-gray-600.text-sm "Préparation : " perform-time]]
 
        [:span.flex.items-center.mb-6
-        [:div.text-gray-400.text-xs.mr-4 "Créé le " created]
+        [:div.text-gray-400.text-xs.mr-4 "Créée le " created]
         [:div.text-gray-400.text-xs "Dernière modification le " modified]]
 
        [:div
