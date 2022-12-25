@@ -301,9 +301,11 @@
         (panels @active-panel)
         ]))
 
-(defn render
+(defn ^:dev/after-load run
   []
-  (dom/render [ui]
+  ; The date/now is here to trigger hot reload automatically
+  ; Maybe it shouldn't be here for production ?
+  (dom/render [ui {:x (js/Date.now)}]
               ; FIXME automatic hot reload
               (js/document.getElementById "app")))
 
@@ -314,7 +316,3 @@
 ; https://github.com/reagent-project/reagent/issues/583
 ; FIXME: routing, make the history/url part work
 ; See reitit.frontend for that. May mean we need to change router.
-
-(defn run
-  []
-  (render))
