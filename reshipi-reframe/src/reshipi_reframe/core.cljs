@@ -73,7 +73,18 @@
   [input]
   (map vector (range) input))
 
+(defn set-panel
+  ([panel-name]
+   (rf/dispatch [:set-active-panel panel-name]))
+  ([panel-name arg]
+   (rf/dispatch [:set-active-panel panel-name arg])))
+
 ;; Components
+
+(defn component-button-link
+  [button-value css-class func]
+  [:button {:on-click #(func)
+            :class css-class} button-value])
 
 (defn component-step
   [input & last]
@@ -186,7 +197,7 @@
      {:key index
       :class (str (if last "" "border-b ") "border-gray-200 w-full")}
      [:div.px-4.py-2
-      [:h3 name]
+      [:h3 [component-button-link name nil #(set-panel :home-panel)]]
       [:div.text-gray-500.text-base "Temps total " total-time]]]
   ))
 
@@ -213,11 +224,6 @@
    [component-link-test]
    [:div "About Roundabout?"]])
 
-(defn component-button-link
-  [button-value panel-symbol css-class]
-  [:button {:on-click #(rf/dispatch [:set-active-panel panel-symbol])
-            :class css-class} button-value])
-
 ;; Views
 ; Technically they are just components. But in practice they're "top level"
 ; components in the sense that they have boilerplate for state/events handling.
@@ -225,21 +231,44 @@
 (defn view-home
   []
   [:div
-   [component-button-link "Home" :home-panel]
+   ; FIXME: create proper styling
+   [component-button-link "Home" nil #(set-panel :home-panel)]
+   [component-button-link "recipe-1" nil #(set-panel :recipe-panel 1)]
    ; FIXME: Don't hardcode the recipes list here
    [component-recipes-list example-recipes-list]])
+
+(defn view-recipe
+  [_id]
+  [:div
+   [component-button-link "Home" nil #(set-panel :home-panel)]
+   ; FIXME: use id to select recipe
+   [component-recipe (first (get-in @(rf/subscribe [:data]) [:results]))]])
 
 ;; State handling for current panel
 
 (rf/reg-event-db
  :set-active-panel
- (fn [db [_ active-panel]]
-   (assoc db :active-panel active-panel)))
+ ; FIXME: Is there a way to make this more proper ? Defmulti maybe?
+ ; This looks like poor man's dispatch
+ (fn [db args]
+   (if (= 2 (count args))
+     (let [active-panel (second args)]
+       (assoc db :active-panel active-panel))
+     (let [active-panel (second args)
+           active-panel-arg (nth args 2)]
+       (-> db
+           (assoc :active-panel active-panel)
+           (assoc :active-panel-arg active-panel-arg))))))
 
 (rf/reg-sub
  :active-panel
  (fn [db _]
    (:active-panel db)))
+
+(rf/reg-sub
+ :active-panel-arg
+ (fn [db _]
+   (:active-panel-arg db)))
 
 ; Examples of use for panels
 ;(defmulti panels identity)
@@ -249,6 +278,7 @@
 
 (defmulti panels identity)
 (defmethod panels :home-panel [] [view-home])
+(defmethod panels :recipe-panel [] [view-recipe])
 (defmethod panels :default [] [view-home])
 
 ;; Main UI
