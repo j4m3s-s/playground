@@ -3,6 +3,10 @@
             [pushy.core :as pushy]
             [re-frame.core :as rf]))
 
+; FIXME: make url recipe sharing work (this is super practical)
+; FIXME: make "twitter cards" for link sharing
+; FIXME: OpenGraph tags (same kind as twitter cards apparently ; created by FB)
+; The above two are also related to server side rendering.
 (def routes ["/" {"" :home
                   "about" :about}])
 
