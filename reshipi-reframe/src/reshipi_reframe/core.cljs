@@ -121,6 +121,8 @@
     ; cf: https://reactjs.org/docs/lists-and-keys.html#keys
     [:li
      {:key key
+      ; FIXME: make the list "embed into parent component" so that it's doesn't
+      ; go over the border. It's weird.
       :class (str (if last "" "border-b ") "px-6 py-2 border-gray-200")}
      [:p name ]]))
 
