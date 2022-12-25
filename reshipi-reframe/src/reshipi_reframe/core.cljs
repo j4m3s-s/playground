@@ -26,10 +26,11 @@
 
 ;; Example data
 
-(def test-data (go
-                 (let [data
-                       (get-in (<! (http/get "http://localhost:8000/api/v1/recipes")) [:body])]
-  (rf/dispatch [:data data]))))
+; Network data
+;(def test-data (go
+;                 (let [data
+;                       (get-in (<! (http/get "http://localhost:8000/api/v1/recipes")) [:body])]
+;  (rf/dispatch [:data data]))))
 
 
 (def example-recipes-list
@@ -58,6 +59,10 @@
      :total-time "00:00:10",
      :perform-time "00:00:10"}
    ])
+
+; Small look-alike of the network data for local usage
+; FIXME only load this on DEV
+(rf/dispatch [:data {:results example-recipes-list}])
 
 (def example-recipe-list
   (first example-recipes-list))
