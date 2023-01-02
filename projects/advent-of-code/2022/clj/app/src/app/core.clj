@@ -171,9 +171,10 @@ move 1 from 1 to 2")
 
         new-crate (conj (nth table to) piece)
         ]
-    (replace-at to (replace-at from table old-crate)
-                new-crate)
-    ))
+    (as-> table table
+      (replace-at from table old-crate)
+      (replace-at to table new-crate)
+    )))
 
 (defn execute-step
   [table instruction]
