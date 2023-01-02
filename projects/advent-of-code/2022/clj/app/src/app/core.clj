@@ -77,12 +77,14 @@ move 1 from 1 to 2")
   )
 
 (defn my-subs
-  "This is to avoid exception and continue execution."
+  ;This is to avoid exception and continue execution. Basically it's subs but
+  ;returns nil on exception.
+  ;If only one argument is given, we assume it's the size for curried version.
   ([input n]
   (try (subs input n)
         (catch Exception _ nil)))
   ([n]
-   (partial #(subs % n))))
+   (partial #(my-subs % n))))
 
 (defn- top-parse-crate-line
   [acc input size]
@@ -120,7 +122,7 @@ move 1 from 1 to 2")
   [input position]
   (map #(nth % position) input))
 
-(defn- top-matrix-reorganize
+(defn- top-matrix-rotate-90r
   [acc input position]
   (println acc)
   (let [new-acc (conj acc (get-column input position))]
@@ -128,10 +130,10 @@ move 1 from 1 to 2")
       new-acc
       (recur new-acc input (dec position)))))
 
-(defn matrix-reorganize
+(defn matrix-rotate-90r
   [input]
   (let [n (dec (count (last input)))]
-    (reverse (top-matrix-reorganize [] input n))
+    (reverse (top-matrix-rotate-90r [] input n))
     ))
 
 ; What a beautiful name
@@ -208,7 +210,7 @@ move 1 from 1 to 2")
                       (count v))]
     (-> crates
         (#(parse-crate-lines % crates-count))
-        matrix-reorganize
+        matrix-rotate-90r
      )))
 
 (defn map-on-vals
