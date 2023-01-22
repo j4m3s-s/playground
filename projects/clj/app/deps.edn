@@ -16,7 +16,7 @@
 
         ;; Xtdb
         com.xtdb/xtdb-core {:mvn/version "1.22.1"}
-        com.xtdb/xtdb-rocksdb {:mvn/version "1.22.1"}}
+        com.xtdb/xtdb-rocksdb {:mvn/version "1.22.1"}
 
         ;;; CLJS dependencies
         ;; CLJS
@@ -25,4 +25,4 @@
         ;; Re-frame, CLJS frontend
         re-frame/re-frame {:mvn/version "1.3.0"}
         ; Associated reagent which re-frame "wraps"
-        reagent/reagent {:mvn/version "1.1.1"}}
+        reagent/reagent {:mvn/version "1.1.1"}}}
