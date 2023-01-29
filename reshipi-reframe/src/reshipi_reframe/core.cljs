@@ -4,7 +4,8 @@
             [re-frame.core :as rf]
             [cljs-http.client :as http]
             [cljs.core.async :refer [<! go]]
-            [reshipi-reframe.routes :as routes]))
+            [reshipi-reframe.routes :as routes]
+            [clojure.string :as str]))
 
 ;; State store
 
@@ -37,26 +38,24 @@
 (def example-recipes-list
   [{:prep-time "00:00:10",
      :name "toto",
-     :steps [{:id 1, :position 0, :text "ds"}],
+     :steps "- toto\n- tata",
      :created "2022-12-16",
      :modified "2022-12-16",
      :cook-time "00:00:10",
-     :ingredients [{:id 1, :name "fff"},
-                   {:id 2, :name "fff1"}
-                   ],
-     :ustensils [{:id 1, :name "fds"}],
+     :ingredients "- toto\n- tata",
+     :ustensils "- toto\n- tata",
      :id 1,
      :total-time "00:00:10",
      :perform-time "00:00:10"}
    {:prep-time "00:00:10",
      :name "tata",
-     :steps [{:id 1, :position 0, :text "ds"}],
+     :steps "- toto\n- tata",
      :created "2022-12-16",
      :modified "2022-12-16",
      :cook-time "00:00:10",
-     :ingredients [{:id 1, :name "fff"}],
-     :ustensils [{:id 1, :name "fds"}],
-     :id 1,
+     :ingredients "- toto\n- tata",
+     :ustensils "- toto\n- tata",
+     :id 2,
      :total-time "00:00:10",
      :perform-time "00:00:10"}
    ])
@@ -94,70 +93,15 @@
   [:button {:on-click #(func)
             :class css-class} button-value])
 
-(defn component-step
-  [input & last]
-  (let [step (second input)
-        react-array-position (second input)
+(defn make-div
+  [item]
+  [:div item])
 
-        _id (:id step)
-        ; FIXME: sort by position
-        _position (:position step)
-        text (:text step)]
-  [:li {:key (str react-array-position)
-        :class (str (if last "" "border-b ") "px-6 py-2 border-gray-200")}
-   text]))
-
-(defn component-steps
-  [steps]
-  ; We need to get array position in keys of a list in React
-  (let [arr (enumerate steps)]
-    (if (empty? steps)
-      [:div "Aucune étapes."]
-      [:div "Étapes :"
-       [:ul
-        (map component-step (drop-last arr))
-        (component-step (last arr) true)
-        ]])))
-
-(defn component-ingredient
-  [input & last]
-  (let [ingredient (second input)
-        key (first input)
-        name (:name ingredient)]
-    ; NOTA BENE: We need a key with a number as a string for React to render
-    ; effectively components and know whenever one of them changes.
-    ; cf: https://reactjs.org/docs/lists-and-keys.html#keys
-    [:li
-     {:key key
-      ; FIXME: make the list "embed into parent component" so that it's doesn't
-      ; go over the border. It's weird.
-      :class (str (if last "" "border-b ") "px-6 py-2 border-gray-200")}
-     [:p name ]]))
-
-(defn component-ingredients
-  [ingredients]
-  ; We map here to get a zipped iterator of (position, ingredient)
-  (let [arr (enumerate ingredients)]
-    [:div "Ingrédients :"
-     ; We separate the last iteration to make last element styling different
-     [:ul.bg-white.rounded-lg.w-96.text-gray-900
-      (map component-ingredient (drop-last arr))
-      (component-ingredient (last arr) true)]]))
-
-(defn component-ustensil
-  [ustensil & last]
-  ; Currently it uses the same schema
-  (component-ingredient ustensil last))
-
-(defn component-ustensils
-  [ustensils]
-  (let [arr (enumerate ustensils)]
-    (if (empty? ustensils)
-      [:div]
-      [:div "Ustensiles : "
-       [:ul.bg-white.rounded-lg.w-96.text-gray-900
-        (map component-ustensil (drop-last arr))
-        (component-ustensil (last arr) true)]])))
+(defn make-line-separated-array
+  [items]
+  (-> items
+      (str/split #"\n")
+      (#(map make-div %))))
 
 ; FIXME: change title to current recipe
 ; FIXME: make date "human readable" instead of "00:00:10"
@@ -173,9 +117,9 @@
         total-time (:total-time recipe)
         perform-time (:perform-time recipe)
 
-        ingredients (:ingredients recipe)
-        steps (:steps recipe)
-        ustensils (:ustensils recipe)]
+        ingredients (make-line-separated-array (:ingredients recipe))
+        steps (make-line-separated-array (:steps recipe))
+        ustensils (make-line-separated-array (:ustensils recipe))]
     [:div.container.my-24.px-6.mx-auto
      [:div.block.rounded-lg.shadow-lg.bg-white
       [:div.px-6.py-6
@@ -189,18 +133,17 @@
         [:div.text-gray-400.text-xs.mr-4 "Créée le " created]
         [:div.text-gray-400.text-xs "Dernière modification le " modified]]
 
-       [:div
-        (component-ingredients ingredients)]
-       [:div
-        (component-ustensils ustensils)]
-       (component-steps steps)
+       [:div ingredients]
+       [:br]
+       [:div ustensils]
+       [:br]
+       [:div steps]
        ]]]))
 
 (defonce recipe-atom (r/atom {:name ""
-                              ; indexed by position 0: ..., 1: ...
-                              :ustensils {}
-                              :ingredients {}
-                              :steps {}
+                              :ustensils ""
+                              :ingredients ""
+                              :steps ""
 
                               :total-time ""
                               :cook-time ""
@@ -230,80 +173,6 @@
   type text. This is to be used with clj/partial."
   [state map-entry element]
   (swap! state (fn [state] (assoc-in state map-entry (-> element .-target .-value)))))
-
-(defn component-step-edit
-  [input]
-  (let [value (first (second input))
-        callback (second (second input))
-        position (first input)]
-    [:li {:key position }
-     ;[component-input "textarea" value callback nil]
-     "toto"
-     [:button {:on-click #(swap! recipe-atom
-                                 (fn [recipe-state position] (let [new-steps (dissoc (:steps recipe-state) position)]
-                                                   (merge @recipe-atom {:steps new-steps})))
-                                 position
-                                 )}
-      "Remove"]
-     ]))
-
-; TODO: remove element
-;
-; FIXME: remove element removes all
-; FIXME: add then remove then add fails with an exception
-
-(defn component-steps-edit
-  [state-atom]
-  [:button {:on-click #(swap! state-atom
-                                    (fn [state] (assoc-in state [:steps (count (get-in @state-atom [:steps]))] ""))
-                                    )}
-   "add"])
-
-(defn component-recipe-edit
-  []
-  (let [name (:name @recipe-atom)
-        total-time (:total-time @recipe-atom)
-        perform-time (:perform-time @recipe-atom)
-        cook-time (:cook-time @recipe-atom)
-        step-0 (get-in @recipe-atom [:steps 0])
-        ]
-    [:div
-     [component-input-text name
-      (partial swap-value-in-atom recipe-atom [:name])
-      ]
-     [component-input-time total-time
-      (partial swap-value-in-atom recipe-atom [:total-time])
-      ]
-     [component-input-time perform-time
-      (partial swap-value-in-atom recipe-atom [:perform-time])
-      ]
-     [component-input-time cook-time
-      (partial swap-value-in-atom recipe-atom [:cook-time])
-      ]
-     [:div name]
-     [:div total-time]
-     [:div perform-time]
-     [:div cook-time]
-     ; steps-edit
-     ;[:ul (map )]
-     [component-steps-edit recipe-atom]
-     ;[component-input "textarea" step-0 (partial swap-value-in-atom recipe-atom [:steps 0]) nil]
-     [:div step-0]
-     [:ul (map component-step-edit (get-in @recipe-atom [:steps]))]
-     ]))
-
-
-; We need the defonce here for hot reloading support
-(defonce ustensil-atom (r/atom ""))
-
-(defn component-ustensil-edit
-  ; FIXME: args like id to push when editing
-  []
-  (let [name ustensil-atom]
-    [:input {:type "text"
-             :value @name
-             :on-change #(reset! name (-> % .-target .-value))}])
-  )
 
 ; TODO: maybe add a small description ?
 (defn component-recipe-list
@@ -354,8 +223,7 @@
    [component-button-link "Home" nil #(set-panel :home-panel)]
    [component-button-link "recipe-1" nil #(set-panel :recipe-panel 1)]
    ; FIXME: Don't hardcode the recipes list here
-   [component-recipes-list example-recipes-list]
-   [component-recipe-edit]])
+   [component-recipes-list example-recipes-list]])
 
 (defn view-recipe
   [_id]
