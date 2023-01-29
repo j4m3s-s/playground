@@ -22,24 +22,11 @@ class Recipe(MetaObject, Model):
     created = models.DateField()
     modified = models.DateField()
 
-    ingredients = models.ManyToManyField("Ingredient")
-    ustensils = models.ManyToManyField("Ustensil")
+    # FIXME: maybe there's a better way to store plaint text
+    ingredients = models.CharField(max_length=5000, default="")
+    ustensils = models.CharField(max_length=5000, default="")
 
-    steps = models.ManyToManyField("RecipeStep")
+    steps = models.CharField(max_length=5000, default="")
 
     #TODO: add author
-
-class Ingredient(MetaObject, Model):
-    name = models.CharField(max_length=64)
-
-class Ustensil(MetaObject, Model):
-    name = models.CharField(max_length=64)
-
-class RecipeStep(MetaObject, Model):
-    # Let's be C logical. Begins at 0, up to whatever integer size this is.
-    position = models.IntegerField()
-    text = models.CharField(max_length=500)
-
-    def __str__(self):
-        # Let's shorten it so that it's readable in the admin
-        return f"{self.position} - {self.text[:25]}..."
+    #TODO: add typed fields to make things proper

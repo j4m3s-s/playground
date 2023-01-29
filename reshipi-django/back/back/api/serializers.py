@@ -1,19 +1,8 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
-from back.api.models import Ingredient, Recipe, Ustensil
+from back.api.models import Recipe
 
-
-class IngredientSerializer(ModelSerializer):
-    class Meta:
-        model = Ingredient
-        fields = ["name", "id"]
-
-
-class UstensilSerializer(ModelSerializer):
-    class Meta:
-        model = Ustensil
-        fields = ["name", "id"]
 
 class RecipeSerializer(ModelSerializer):
     class Meta:
