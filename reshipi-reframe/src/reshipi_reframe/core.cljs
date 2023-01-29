@@ -188,16 +188,19 @@
 
      ; FIXME: make network work
      ; FIXME: make newline/textarea work
+     [:div.text-gray-400.text-xs.mr-4 "Ingrédients"]
      [:input {:type "text"
               :value ingredients
               :on-change (partial swap-map-element recipe-atom :ingredients)
               }]
-     [:br]
+
+     [:div.text-gray-400.text-xs.mr-4 "Ustensiles"]
      [:input {:type "text"
               :value ustensils
               :on-change (partial swap-map-element recipe-atom :ustensils)
               }]
-     [:br]
+
+     [:div.text-gray-400.text-xs.mr-4 "Recette"]
      [:input {:type "text"
               :value steps
               :on-change (partial swap-map-element recipe-atom :steps)
