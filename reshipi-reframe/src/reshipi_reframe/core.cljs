@@ -140,14 +140,67 @@
        [:div steps]
        ]]]))
 
-(defonce recipe-atom (r/atom {:name ""
-                              :ustensils ""
-                              :ingredients ""
-                              :steps ""
+(defonce recipe-atom (r/atom
+                      {:prep-time "00:00:10",
+                       :name "toto",
+                       :steps "- toto\n- tata",
+                       :created "2022-12-16",
+                       :modified "2022-12-16",
+                       :cook-time "00:00:10",
+                       :ingredients "- toto\n- tata",
+                       :ustensils "- toto\n- tata",
+                       :id 1,
+                       :total-time "00:00:10",
+                       :perform-time "00:00:10"}))
 
-                              :total-time ""
-                              :cook-time ""
-                              :perform-time ""}))
+(defn swap-map-element
+  [swap-atom map-entry new-value]
+  (swap! swap-atom
+           (fn [state] (merge state {map-entry (-> new-value .-target .-value)}))))
+
+(defn component-recipe-edit
+  [_recipe-id]
+  (let [name (:name @recipe-atom)
+        _id (:id @recipe-atom)
+
+        created (:created @recipe-atom)
+        modified (:modified @recipe-atom)
+
+        cook-time (:cook-time @recipe-atom)
+        total-time (:total-time @recipe-atom)
+        perform-time (:perform-time @recipe-atom)
+
+        ingredients (:ingredients @recipe-atom)
+        steps (:steps @recipe-atom)
+        ustensils (:ustensils @recipe-atom)]
+  [:div.container.my-24.px-6.mx-auto
+   [:div.block.rounded-lg.shadow-lg.bg-white
+    [:div.px-6.py-6
+     [:h3.font-bold.text-gray-900.text-3xl.leading-tight.font-medium.mb-2 name]
+
+     ; TODO: add time editor component
+     ;[:span.flex.items-center.mb-6
+     ; [:div.text-gray-800.text-base.mr-4 "Total : " total-time]
+     ; [:div.text-gray-600.text-sm.mr-2 "Cuisson : " cook-time]
+     ; [:div.text-gray-600.text-sm "Préparation : " perform-time]]
+
+     ; FIXME: make network work
+     ; FIXME: make newline/textarea work
+     [:input {:type "text"
+              :value ingredients
+              :on-change (partial swap-map-element recipe-atom :ingredients)
+              }]
+     [:br]
+     [:input {:type "text"
+              :value ustensils
+              :on-change (partial swap-map-element recipe-atom :ustensils)
+              }]
+     [:br]
+     [:input {:type "text"
+              :value steps
+              :on-change (partial swap-map-element recipe-atom :steps)
+              }]
+     ]]]))
 
 (defn component-input
   [type value callback css-class]
@@ -230,7 +283,8 @@
   [:div
    [component-button-link "Home" nil #(set-panel :home-panel)]
    ; FIXME: use id to select recipe
-   [component-recipe (first (get-in @(rf/subscribe [:data]) [:results]))]])
+   [component-recipe (first (get-in @(rf/subscribe [:data]) [:results]))]
+   [component-recipe-edit 1]])
 
 ;; State handling for current panel
 
