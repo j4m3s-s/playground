@@ -42,7 +42,7 @@
      :created "2022-12-16",
      :modified "2022-12-16",
      :cook-time "00:00:10",
-     :ingredients "- toto\n- tata",
+     :ingredients "- toto\n- titi",
      :ustensils "- toto\n- tata",
      :id 1,
      :total-time "00:00:10",
