@@ -1,5 +1,15 @@
 List of tasks that are considered necessary for the MVP.
 
-* TODO [/]
-** TODO Menu styling
+* TODO Necessary [0/6]
+** TODO text entry for ingredients, ustensils, build advise
 ** TODO recipe editing/add
+-> Backend connection
+** TODO Connect form
+* TODO Nice to have [0/2]
+** TODO Menu styling (not really needed)
+
+** TODO Backend support for epoch
+For next version to simplify dev
+** TODO search/create component for ustensils/ingredients
+** TODO add step component
+** TODO button to add more textarea
