@@ -1,10 +1,19 @@
 List of tasks that are considered necessary for the MVP.
 
-* TODO Necessary [0/6]
-** TODO text entry for ingredients, ustensils, build advise
-** TODO recipe editing/add
--> Backend connection
+* TODO Necessary [4/8]
+** DONE text entry for ingredients, ustensils, build advise
+- State "DONE"       from "TODO"       [2023-01-29 Sun 19:03]
+** DONE recipe editing/add
+- State "DONE"       from "TODO"       [2023-01-29 Sun 19:23]
+** TODO Backend connection
 ** TODO Connect form
+** DONE View for editing
+- State "DONE"       from "TODO"       [2023-01-29 Sun 19:28]
+Need to add styling for description of what is what
+** TODO Add push button to update recipe
+** DONE menu link to recipe page
+- State "DONE"       from "TODO"       [2023-01-29 Sun 19:29]
+** TODO menu link to edit recipe page
 * TODO Nice to have [0/2]
 ** TODO Menu styling (not really needed)
 
