@@ -44,7 +44,7 @@
      :cook-time "00:00:10",
      :ingredients "- toto\n- titi",
      :ustensils "- toto\n- tata",
-     :id 1,
+     :id 0,
      :total-time "00:00:10",
      :perform-time "00:00:10"}
    {:prep-time "00:00:10",
@@ -55,7 +55,7 @@
      :cook-time "00:00:10",
      :ingredients "- toto\n- tata",
      :ustensils "- toto\n- tata",
-     :id 2,
+     :id 1,
      :total-time "00:00:10",
      :perform-time "00:00:10"}
    ])
