@@ -1,5 +1,6 @@
 (ns reshipi-reframe.core
   (:require [reagent.dom :as dom]
+            [reagent.ratom :as r]
             [re-frame.core :as rf]
             [cljs-http.client :as http]
             [cljs.core.async :refer [<! go]]
@@ -68,6 +69,13 @@
   (first example-recipes-list))
 
 ;; Utils
+
+(defmacro infix
+  [n]
+  (if (list? n)
+    (let [[arg1 op arg2] n]
+      `(~op (infix ~arg1) (infix ~arg2)))
+    n))
 
 (defn enumerate
   [input]
@@ -188,6 +196,115 @@
        (component-steps steps)
        ]]]))
 
+(defonce recipe-atom (r/atom {:name ""
+                              ; indexed by position 0: ..., 1: ...
+                              :ustensils {}
+                              :ingredients {}
+                              :steps {}
+
+                              :total-time ""
+                              :cook-time ""
+                              :perform-time ""}))
+
+(defn component-input
+  [type value callback css-class]
+  [:input {:type type
+           :class css-class
+           :value value
+           :on-change callback}])
+
+(defn component-input-text
+  ([value callback]
+   (component-input-text value callback nil))
+  ([value callback css-class]
+   (component-input "text" value callback css-class)))
+
+(defn component-input-time
+  ([value callback]
+   (component-input-time value callback nil))
+  ([value callback css-class]
+   (component-input "time" value callback css-class)))
+
+(defn swap-value-in-atom
+  "utils function to generically edit an item inside a map atom to use for input
+  type text. This is to be used with clj/partial."
+  [state map-entry element]
+  (swap! state (fn [state] (assoc-in state map-entry (-> element .-target .-value)))))
+
+(defn component-step-edit
+  [input]
+  (let [value (first (second input))
+        callback (second (second input))
+        position (first input)]
+    [:li {:key position }
+     ;[component-input "textarea" value callback nil]
+     "toto"
+     [:button {:on-click #(swap! recipe-atom
+                                 (fn [recipe-state position] (let [new-steps (dissoc (:steps recipe-state) position)]
+                                                   (merge @recipe-atom {:steps new-steps})))
+                                 position
+                                 )}
+      "Remove"]
+     ]))
+
+; TODO: remove element
+;
+; FIXME: remove element removes all
+; FIXME: add then remove then add fails with an exception
+
+(defn component-steps-edit
+  [state-atom]
+  [:button {:on-click #(swap! state-atom
+                                    (fn [state] (assoc-in state [:steps (count (get-in @state-atom [:steps]))] ""))
+                                    )}
+   "add"])
+
+(defn component-recipe-edit
+  []
+  (let [name (:name @recipe-atom)
+        total-time (:total-time @recipe-atom)
+        perform-time (:perform-time @recipe-atom)
+        cook-time (:cook-time @recipe-atom)
+        step-0 (get-in @recipe-atom [:steps 0])
+        ]
+    [:div
+     [component-input-text name
+      (partial swap-value-in-atom recipe-atom [:name])
+      ]
+     [component-input-time total-time
+      (partial swap-value-in-atom recipe-atom [:total-time])
+      ]
+     [component-input-time perform-time
+      (partial swap-value-in-atom recipe-atom [:perform-time])
+      ]
+     [component-input-time cook-time
+      (partial swap-value-in-atom recipe-atom [:cook-time])
+      ]
+     [:div name]
+     [:div total-time]
+     [:div perform-time]
+     [:div cook-time]
+     ; steps-edit
+     ;[:ul (map )]
+     [component-steps-edit recipe-atom]
+     ;[component-input "textarea" step-0 (partial swap-value-in-atom recipe-atom [:steps 0]) nil]
+     [:div step-0]
+     [:ul (map component-step-edit (get-in @recipe-atom [:steps]))]
+     ]))
+
+
+; We need the defonce here for hot reloading support
+(defonce ustensil-atom (r/atom ""))
+
+(defn component-ustensil-edit
+  ; FIXME: args like id to push when editing
+  []
+  (let [name ustensil-atom]
+    [:input {:type "text"
+             :value @name
+             :on-change #(reset! name (-> % .-target .-value))}])
+  )
+
 ; TODO: maybe add a small description ?
 (defn component-recipe-list
   [input & last]
@@ -237,7 +354,8 @@
    [component-button-link "Home" nil #(set-panel :home-panel)]
    [component-button-link "recipe-1" nil #(set-panel :recipe-panel 1)]
    ; FIXME: Don't hardcode the recipes list here
-   [component-recipes-list example-recipes-list]])
+   [component-recipes-list example-recipes-list]
+   [component-recipe-edit]])
 
 (defn view-recipe
   [_id]
