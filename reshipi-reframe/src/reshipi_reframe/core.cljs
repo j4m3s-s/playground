@@ -158,17 +158,19 @@
   (swap! swap-atom
            (fn [state] (merge state {map-entry (-> new-value .-target .-value)}))))
 
+; TODO: provide a function to edit that knows the Recipe's id
 (defn component-recipe-edit
-  [_recipe-id]
-  (let [name (:name @recipe-atom)
+  [_recipe]
+  (let [
+        name (:name @recipe-atom)
         _id (:id @recipe-atom)
 
-        created (:created @recipe-atom)
-        modified (:modified @recipe-atom)
+        ;created (:created @recipe-atom)
+        ;modified (:modified @recipe-atom)
 
-        cook-time (:cook-time @recipe-atom)
-        total-time (:total-time @recipe-atom)
-        perform-time (:perform-time @recipe-atom)
+        ;cook-time (:cook-time @recipe-atom)
+        ;total-time (:total-time @recipe-atom)
+        ;perform-time (:perform-time @recipe-atom)
 
         ingredients (:ingredients @recipe-atom)
         steps (:steps @recipe-atom)
@@ -202,31 +204,6 @@
               }]
      ]]]))
 
-(defn component-input
-  [type value callback css-class]
-  [:input {:type type
-           :class css-class
-           :value value
-           :on-change callback}])
-
-(defn component-input-text
-  ([value callback]
-   (component-input-text value callback nil))
-  ([value callback css-class]
-   (component-input "text" value callback css-class)))
-
-(defn component-input-time
-  ([value callback]
-   (component-input-time value callback nil))
-  ([value callback css-class]
-   (component-input "time" value callback css-class)))
-
-(defn swap-value-in-atom
-  "utils function to generically edit an item inside a map atom to use for input
-  type text. This is to be used with clj/partial."
-  [state map-entry element]
-  (swap! state (fn [state] (assoc-in state map-entry (-> element .-target .-value)))))
-
 ; TODO: maybe add a small description ?
 (defn component-recipe-list
   [input & last]
@@ -238,7 +215,7 @@
      {:key index
       :class (str (if last "" "border-b ") "border-gray-200 w-full")}
      [:div.px-4.py-2
-      [:h3 [component-button-link name nil #(set-panel :home-panel)]]
+      [:h3 [component-button-link name nil #(set-panel :recipe-panel index)]]
       [:div.text-gray-500.text-base "Temps total " total-time]]]
   ))
 
@@ -280,11 +257,14 @@
 
 (defn view-recipe
   [_id]
-  [:div
-   [component-button-link "Home" nil #(set-panel :home-panel)]
-   ; FIXME: use id to select recipe
-   [component-recipe (first (get-in @(rf/subscribe [:data]) [:results]))]
-   [component-recipe-edit 1]])
+  (let [recipe-id @(rf/subscribe [:active-panel-arg])
+        recipe-values (nth (get-in @(rf/subscribe [:data]) [:results]) recipe-id)
+        ]
+    [:div
+     [component-button-link "Home" nil #(set-panel :home-panel)]
+                                        ; FIXME: use id to select recipe
+     [component-recipe recipe-values]
+     [component-recipe-edit recipe-values]]))
 
 ;; State handling for current panel
 
