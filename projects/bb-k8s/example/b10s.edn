@@ -1,0 +1,8 @@
+{:kustomize ["kusto-ex"]
+ :resources [
+             {:kind "toto"
+              :metadata {:name "toto"
+                         :namespace "toto"}}
+             {:kind "Pod"
+              :metadata {:name "ngin"}}
+             ]}
