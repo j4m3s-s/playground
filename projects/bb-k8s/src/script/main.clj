@@ -3,7 +3,8 @@
             [clj-yaml.core :as yaml]
             [babashka.fs :as fs]
             [clojure.edn :as edn]
-            [cheshire.core :as json]))
+            [cheshire.core :as json])
+  (:gen-class))
 
 (defn kustomize-build
   [path]
