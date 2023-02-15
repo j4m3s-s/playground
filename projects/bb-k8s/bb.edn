@@ -1,0 +1,1 @@
+{:tasks {native (shell "native-image --report-unsupported-elements-at-runtime --initialize-at-build-time --no-server --no-fallback  -jar target/b10s-0.1.0-standalone.jar -H:Name=b10s-exe")}}

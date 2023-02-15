@@ -41,10 +41,11 @@
 (defn b10s-edn-exec
   [path b10s-edn-path]
   (let [cfg (edn/read-string (slurp b10s-edn-path))]
-    (k8s-merge-resources (flatten [(if (contains? cfg :kustomize)
-                            (kustomize-build (str path "/" (first (:kustomize cfg)))))
-                          (if (contains? cfg :resources)
-                            (:resources cfg))]))
+    (k8s-merge-resources (flatten [
+                                   (if (contains? cfg :kustomize)
+                                     (kustomize-build (str path "/" (first (:kustomize cfg)))))
+                                   (if (contains? cfg :resources)
+                                     (:resources cfg))]))
     ))
 
 (defn mk-k8s-list
@@ -64,4 +65,6 @@
 
 (defn -main [& args]
   (let [path (first args)]
-    (println (b10s-exec path))))
+    (println (b10s-exec path))
+    ; FIXME: not sure why that's needed for faster exit
+    (System/exit 0)))

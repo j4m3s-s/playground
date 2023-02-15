@@ -1,2 +1,5 @@
 # Clojure build directory
 target
+
+# Native binaries / artifacts
+b10s-exe*
