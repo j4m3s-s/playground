@@ -37,7 +37,6 @@
   (if (= nil (k8s-merge-resources-top #{} resources))
     resources))
 
-
 (defn b10s-edn-exec
   [path b10s-edn-path]
   (let [cfg (edn/read-string (slurp b10s-edn-path))]
@@ -45,7 +44,11 @@
                                    (if (contains? cfg :kustomize)
                                      (kustomize-build (str path "/" (first (:kustomize cfg)))))
                                    (if (contains? cfg :resources)
-                                     (:resources cfg))]))
+                                     (:resources cfg))
+                                   (if (contains? cfg :b10s)
+                                     (eval (read-string
+                                       (slurp (str path "/" (first (:b10s cfg)) "/b10s.bb")))))
+                                   ]))
     ))
 
 (defn mk-k8s-list

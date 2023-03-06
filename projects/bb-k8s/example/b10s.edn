@@ -1,4 +1,5 @@
 {:kustomize ["kusto-ex"]
+ :b10s ["b10s"]
  :resources [
              {:kind "toto"
               :metadata {:name "toto"
