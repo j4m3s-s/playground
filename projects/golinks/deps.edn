@@ -1,0 +1,23 @@
+{:paths ["src"]
+ :deps {org.clojure/clojure {:mvn/version "1.10.3"}
+
+        ;; For web APIs
+        io.pedestal/pedestal.service {:mvn/version "0.5.10"}
+        io.pedestal/pedestal.route {:mvn/version "0.5.10"}
+        io.pedestal/pedestal.jetty {:mvn/version "0.5.10"}
+
+        ;; Configuration
+        environ/environ {:mvn/version "1.2.0"}
+
+        ;; Logging
+        org.slf4j/slf4j-simple {:mvn/version "1.7.36"}
+
+        ;; HTML templating
+        hiccup/hiccup {:mvn/version "1.0.5"}
+
+        ;; HTML parsing
+        crouton/crouton {:mvn/version "0.1.2"}
+
+        ;; Durable (atoms) data
+        alandipert/enduro {:mvn/version "1.2.0"}
+        }}
