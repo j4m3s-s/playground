@@ -5,7 +5,9 @@
             [io.pedestal.http.body-params :as body-params]
             [hiccup.core :as hiccup]
             [alandipert.enduro :as e]
-            [clojure.string :as str]))
+            [clojure.string :as str]
+            [environ.core :refer [env]]
+  ))
 
 ; Utils
 (defn render-html
@@ -45,7 +47,9 @@
      (submit-input)
      ]))
 
-(defonce links (e/file-atom {} "/tmp/links.edn" :pending-dir "/tmp"))
+(defonce links (e/file-atom {}
+                            (or (env :data-file) "/tmp/links.edn")
+                            :pending-dir "/tmp"))
 
 (defn add-link
   [req]
@@ -86,7 +90,6 @@
   [[["/" {:get `homepage}]
     ["/add-link" ^:interceptors [(body-params/body-params)] {:post `add-link}]
     ["/list-links" {:get `list-links}]
-    ; FIXME: actually make redirect for links
     ["/t/*" {:get `redirect-link}]
     ]])
 
@@ -94,9 +97,9 @@
 ; otherwise we'll destroy performance
 (def service-map {::http/routes #(route/expand-routes routes)
                   ::http/type   :jetty
-                  ::http/host   "0.0.0.0"
+                  ::http/host   (or (env :host) "0.0.0.0")
                   ::http/join?  false
-                  ::http/port (Integer. 5000)
+                  ::http/port (Integer. (or (env :port) 5000))
 
                   ;; CSP
                   ;; FIXME: use something more secure?
@@ -106,17 +109,17 @@
                   ;; see http://pedestal.io/reference/jetty
                   ::http/container-options {:h2c true}})
 
-(defn start
-  []
-  (->
-   service-map
-   http/create-server
-   http/start))
-
 (defn -main [& _] (-> service-map http/create-server http/start))
 
-(defonce server (atom nil))
+#_ (defn start
+     []
+     (->
+      service-map
+      http/create-server
+      http/start))
 
-; to start/stop the server
+#_ (defonce server (atom nil))
+
+                                        ; to start/stop the server
 #_ (reset! server (start))
 #_ (http/stop @server)
