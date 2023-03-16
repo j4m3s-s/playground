@@ -28,4 +28,20 @@ rec {
   mkHost = args: (import (pkgs.path + "/nixos/lib/eval-config.nix") args).config.system.build;
   mkHostVM = args: (mkHost args).vm;
   mkHostDerivation = args: (mkHost args).toplevel;
+
+  # imports a path and all its file.nix as { file = pkg } and folder f having
+  # default.nix as { f = pkg }
+  pkgsImport = path: let
+    # { toto.nix = "regular", tata = "folder"}
+    entries = builtins.readDir path;
+    # [toto.nix tata]
+    entriesNames = builtins.attrNames entries;
+  in
+    # { toto, tata}
+    builtins.listToAttrs (map (v: let
+      file = (path + ( "/" + v));
+    in {
+      name = (lib.strings.removeSuffix ".nix" v);
+      value = pkgs.callPackage file { };
+    }) entriesNames);
 }
