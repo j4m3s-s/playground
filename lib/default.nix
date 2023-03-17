@@ -1,4 +1,4 @@
-{ lib, pkgs, ... }:
+{ lib, pkgs, system, ... }:
 
 rec {
   ## Users
@@ -28,6 +28,17 @@ rec {
   mkHost = args: (import (pkgs.path + "/nixos/lib/eval-config.nix") args).config.system.build;
   mkHostVM = args: (mkHost args).vm;
   mkHostDerivation = args: (mkHost args).toplevel;
+
+
+  mkHostArgs = specialArgs: path: {
+    inherit system;
+    specialArgs = specialArgs;
+    modules = [
+      path
+    ];
+  };
+
+
 
   # imports a path and all its file.nix as { file = pkg } and folder f having
   # default.nix as { f = pkg }
