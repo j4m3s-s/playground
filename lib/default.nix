@@ -31,6 +31,20 @@ rec {
   mkHostDerivation = args: (mkHost args).toplevel;
 
 
+  mkHosts = specialArgs: path: builtins.listToAttrs (
+    let
+      hostsFolders = builtins.attrNames (builtins.readDir path);
+    in
+      map (folder:
+        let
+          hostPath = path + ("/" + folder);
+        in
+          {
+            name = folder;
+            value = (mkNixosConfiguration (mkHostArgs specialArgs hostPath));
+          }) hostsFolders);
+
+
   mkHostArgs = specialArgs: path: {
     inherit system;
     specialArgs = specialArgs;
