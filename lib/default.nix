@@ -25,7 +25,8 @@ rec {
   ## Machine / Virtual Machine
   # This is an example of exposing a host derivation as a package.
   # Since technically everything is a derivation.
-  mkHost = args: (import (pkgs.path + "/nixos/lib/eval-config.nix") args).config.system.build;
+  mkNixosConfiguration = args: (import (pkgs.path + "/nixos/lib/eval-config.nix") args);
+  mkHost = args: (mkNixosConfiguration args).config.system.build;
   mkHostVM = args: (mkHost args).vm;
   mkHostDerivation = args: (mkHost args).toplevel;
 
