@@ -30,7 +30,7 @@ rec {
   mkHostVM = args: (mkHost args).vm;
   mkHostDerivation = args: (mkHost args).toplevel;
 
-
+  # FIXME: Make this generic with pkgsImport function.
   mkHosts = specialArgs: path: builtins.listToAttrs (
     let
       hostsFolders = builtins.attrNames (builtins.readDir path);
