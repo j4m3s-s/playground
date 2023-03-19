@@ -68,6 +68,6 @@ rec {
       file = (path + ( "/" + v));
     in {
       name = (lib.strings.removeSuffix ".nix" v);
-      value = pkgs.callPackage file { inherit repo pkgs; };
+      value = pkgs.callPackage file { inherit repo pkgs lib; };
     }) entriesNames);
 }
