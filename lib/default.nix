@@ -1,4 +1,4 @@
-{ lib, pkgs, system, repo, ... }:
+{ lib, pkgs, system, repo, ... } @ inputs:
 
 rec {
   ## Users
@@ -70,4 +70,7 @@ rec {
       name = (lib.strings.removeSuffix ".nix" v);
       value = pkgs.callPackage file { inherit repo pkgs lib; };
     }) entriesNames);
+
+
+  myCallPackage = path: args: pkgs.callPackage path (args // inputs);
 }
