@@ -85,6 +85,7 @@ rec {
     # - compression
     # - cache files
     # - Etag
+    # - http2?
     text = ''
       server.document-root = "${src}"
       index-file.names = ( "index.html" )
