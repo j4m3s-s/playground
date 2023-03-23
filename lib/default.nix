@@ -73,4 +73,24 @@ rec {
 
 
   myCallPackage = path: args: pkgs.callPackage path (args // inputs);
+
+  mkStaticHttpConfig = src: pkgs.writeTextFile {
+    name = "lighttpd.conf";
+
+    checkPhase = ''
+    PORT=5000 ${pkgs.lighttpd}/bin/lighttpd -tt -f $out
+  '';
+
+    # FIXME:
+    # - compression
+    # - cache files
+    # - Etag
+    text = ''
+      server.document-root = "${src}"
+      index-file.names = ( "index.html" )
+      server.port = env.PORT
+      include "${pkgs.lighttpd}/share/lighttpd/doc/config/conf.d/mime.conf"
+    '';
+  };
+  mkStaticHttpCmd = src: [ "${pkgs.lighttpd}/bin/lighttpd" "-D" "-f" (mkStaticHttpConfig src)];
 }
