@@ -1,4 +1,4 @@
-{ lib, pkgs, system, repo, ... } @ inputs:
+{ lib, pkgs, system, repo, self, ... } @ inputs:
 
 rec {
   ## Users
@@ -94,4 +94,29 @@ rec {
     '';
   };
   mkStaticHttpCmd = src: [ "${pkgs.lighttpd}/bin/lighttpd" "-D" "-f" (mkStaticHttpConfig src)];
+
+  mkDefaultHugoBlog = src: pkgs.stdenv.mkDerivation {
+    pname = "hugo-blog";
+    version = "${builtins.substring 0 8 (self.lastModifiedDate or self.lastModified or "19700101")}_${self.shortRev or "dirty"}";
+
+    buildInputs = [ pkgs.hugo ];
+
+    inherit src;
+
+    buildPhase = ''
+    mkdir -p themes/
+    ln -sf ${repo.third_party.papermod} themes/PaperMod
+
+    hugo \
+      --config=config.yaml \
+      --cleanDestinationDir \
+      --forceSyncStatic \
+      --ignoreCache \
+      --minify
+  '';
+
+    installPhase = ''
+    cp -r public $out
+  '';
+  };
 }
