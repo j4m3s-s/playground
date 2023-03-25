@@ -78,7 +78,7 @@ rec {
     name = "lighttpd.conf";
 
     checkPhase = ''
-    PORT=5000 ${pkgs.lighttpd}/bin/lighttpd -tt -f $out
+    PORT=5000 ${pkgs.pkgsMusl.lighttpd}/bin/lighttpd -tt -f $out
   '';
 
     # FIXME:
@@ -90,10 +90,10 @@ rec {
       server.document-root = "${src}"
       index-file.names = ( "index.html" )
       server.port = env.PORT
-      include "${pkgs.lighttpd}/share/lighttpd/doc/config/conf.d/mime.conf"
+      include "${pkgs.pkgsMusl.lighttpd}/share/lighttpd/doc/config/conf.d/mime.conf"
     '';
   };
-  mkStaticHttpCmd = src: [ "${pkgs.lighttpd}/bin/lighttpd" "-D" "-f" (mkStaticHttpConfig src)];
+  mkStaticHttpCmd = src: [ "${pkgs.pkgsMusl.lighttpd}/bin/lighttpd" "-D" "-f" (mkStaticHttpConfig src)];
 
   mkDefaultHugoBlog = src: pkgs.stdenv.mkDerivation {
     pname = "hugo-blog";
