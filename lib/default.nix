@@ -116,7 +116,7 @@ rec {
   '';
 
     installPhase = ''
-    cp -r public $out
+      cp -r public $out
   '';
   };
 }
