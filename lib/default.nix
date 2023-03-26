@@ -1,4 +1,4 @@
-{ lib, pkgs, system, repo, self, ... } @ inputs:
+{ lib, pkgs, system, repo, self, nix2container, ... } @ inputs:
 
 rec {
   ## Users
@@ -118,5 +118,13 @@ rec {
     installPhase = ''
       cp -r public $out
   '';
+  };
+
+  mkOCIHugoBlog = blog: nix2container.buildImage {
+    name = blog.name;
+    config.cmd = repo.myLib.mkStaticHttpCmd blog;
+    layers = [
+      (nix2container.buildLayer { deps = [blog]; })
+    ];
   };
 }
