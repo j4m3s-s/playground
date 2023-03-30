@@ -1,8 +1,9 @@
-{ pkgs, gitignoreSource, stdenv, ... }:
+{ pkgs, stdenv, repo, ... }:
 
 with pkgs.lib;
 
 let
+  gitignoreSource = repo.gitignoreSource;
   deps = import ./deps.nix {
     inherit (pkgs) fetchMavenArtifact fetchgit lib;
   };
