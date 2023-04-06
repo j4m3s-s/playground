@@ -1,5 +1,7 @@
 {:paths ["src"]
- :deps {eu.ewigkraft/bb-test {:local/root "."}}
+ :deps {eu.ewigkraft/bb-test {:local/root "."}
+        clojure.java-time/clojure.java-time {:mvn/version "1.2.0"}
+        }
  :tasks {
          ; this is an example of tasks
          ; see https://book.babashka.org/#tasks for more

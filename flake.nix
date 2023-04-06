@@ -3,14 +3,30 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-22.05";
+
+    tvlkit = {
+      url = "github:tvlfyi/kit/canon";
+      flake = false;
+    };
   };
 
-  outputs = { self, nixpkgs }:
+  outputs = {
+    self
+    , nixpkgs
+    , tvlkit
+  } @ inputs:
   let
     system = "x86_64-linux";
     pkgs = import nixpkgs { inherit system; };
+
+    tvllib = import tvlkit { inherit pkgs; };
   in
   {
+
+    my.${system} = tvllib.readTree {
+      path = ./.;
+      args = inputs;
+    };
 
     devShell.${system} = pkgs.mkShell {
       # Django default environment

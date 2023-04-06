@@ -18,7 +18,25 @@
     },
     "root": {
       "inputs": {
-        "nixpkgs": "nixpkgs"
+        "nixpkgs": "nixpkgs",
+        "tvlkit": "tvlkit"
+      }
+    },
+    "tvlkit": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1680252361,
+        "narHash": "sha256-Ic/hS0SbxG0LKUmXcdSA+Aqum07nYiQOsMn9bu9+DWE=",
+        "owner": "tvlfyi",
+        "repo": "kit",
+        "rev": "407bc2c68d188073d9fadd8e5029d72c5f44d7fa",
+        "type": "github"
+      },
+      "original": {
+        "owner": "tvlfyi",
+        "ref": "canon",
+        "repo": "kit",
+        "type": "github"
       }
     }
   },
