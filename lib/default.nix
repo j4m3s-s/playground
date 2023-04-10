@@ -131,7 +131,8 @@ rec {
   mkOCIHugoBlogUploadScript = blog: containerName: containerVersion: let
     container = mkOCIHugoBlog blog;
   in pkgs.writeScript "upload" ''
-    echo Uploading ${containerName}:${containerVersion} ...
     ${repo.third_party.skopeo-nix2container}/bin/skopeo copy nix:${container} docker-daemon:${containerName}:${containerVersion}
+    echo Uploading ${containerName}:${containerVersion} ...
+    ${pkgs.docker}/bin/docker push ${containerName}:${containerVersion}
   '';
 }
