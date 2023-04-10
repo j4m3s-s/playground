@@ -97,7 +97,7 @@ rec {
 
   mkDefaultHugoBlog = src: pkgs.stdenv.mkDerivation {
     pname = "hugo-blog";
-    version = "${builtins.substring 0 8 (self.lastModifiedDate or self.lastModified or "19700101")}_${self.shortRev or "dirty"}";
+    version = "dummy";
 
     buildInputs = [ pkgs.hugo ];
 
