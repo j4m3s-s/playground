@@ -2,6 +2,16 @@
   description = "Playground flake";
 
   inputs = {
+    flake-compat = {
+      url = "github:edolstra/flake-compat";
+      flake = false;
+    };
+
+    gitignore = {
+      url = "github:hercules-ci/gitignore.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-22.11";
 
     tvlkit = {
@@ -14,18 +24,28 @@
     self
     , nixpkgs
     , tvlkit
+    , flake-compat
+    , gitignore
   } @ inputs:
   let
     system = "x86_64-linux";
     pkgs = import nixpkgs { inherit system; };
 
     tvllib = import tvlkit { inherit pkgs; };
+
+    incompleteArgs = inputs // {
+      inherit
+        pkgs
+        ;
+      inherit (gitignore.lib) gitignoreSource;
+    };
+    args = incompleteArgs // { repo = incompleteArgs; };
   in
   {
 
     my.${system} = tvllib.readTree {
       path = ./.;
-      args = inputs;
+      inherit args;
     };
 
     devShell.${system} = pkgs.mkShell {
