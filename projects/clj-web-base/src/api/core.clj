@@ -2,10 +2,8 @@
   (:gen-class)
   (:require [io.pedestal.http :as http]
             [io.pedestal.http.route :as route]
-            ;[io.pedestal.http.body-params :as body-params]
             [environ.core :refer [env]]
             [com.walmartlabs.lacinia.pedestal2 :as p2]
-            ;[clojure.java.io :as io]
 
             ; Local imports
             [api.schema :as schem]
@@ -53,9 +51,6 @@
 (def service-map (merge default-jetty-options {::http/routes (if (is-prod)
                                                                #(route/expand-routes routes)
                                                                (route/expand-routes routes))}))
-
-#_(def service-map
-  (p2/default-service schem/blog-schema nil))
 
 (defn -main [& _] (-> service-map http/create-server http/start))
 
