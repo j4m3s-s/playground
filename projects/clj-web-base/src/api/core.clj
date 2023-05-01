@@ -7,11 +7,8 @@
 
             ; Local imports
             [api.schema :as schem]
+            [api.utils :refer [is-prod?]]
   ))
-
-(defn is-prod
-  []
-  (= (env :environment) "prod"))
 
 ; Inspired from private pedestal2 (used in p2/default-service)
 ; Can't really change them since it seems to be hardcoded somewhere
@@ -31,7 +28,7 @@
    ;; FIXME: use something more secure?
    ;; NB: the nil for secure headers is needed for graphiql usage
    ;; See lacinia-pedestal enable-graphiql.
-   ::http/secure-headers (if (is-prod)
+   ::http/secure-headers (if (is-prod?)
                            {:content-security-policy-settings "script-src 'unsafe-inline';"}
                            nil)
 
@@ -48,7 +45,7 @@
 
 ; for production usage, use "export environment=prod" otherwise it expands
 ; routes on each request which destroys performance
-(def service-map (merge default-jetty-options {::http/routes (if (is-prod)
+(def service-map (merge default-jetty-options {::http/routes (if (is-prod?)
                                                                #(route/expand-routes routes)
                                                                (route/expand-routes routes))}))
 
