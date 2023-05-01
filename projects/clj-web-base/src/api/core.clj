@@ -14,8 +14,8 @@
 (defn -main [& _] (-> service-map http/create-server http/start))
 
 #_ (def server (atom (->
-                          service-map
-                          http/create-server)))
+                      service-map
+                      http/create-server)))
 #_ @server
 
 #_ (http/start @server)
