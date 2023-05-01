@@ -1,0 +1,30 @@
+{:objects {
+           :Tag {:description "Used to categorize blogposts"
+                 :fields {:name {:type (non-null String)}
+                          :id {:type ID}}}
+           :BlogPost {:description "A blogpost"
+                      :fields {:title {:type (non-null String)
+                                       :description "title"}
+                               :id {:type (non-null ID)}
+                               :tags {:type (list :Tag)}
+                               :content {:type (non-null String)}
+                               :created {:type Int
+                                         :description "Unix epoch seconds when post was added to database"}}}}
+ :queries {:blogpost {:type :BlogPost
+                      :description "Retrieve a single blogpost by ID"
+                      :args {:id {:type (non-null ID)}}
+                      :resolve :resolve-blog-post}
+           :blogposts {:type (list :BlogPost)
+                       :description "Retrieve all blogposts"
+                       :resolve :resolve-blog-posts}
+                                        ; FIXME: search by tags, etc
+           :tags {:type (list :Tag)
+                  :description "Retrieve all tags"
+                  :resolve :resolve-tags}}
+ :mutations {:createBlogpost {:type :BlogPost
+                              :description "Create a new blogpost"
+                                        ; Other fields (created, id) are server-side generated
+                              :args {:name {:type (non-null String)}
+                                     :content {:type (non-null String)}
+                                     :tags {:type (list ID)}}
+                              :resolve :create-blog-post}}}
