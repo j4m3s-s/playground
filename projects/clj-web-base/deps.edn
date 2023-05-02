@@ -22,4 +22,8 @@
         ;; Graphql
         com.walmartlabs/lacinia {:mvn/version "1.2.1"}
         com.walmartlabs/lacinia-pedestal {:mvn/version "1.1"}
+
+        ;; Xtdb
+        com.xtdb/xtdb-core {:mvn/version "1.23.2"}
+        com.xtdb/xtdb-rocksdb {:mvn/version "1.23.2"}
         }}
