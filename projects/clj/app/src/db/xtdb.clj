@@ -26,15 +26,41 @@
 
 ; Submit a transaction
 #_ (xt/submit-tx xtdb-node [[::xt/put
-                             {:xt/id "hi2u"
-                              :user/name "zig"}]])
+                             {:xt/id :another
+                              :tag/name "tata"}]])
 
 ; Query
-#_ (xt/q (xt/db xtdb-node) '{:find [e]
-                             :where [[e :user/name "zig"]]})
+#_ (xt/q (xt/db xtdb-node) '{:find [tag]
+                             :where [[e :post/title "title"]
+                                     [e :post/tags tag]
+                                     ]})
+#_ (xt/q (xt/db xtdb-node) '{:find [name tag]
+                             :where [[tag :tag/name name]
+                                     [?post :post/tags tag]
+                                     ]})
 ;; => #{["hi2u"]}
 
+#_ (xt/submit-tx xtdb-node [[::xt/put
+                             {:xt/id :test-post
+                              :post/title "title"
+                              :post/content "content"
+                              :post/tags #{(first (first (xt/q (xt/db xtdb-node)
+                                                       '{:find [id]
+                                                         :where [[id :tag/name "toto"]]})))
+                                          (first (first (xt/q (xt/db xtdb-node)
+                                                              '{:find [id]
+                                                                :where [[id :tag/name "tata"]]})))
+                                          }}]])
 
+(pr-str  (xt/q (xt/db xtdb-node)
+               '{:find [(pull ?post [* {:post/tags [:tag/name :xt/id]}])]
+                 :where
+                 [[?post :post/title ?title]
+                  [?post :post/content ?content]
+                  [?post :post/tags ?tag-entity]
+                  [?tag-entity :tag/name ?tag-name]
+                  [(= :test-post ?post)]
+                  ]}))
 ;; Let's design a simple HN frontpage
 
 
@@ -42,15 +68,15 @@
   []
   (java.util.UUID/randomUUID))
 
-(time (dotimes [_ 100000]
-(let [id (uuid)]
-     (xt/submit-tx xtdb-node [[::xt/put
-                               {:xt/id id
-                                :type :HNPost
-                                :name "Hello!"
-                                :url "World@"}]]))))
+#_(time (dotimes [_ 100000]
+          (let [id (uuid)]
+            (xt/submit-tx xtdb-node [[::xt/put
+                                      {:xt/id id
+                                       :type :HNPost
+                                       :name "Hello!"
+                                       :url "World@"}]]))))
 
-; Let's query all the posts
+                                        ; Let's query all the posts
 (time (xt/q (xt/db xtdb-node) '{:find [e v u]
                                 :where [[e :type :HNPost]
                                         [e :name v]
