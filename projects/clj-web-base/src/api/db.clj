@@ -16,6 +16,16 @@
 
 (defonce db (atom (start-xtdb!)))
 
+(def tags
+  [{:xt/id #uuid "0ae3c154-5b28-4a67-ae3d-f630a9ab1289"
+    :type :tag
+    :tag/name "ho!"}
+   {:xt/id #uuid "bf6bef5f-5582-4233-a2f8-1426eaa48265"
+    :type :tag
+    :tag/name "ha!"}])
+
+#_(xt/submit-tx @db (map #(vector ::xt/put %) tags))
+
 (def blog-posts
   [{:xt/id #uuid "603ae9a6-1163-4005-afec-5167cb97d4e9"
     :type :post
