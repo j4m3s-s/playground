@@ -73,8 +73,12 @@
 
 #_(resolve-blog-posts! nil nil nil)
 
-(defn resolve-tags
-  [])
+(defn resolve-tags!
+  [_context _args _value]
+  (xt/q
+   (xt/db @db)
+   '{:find [(pull ?tag [*])]
+     :where [[?tag :type :tag]]}))
 
 (defn create-blog-post
   [])
