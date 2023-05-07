@@ -23,17 +23,15 @@
       (reset! xtdb-node nil))
 
 ; XTDB
-#_(xt/submit-tx @xtdb-node [[::xt/put
-                             {:xt/id "hi2u"
-                              :user/name "zig"}]])
-
-#_(xt/q (xt/db @xtdb-node) '{:find [e]
-                            :where [[e :user/name "zig"]]})
-
 #_ (xt/submit-tx @xtdb-node [[::xt/put
                               {:xt/id (java.util.UUID/randomUUID)
                                :type :tag
-                               :name "ha"}]])
+                               :tag/name "ha"}]
+                             [::xt/put
+                              {:xt/id (java.util.UUID/randomUUID)
+                               :type :tag
+                               :tag/name "ho"}
+                              ]])
 
 #_ (xt/q (xt/db @xtdb-node)
         '{:find [(pull ?e [*])]
@@ -41,18 +39,21 @@
                    ]})
 
 #_(xt/submit-tx @xtdb-node [[::xt/put
-                              {:xt/id :test
-                               :content "Ha"
-                               :title "ha"
-                               :created 12
-                               :tags (letfn [(search-tag [name] (xt/q (xt/db @xtdb-node) '{:find [id]
-                                                                                           :in [name]
-                                                                                           :where [[e :xt/id id]
-                                                                                                   [e :type :tag]
-                                                                                                   [e :name name]]}
-                                                                      name))]
-                                       (map search-tag #{"ha" "ho"}))}
-                              ]])
+                             {:xt/id :test
+                              :post/content "Ha"
+                              :post/title "ha"
+                              :post/created 12
+                              :tag (letfn [(search-tag [name] (xt/q (xt/db @xtdb-node) '{:find [id]
+                                                                                         :in [name]
+                                                                                         :where [[e :xt/id id]
+                                                                                                 [e :type :tag]
+                                                                                                 [e :tag/name name]]}
+                                                                    name))]
+                                     (->> #{"ha" "ho"}
+                                          (map search-tag)
+                                          (map ffirst)
+                                          set))}
+                             ]])
 
 #_(xt/sync @xtdb-node)
 
@@ -81,12 +82,8 @@
                    ]})
 
 #_(xt/q (xt/db @xtdb-node)
-        '{:find [?tag]
-          :where [[?tag :name "ho"]
-                  [?bp :tags ?tag]
-                   ]})
-
-
-
-#_(xt/entity (xt/db @xtdb-node) "1")
-
+        '{:find [(pull ?post [* {:tag [:tag/name]}])]
+          :where
+          [[?post :post/title ?title]
+           [(= :test ?post)]
+           ]})
