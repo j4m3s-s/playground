@@ -32,14 +32,14 @@
     :post/content "Ho"
     :post/title "ho"
     :post/created 0
-    ;:post/tags ["ho"]
+    :post/tags (set (map :xt/id tags))
     }
    {:xt/id #uuid "23f590aa-b33f-410d-be0a-bb3e6f94af17"
     :type :post
     :post/content "Ha"
     :post/title "ha"
     :post/created 1
-    ;:post/tags ["ha"]
+    :post/tags (set (map :xt/id tags))
     }])
 
 #_(xt/submit-tx @db [[::xt/put
@@ -50,28 +50,28 @@
                       ]
                      ])
 
-(defn resolve-blog-post
+(defn resolve-blog-post!
   [_context args _value]
   (let [id (:id args)]
     (xt/q
      (xt/db  @db)
-     '{:find [(pull ?post [*])]
+     '{:find [(pull ?post [* {:post/tags [:tag/name :xt/id]}])]
        :in [?post]
        :where [[?post :xt/id _]
                ]}
      id)))
 
-#_(resolve-blog-post nil {:id #uuid "23f590aa-b33f-410d-be0a-bb3e6f94af17"} nil)
+#_(resolve-blog-post! nil {:id #uuid "23f590aa-b33f-410d-be0a-bb3e6f94af17"} nil)
 
 
-(defn resolve-blog-posts
+(defn resolve-blog-posts!
   [_context _args _value]
   (xt/q
    (xt/db @db)
-   '{:find [(pull ?post [*])]
+   '{:find [(pull ?post [* {:post/tags [:tag/name :xt/id]}])]
      :where [[?post :type :post]]}))
 
-#_(resolve-blog-posts nil nil nil)
+#_(resolve-blog-posts! nil nil nil)
 
 (defn resolve-tags
   [])
