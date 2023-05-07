@@ -9,6 +9,7 @@
                         :db-dir (io/file dir)
                         :sync true}})]
     (xt/start-node
+     ; FIXME: make configuration generic
      {:xtdb/tx-log (kv-store "data/dev/tx-log")
       :xtdb/document-store (kv-store "data/dev/doc-store")
       :xtdb/index-store (kv-store "data/dev/index-store")})))
