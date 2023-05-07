@@ -14,36 +14,54 @@
       :xtdb/document-store (kv-store "data/dev/doc-store")
       :xtdb/index-store (kv-store "data/dev/index-store")})))
 
-(def db (atom start-xtdb!))
+(defonce db (atom (start-xtdb!)))
 
 (def blog-posts
-  {"0" {:id "0"
-        :content "Ho"
-        :title "ho"
-        :created 0
-        :tags ["ho"]}
-   "1" {:id "1"
-        :content "Ha"
-        :title "ha"
-        :created 1
-        :tags ["ha"]}})
+  [{:xt/id #uuid "603ae9a6-1163-4005-afec-5167cb97d4e9"
+    :type :post
+    :post/content "Ho"
+    :post/title "ho"
+    :post/created 0
+    ;:post/tags ["ho"]
+    }
+   {:xt/id #uuid "23f590aa-b33f-410d-be0a-bb3e6f94af17"
+    :type :post
+    :post/content "Ha"
+    :post/title "ha"
+    :post/created 1
+    ;:post/tags ["ha"]
+    }])
+
+#_(xt/submit-tx @db [[::xt/put
+                      (first blog-posts)
+                      ]
+                     [::xt/put
+                      (second blog-posts)
+                      ]
+                     ])
 
 (defn resolve-blog-post
   [_context args _value]
   (let [id (:id args)]
     (xt/q
-     @db
-     '{:find [title content created tags]
-       :in [id]
-       :where [[id :title title]
-               [id :content content]
-               [id :created created]
-               [id :tag tags]]}
+     (xt/db  @db)
+     '{:find [(pull ?post [*])]
+       :in [?post]
+       :where [[?post :xt/id _]
+               ]}
      id)))
+
+#_(resolve-blog-post nil {:id #uuid "23f590aa-b33f-410d-be0a-bb3e6f94af17"} nil)
+
 
 (defn resolve-blog-posts
   [_context _args _value]
-  (map second blog-posts))
+  (xt/q
+   (xt/db @db)
+   '{:find [(pull ?post [*])]
+     :where [[?post :type :post]]}))
+
+#_(resolve-blog-posts nil nil nil)
 
 (defn resolve-tags
   [])
