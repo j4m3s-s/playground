@@ -83,6 +83,7 @@
                 (add-item name)
                 ; FIXME: don't hardcode youtube-dl PATH
                 ; FIXME: add logging for yt-dl output
+                ; FIXME: we need to use yt-dlp which is updated more than youtube-dl
                 (sh "/nix/store/aslfrlffx4nl8niw3ji47sqw1w14q6cg-python3.10-youtube-dl-2021.12.17/bin/youtube-dl" "-x" url "--embed-thumbnail")
                 (finish-download-item name))))
   {:status 200 :headers {"Content-Type" "text/plain"}}))
