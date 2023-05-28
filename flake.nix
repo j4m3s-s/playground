@@ -48,6 +48,9 @@
       inherit args;
     };
 
+    packages.x86_64-linux.yt-music = import ./projects/yt-music args;
+    packages.x86_64-linux.jms = import ./projects/jms args;
+
     devShell.${system} = pkgs.mkShell {
       # Django default environment
       DJANGO_ENV = "dev";
