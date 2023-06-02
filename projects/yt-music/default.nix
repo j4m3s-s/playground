@@ -93,15 +93,16 @@ rec {
           paths = with pkgs; [
             bashInteractive
             coreutils
+
             jdk11
             yt-dlp
+            chromaprint # for fpcalc fingerprint calculation
           ];
           pathsToLink = [ "/bin" ];
         })
       ];
       layers = [
         (nix2container.buildLayer { deps = [jar]; })
-
       ];
     };
   container-script = myLib.mkOCIUploadScript img-container "j4m3s/yt-music" version;

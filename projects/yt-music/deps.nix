@@ -216,8 +216,8 @@ let repos = [
       inherit repos;
       artifactId = "jackson-dataformat-cbor";
       groupId = "com.fasterxml.jackson.dataformat";
-      sha512 = "82695d50cd7df578388db52433f56c8533e5565d01d2c17cc18b26536367eedd7a249afe070249fdaf8fa02c3d1c06a542d0a4303696b4d1ddc4cdcb3145a7bc";
-      version = "2.9.9";
+      sha512 = "b6e16c43fb3e71f82f8e7dc558f53cbcc8fea31efa59f40d22220f6e40167cf32c150efa18a81f839008d6a042e201bf17d8fd52a4fecbe8f356454f2d6a6170";
+      version = "2.13.3";
 
     };
     paths = [ src ];
@@ -333,8 +333,8 @@ let repos = [
       inherit repos;
       artifactId = "jackson-core";
       groupId = "com.fasterxml.jackson.core";
-      sha512 = "d8beac9e71444bc795c9d99308ead3284a39aa161f825708da7dbdfce410d099c0bbc76c31c27adad540cf3bccf6826d539fcb157923efae84b10b3778b920a9";
-      version = "2.9.9";
+      sha512 = "d5337db908b2c56dcb911e3d1a5f671456c13f254fe8d2a620823bc15b2db6aaa8325a86b436b5d181f2584b533158fd14d140b98305ac252f8dfd9a627da859";
+      version = "2.13.3";
 
     };
     paths = [ src ];
@@ -580,8 +580,8 @@ let repos = [
       inherit repos;
       artifactId = "cheshire";
       groupId = "cheshire";
-      sha512 = "762d678617e6b83951a219421091cb6ca44f2d73d7d11a2b595d978f43dff82527c2881ff3adb3507540e06cf49f098d2359b6158176c3fdfb9fedcf7919db04";
-      version = "5.9.0";
+      sha512 = "2262573047d194bba28b3d2ca4b00b12f8171d6f8f7f5449df35f10ab1ef5902a9ba2f9937399d6e4b54a78bda919fa205a22a44cde998019bc0cfc508e90f29";
+      version = "5.11.0";
 
     };
     paths = [ src ];
@@ -593,8 +593,8 @@ let repos = [
       inherit repos;
       artifactId = "tigris";
       groupId = "tigris";
-      sha512 = "5393fe3f656521a6760d289d9549ffb9e9c1a8a72b69878205d53763802afa8778f1cb8bed6899e0b9721de231a79b8b1254cc601c84f5374467f1cc4780a987";
-      version = "0.1.1";
+      sha512 = "fdff4ef5e7175a973aaef98de4f37dee8e125fc711c495382e280aaf3e11341fe8925d52567ca60f3f1795511ade11bc23461c88959632dfae3cf50374d02bf6";
+      version = "0.1.2";
 
     };
     paths = [ src ];
@@ -866,8 +866,8 @@ let repos = [
       inherit repos;
       artifactId = "jackson-dataformat-smile";
       groupId = "com.fasterxml.jackson.dataformat";
-      sha512 = "409c39b581fa758a65e1e5344f08ac5607f5e3af41c5a307e61f2d0e54ba85487cfe6a6bbbeaa89a99c9fca0240c9dc5676cb50635378ae796570eb3bb427fe0";
-      version = "2.9.9";
+      sha512 = "4c1566aa4fac309de8fba08ea355165cf2a888b7bcec98e7035ac8acd7315e340415a10b8deec6497fc4eea5ba9319fc989676170d8c4c0d0bbc3d4f3cc4d681";
+      version = "2.13.3";
 
     };
     paths = [ src ];

@@ -5,7 +5,8 @@
             [io.pedestal.http.body-params :as body-params]
             [hiccup.core :refer [html]]
             [clojure.java.shell :refer [sh]]
-            [crouton.html :as html]))
+            [crouton.html :as html]
+            [cheshire.core :as json]))
 
 (def URL "http://localhost:5000/api/dl")
 
@@ -81,14 +82,39 @@
     (println stdout)
     input))
 
+(defn filename-from-stdout
+  [input]
+  (let [stdout (:out input)]
+    (-> (re-find #"^\[download\] Destination: (.*)$" stdout)
+        second)))
+
+(defn fingerprint
+  [filename]
+  (-> (re-find #"FINGERPRINT=(.*)$" (:out (sh "fpcalc" filename)))
+      second))
+
+(defn add-metadata
+  [filename]
+  (let [music-signature (fingerprint filename)
+        json-output (slurp (str "https://https://api.acoustid.org/v2/lookup?client=v8pQ6oyB&meta=releases+recordings+recordingsidstracks+compress+usermeta+sources&duration=641&fingerprint=" music-signature))
+        title (get-in (json/parse-string json-output) [:results 0 :title])
+        ; FIXME: support multiple artists
+        artist (get-in (json/parse-string json-output) [:results 0 :recordings :artists 0 :name])
+        album (get-in (json/parse-string json-output) [:results 0 :recordings :releases 0 :title])
+        ]
+    (println (json/generate-string {:title title :artist artist :album album}))
+    (sh "tracktag" "--name" title "--album" album "--artist" artist filename)))
+
 (defn dl-handler
   [req]
   (let [url (get-in req [:json-params :url] nil)]
     (future (do
               (let [name (get-music-name url)]
                 (add-item name)
-                (-> (sh "yt-dlp" "-x" url "--embed-thumbnail")
-                    log-stdout)
+                (let [filename (-> (sh "yt-dlp" "-x" url "--embed-thumbnail")
+                                   log-stdout
+                                   filename-from-stdout)]
+                  (add-metadata filename))
                 (finish-download-item name))))
   {:status 200 :headers {"Content-Type" "text/plain"}}))
 
