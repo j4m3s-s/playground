@@ -75,16 +75,20 @@
 ; TODO: persist all dls list. Do we really care ?
 ; TODO: some basic CSS
 
+(defn log-stdout
+  [input]
+  (let [stdout (:out input)]
+    (println stdout)
+    input))
+
 (defn dl-handler
   [req]
   (let [url (get-in req [:json-params :url] nil)]
     (future (do
               (let [name (get-music-name url)]
                 (add-item name)
-                ; FIXME: don't hardcode youtube-dl PATH
-                ; FIXME: add logging for yt-dl output
-                ; FIXME: we need to use yt-dlp which is updated more than youtube-dl
-                (sh "/nix/store/aslfrlffx4nl8niw3ji47sqw1w14q6cg-python3.10-youtube-dl-2021.12.17/bin/youtube-dl" "-x" url "--embed-thumbnail")
+                (-> (sh "yt-dlp" "-x" url "--embed-thumbnail")
+                    log-stdout)
                 (finish-download-item name))))
   {:status 200 :headers {"Content-Type" "text/plain"}}))
 

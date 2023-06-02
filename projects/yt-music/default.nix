@@ -90,7 +90,12 @@ rec {
       copyToRoot = [
         (pkgs.buildEnv {
           name = "root";
-          paths = [ pkgs.bashInteractive pkgs.coreutils pkgs.jdk11 ];
+          paths = with pkgs; [
+            bashInteractive
+            coreutils
+            jdk11
+            yt-dlp
+          ];
           pathsToLink = [ "/bin" ];
         })
       ];
