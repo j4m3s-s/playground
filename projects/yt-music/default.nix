@@ -18,6 +18,8 @@ let
     (map gitignoreSource [ ./src ./test ]) ++ depsPaths # [ resources ] ++
   );
 
+  projectSrc = builtins.filterSource (path: _type: path != "default.nix") ./.;
+
   mkJar = name: mainClass:
     with pkgs;
     #assert (hasSuffix ".jar" name);
@@ -26,7 +28,7 @@ let
       dontUnpack = true;
       buildPhase = ''
         export HOME=$(pwd)
-        cp -rf ${./.}/* .
+        cp -rf ${projectSrc}/* .
         ${clojure}/bin/clojure \
           -Scp ${classpath.prod} \
           -M:uberjar \
