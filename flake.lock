@@ -16,6 +16,21 @@
         "type": "github"
       }
     },
+    "flake-utils": {
+      "locked": {
+        "lastModified": 1653893745,
+        "narHash": "sha256-0jntwV3Z8//YwuOjzhV2sgJJPt+HY6KhU7VZUL0fKZQ=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "1ed9fb1935d260de5fe1c2f7ee0ebaae17ed2fa1",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
     "gitignore": {
       "inputs": {
         "nixpkgs": [
@@ -33,6 +48,27 @@
       "original": {
         "owner": "hercules-ci",
         "repo": "gitignore.nix",
+        "type": "github"
+      }
+    },
+    "nix2container": {
+      "inputs": {
+        "flake-utils": "flake-utils",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1684252411,
+        "narHash": "sha256-4T89zvNljrrErlsiWG/u9/AY3qj6KXeiaa/Mpx0SEsk=",
+        "owner": "nlewo",
+        "repo": "nix2container",
+        "rev": "2e0a633344489b3171afe136b820b4602f9d1807",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nlewo",
+        "repo": "nix2container",
         "type": "github"
       }
     },
@@ -56,6 +92,7 @@
       "inputs": {
         "flake-compat": "flake-compat",
         "gitignore": "gitignore",
+        "nix2container": "nix2container",
         "nixpkgs": "nixpkgs",
         "tvlkit": "tvlkit"
       }

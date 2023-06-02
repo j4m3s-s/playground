@@ -1,4 +1,4 @@
-{ pkgs, repo, ... }:
+{ pkgs, repo, myLib, nix2container, version, ... }:
 
 with pkgs.lib;
 
@@ -79,6 +79,23 @@ let
 in
 rec {
   inherit (pkgs) hello;
-  yt-music-jar = mkJar "yt-music.jar" "yt-music.core";
-  yt-music = mkNativeFromJar "yt-music" yt-music-jar ./reflect-cfg.json;
+  jar = mkJar "yt-music.jar" "yt-music.core";
+  bin = mkNativeFromJar "yt-music" jar ./reflect-cfg.json;
+  img-container = nix2container.buildImage {
+      name = "yt-music";
+      #config.cmd = ["${pkgs.jdk11}/bin/java -jar ${jar}"];
+      config.cmd = ["/bin/java" "-jar" jar];
+      copyToRoot = [
+        (pkgs.buildEnv {
+          name = "root";
+          paths = [ pkgs.bashInteractive pkgs.coreutils pkgs.jdk11 ];
+          pathsToLink = [ "/bin" ];
+        })
+      ];
+      layers = [
+        (nix2container.buildLayer { deps = [jar]; })
+
+      ];
+    };
+  container-script = myLib.mkOCIUploadScript img-container "j4m3s/yt-music" version;
 }
