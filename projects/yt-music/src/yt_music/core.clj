@@ -93,10 +93,13 @@
   (-> (re-find #"FINGERPRINT=(.*)$" (:out (sh "fpcalc" filename)))
       second))
 
+; Just so GH search engine doesn't index it by default
+(def api-key (apply str (map #(char (bit-xor 2r10100101 (int %))) "ÓÕôÊÜç")))
+
 (defn add-metadata
   [filename]
   (let [music-signature (fingerprint filename)
-        json-output (slurp (str "https://https://api.acoustid.org/v2/lookup?client=v8pQ6oyB&meta=releases+recordings+recordingsidstracks+compress+usermeta+sources&duration=641&fingerprint=" music-signature))
+        json-output (slurp (str "https://https://api.acoustid.org/v2/lookup?client=" api-key "&meta=releases+recordings+recordingsidstracks+compress+usermeta+sources&duration=641&fingerprint=" music-signature))
         title (get-in (json/parse-string json-output) [:results 0 :title])
         ; FIXME: support multiple artists
         artist (get-in (json/parse-string json-output) [:results 0 :recordings :artists 0 :name])
