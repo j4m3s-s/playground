@@ -19,7 +19,10 @@
         crouton/crouton {:mvn/version "0.1.2"}
 
         ;; JSON parsig
-        cheshire/cheshire {:mvn/version "5.11.0"}}
+        cheshire/cheshire {:mvn/version "5.11.0"}
+
+        ;; http client querying
+        clj-http/clj-http {:mvn/version "3.12.3"}}
 
  :aliases {
    :uberjar {:extra-deps {seancorfield/depstar {:mvn/version "1.0.94"}}
