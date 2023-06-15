@@ -78,9 +78,17 @@ let
         cp ${name} $out
       '';
     };
+
+  ytMusicCliPkgs = with pkgs; [
+    yt-dlp
+    chromaprint # for fpcalc fingerprint calculation
+    python3Packages.audiotools
+  ];
 in
 rec {
-  inherit (pkgs) hello;
+  shell = pkgs.mkShell {
+    buildInputs = ytMusicCliPkgs;
+  };
   jar = mkJar "yt-music.jar" "yt-music.core";
   bin = mkNativeFromJar "yt-music" jar ./reflect-cfg.json;
   img-container = nix2container.buildImage {
@@ -95,9 +103,7 @@ rec {
             coreutils
 
             jdk11
-            yt-dlp
-            chromaprint # for fpcalc fingerprint calculation
-          ];
+          ] ++ ytMusicCliPkgs;
           pathsToLink = [ "/bin" ];
         })
       ];
