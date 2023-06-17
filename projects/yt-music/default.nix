@@ -82,7 +82,7 @@ let
   ytMusicCliPkgs = with pkgs; [
     yt-dlp
     chromaprint # for fpcalc fingerprint calculation
-    python3Packages.audiotools
+    id3v2
   ];
 in
 rec {

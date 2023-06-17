@@ -6,7 +6,8 @@
             [hiccup.core :refer [html]]
             [clojure.java.shell :refer [sh]]
             [crouton.html :as html]
-            [cheshire.core :as json]))
+            [cheshire.core :as json]
+            [clj-http.client :as client]))
 
 (def URL "http://localhost:5000/api/dl")
 
@@ -80,33 +81,58 @@
   [input]
   (let [stdout (:out input)]
     (println stdout)
-    input))
+    stdout))
 
 (defn filename-from-stdout
   [input]
   (let [stdout (:out input)]
-    (-> (re-find #"^\[download\] Destination: (.*)$" stdout)
+    (-> (re-find #"\[ExtractAudio\] Destination: (.*)" stdout)
         second)))
 
-(defn fingerprint
+(defn fingerprint-duration
   [filename]
-  (-> (re-find #"FINGERPRINT=(.*)$" (:out (sh "fpcalc" filename)))
-      second))
+  (let [output (:out (sh "fpcalc" filename))]
+    [(-> (re-find #"FINGERPRINT=(.*)$" output)
+         second)
+     (-> (re-find #"DURATION=(.*)" output)
+         second)]))
 
 ; Just so GH search engine doesn't index it by default
 (def api-key (apply str (map #(char (bit-xor 2r10100101 (int %))) "ÓÕôÊÜç")))
 
+(defn get-title
+  [input]
+  (-> input
+      (get-in [:results 0 :recordings 3 :title])))
+
+(defn get-artist
+  [input]
+  (get-in input [:results 0 :recordings 3 :artists 0 :name]))
+
+(defn get-album
+  [input]
+  (get-in input [:results 0 :recordings 3 :releases 1 :title]))
+
 (defn add-metadata
   [filename]
-  (let [music-signature (fingerprint filename)
-        json-output (slurp (str "https://https://api.acoustid.org/v2/lookup?client=" api-key "&meta=releases+recordings+recordingsidstracks+compress+usermeta+sources&duration=641&fingerprint=" music-signature))
-        title (get-in (json/parse-string json-output) [:results 0 :title])
+  (let [[music-signature music-duration] (fingerprint-duration filename)
+
+        json-output (-> (client/get (str "https://api.acoustid.org/v2/lookup?client="
+                                         api-key
+                                         "&meta=releases+recordings+recordingsidstracks+compress+usermeta+sources&duration="
+                                         music-duration
+                                         "&fingerprint="
+                                         music-signature))
+                        :body
+                        (json/parse-string true))
+
+        title (get-title json-output)
+
         ; FIXME: support multiple artists
-        artist (get-in (json/parse-string json-output) [:results 0 :recordings :artists 0 :name])
-        album (get-in (json/parse-string json-output) [:results 0 :recordings :releases 0 :title])
-        ]
+        artist (get-artist json-output)
+        album (get-album json-output)]
     (println (json/generate-string {:title title :artist artist :album album}))
-    (sh "tracktag" "--name" title "--album" album "--artist" artist filename)))
+    (sh "id3v2" "--song" title "--album" album "--artist" artist filename)))
 
 (defn dl-handler
   [req]
