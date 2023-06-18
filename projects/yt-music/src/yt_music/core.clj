@@ -81,7 +81,7 @@
   [input]
   (let [stdout (:out input)]
     (println stdout)
-    stdout))
+    input))
 
 (defn filename-from-stdout
   [input]
@@ -100,18 +100,37 @@
 ; Just so GH search engine doesn't index it by default
 (def api-key (apply str (map #(char (bit-xor 2r10100101 (int %))) "ÓÕôÊÜç")))
 
+(defn get-until-symbol
+  [vec symbol]
+  (if (empty? vec)
+    nil
+    (let [top (first vec)]
+      (if (contains? top symbol)
+        (symbol top)
+        (recur (rest vec) symbol)))))
+
+(defn get-until-symbols
+  [elt symbols]
+  (if (empty? symbols)
+    elt
+    (let [symbol (first symbols)]
+      (recur (get-until-symbol elt symbol) (rest symbols)))))
+
 (defn get-title
   [input]
   (-> input
-      (get-in [:results 0 :recordings 3 :title])))
+      :results
+      (get-until-symbols [:recordings :title])))
 
 (defn get-artist
   [input]
-  (get-in input [:results 0 :recordings 3 :artists 0 :name]))
+  (-> (:results input)
+      (get-until-symbols [:recordings :artists :name])))
 
 (defn get-album
   [input]
-  (get-in input [:results 0 :recordings 3 :releases 1 :title]))
+  (-> (:results input)
+      (get-until-symbols [:recordings :releases :title])))
 
 (defn add-metadata
   [filename]
@@ -143,6 +162,7 @@
                 (let [filename (-> (sh "yt-dlp" "-x" url "--embed-thumbnail")
                                    log-stdout
                                    filename-from-stdout)]
+                  (println "FILENAME: " filename)
                   (add-metadata filename))
                 (finish-download-item name))))
   {:status 200 :headers {"Content-Type" "text/plain"}}))
