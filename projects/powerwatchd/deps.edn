@@ -1,2 +1,4 @@
 {:paths [ "src" ]
- :deps {org.clojure/clojure {:mvn/version "1.10.3"}}}
+ :deps {org.clojure/clojure {:mvn/version "1.10.3"}}
+ :aliases {:uberjar {:extra-deps {seancorfield/depstar {:mvn/version "1.0.94"}}
+                     :main-opts [ "-m" "hf.depstar.uberjar"]}}}
