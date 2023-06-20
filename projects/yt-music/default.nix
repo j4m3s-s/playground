@@ -86,7 +86,7 @@ let
   ];
 in
 rec {
-  shell = pkgs.mkShell {
+  shell = myLib.mkShell {
     buildInputs = ytMusicCliPkgs;
     meta.ci.build = true;
   };

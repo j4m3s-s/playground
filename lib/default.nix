@@ -213,4 +213,7 @@ rec {
     # Enable CI target
     meta.ci.build = true;
   };
+
+  # Small wrapper that adds it build to build target by default
+  mkShell = args: pkgs.mkShell (args // { meta.ci.build = true; });
 }

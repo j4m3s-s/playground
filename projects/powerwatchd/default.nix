@@ -42,7 +42,7 @@ rec {
       classpath
     ;
   };
-  shell = pkgs.mkShell {
+  shell = myLib.mkShell {
     packages = with pkgs; [ hello ];
     shellHook = ''
       echo Test!

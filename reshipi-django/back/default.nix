@@ -1,7 +1,7 @@
-{ pkgs, ... }:
+{ pkgs, myLib, ... }:
 
 {
-  shell = pkgs.mkShell {
+  shell = myLib.mkShell {
     # Django default environment
     DJANGO_ENV = "dev";
 
