@@ -134,4 +134,77 @@ rec {
     echo Uploading ${containerName}:${containerVersion} ...
     ${pkgs.docker}/bin/docker push ${containerName}:${containerVersion}
   '';
+
+  # Clojure build functions
+  ## We need the uberjar alias to create this dependencies (as the presence of it
+  ## inside generated deps.nix). Deps.nix is generated with clj2nix w/ uberjar
+  ## alias.
+  mkJar = {
+    name,
+    mainClass,
+    classpath,
+    src
+  }: pkgs.stdenv.mkDerivation rec {
+    inherit name;
+    dontUnpack = true;
+    buildPhase = ''
+      export HOME=$(pwd)
+      cp -rf ${src}/* .
+      ${pkgs.clojure}/bin/clojure \
+        -Scp ${classpath.prod} \
+        -M:uberjar \
+        ${name} \
+        -C -m ${mainClass}
+    '';
+
+    doCheck = true;
+
+    checkPhase = ''
+      echo "checking for existence of ${name}"
+      [ -f ${name} ]
+    '';
+
+    installPhase = ''
+      cp ${name} $out
+    '';
+  };
+
+  ## Create native binary w/ GraalVM. Note that this is expensive CPU-wise and
+  ## quite slow if you build it everytime. Startup latency of those binaries is
+  ## lower though.
+  ## Enterprise GraalVM has more features but it's currently
+  mkNativeFromJar = {
+    name,
+    entryJar,
+    reflectionConfig,
+    classpath
+  }: pkgs.stdenv.mkDerivation rec {
+    inherit name;
+
+    dontUnpack = true;
+    # ReportExceptionStackTraces : to get an idea of where reflection is used
+    # no-fallback : don't build a slow image is reflection is used
+    # Reflection configuration contains class to load that use reflection
+    buildPhase = ''
+      ${pkgs.graalvm17-ce}/bin/native-image \
+      -cp ${classpath.prod} \
+      -jar ${entryJar} \
+      ${name} \
+      --initialize-at-build-time \
+      -H:+ReportExceptionStackTraces \
+      -H:ReflectionConfigurationFiles=${reflectionConfig} \
+      --no-fallback
+    '';
+
+    doCheck = true;
+    checkPhase = ''
+      echo "checking for existence of ${name}"
+      [ -f ${name} ]
+      ./${name}
+    '';
+
+    installPhase = ''
+      cp ${name} $out
+    '';
+  };
 }
