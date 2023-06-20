@@ -167,6 +167,9 @@ rec {
     installPhase = ''
       cp ${name} $out
     '';
+
+    # Enable CI target
+    meta.ci.build = true;
   };
 
   ## Create native binary w/ GraalVM. Note that this is expensive CPU-wise and
@@ -206,5 +209,8 @@ rec {
     installPhase = ''
       cp ${name} $out
     '';
+
+    # Enable CI target
+    meta.ci.build = true;
   };
 }

@@ -88,6 +88,7 @@ in
 rec {
   shell = pkgs.mkShell {
     buildInputs = ytMusicCliPkgs;
+    meta.ci.build = true;
   };
   jar = mkJar "yt-music.jar" "yt-music.core";
   bin = mkNativeFromJar "yt-music" jar ./reflect-cfg.json;

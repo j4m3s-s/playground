@@ -59,13 +59,25 @@
     args = incompleteArgsNoLib // { inherit myLib; };
 
     myLib = import ./lib incompleteArgsNoLib;
-  in
-  {
+
+    # CI targets are currently opt-in since most of this repo doesn't build with
+    # Nix currently.
+    isCITarget = node: (node ? outPath) && (node.meta.ci.build or false);
+
+    repo = self.my.${system};
+  in rec {
 
     my.${system} = tvllib.readTree {
       path = ./.;
       inherit args;
     };
+    ci.targets = repo.third_party.tvllib.mygather isCITarget my.${system};
+
+    ci.gcroot = pkgs.writeText "repo-gcroot"
+      (builtins.concatStringsSep "\n"
+        (lib.flatten
+          (map (p: map (o: p.${o}) p.outputs or [ ]) # list all outputs of each drv
+            self.ci.targets)));
 
     devShell.${system} = pkgs.mkShell {
       # Django default environment
