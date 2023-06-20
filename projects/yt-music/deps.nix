@@ -185,6 +185,19 @@ let repos = [
   }
 
   rec {
+    name = "httpasyncclient/org.apache.httpcomponents";
+    src = fetchMavenArtifact {
+      inherit repos;
+      artifactId = "httpasyncclient";
+      groupId = "org.apache.httpcomponents";
+      sha512 = "0a80db5dbf772f02d02ba6c7c163e8da9517dd7195714b495acb845c429580c1fc926d3e71c115e75be8c145651dce2fdfa0dc380132f7809c14b3ad95492aee";
+      version = "4.1.4";
+
+    };
+    paths = [ src ];
+  }
+
+  rec {
     name = "tools.analyzer.jvm/org.clojure";
     src = fetchMavenArtifact {
       inherit repos;
@@ -257,6 +270,32 @@ let repos = [
       groupId = "seancorfield";
       sha512 = "0f4458b39b8b1949755bc2fe64b239673a9efa3a0140998464bbbcab216ec847344c1b8920611f7c9ca07261850f3a08144ae221cc2c41813a080189e32f9c10";
       version = "1.0.94";
+
+    };
+    paths = [ src ];
+  }
+
+  rec {
+    name = "slingshot/slingshot";
+    src = fetchMavenArtifact {
+      inherit repos;
+      artifactId = "slingshot";
+      groupId = "slingshot";
+      sha512 = "ff2b2a27b441d230261c7f3ec8c38aa551865e05ab6438a74bd12bfcbc5f6bdc88199d42aaf5932b47df84f3d2700c8f514b9f4e9b5da28d29da7ff6b09a7fb5";
+      version = "0.12.2";
+
+    };
+    paths = [ src ];
+  }
+
+  rec {
+    name = "httpcore-nio/org.apache.httpcomponents";
+    src = fetchMavenArtifact {
+      inherit repos;
+      artifactId = "httpcore-nio";
+      groupId = "org.apache.httpcomponents";
+      sha512 = "002af5f72b68a4ff1b1ff46b788013283d195e1d62ee1d7b102aa930b30f77f7e215a6d18edbea0fccd18fb1fa3a66cc4aef6070d72d6d1886f0044dfe0e16c7";
+      version = "4.4.10";
 
     };
     paths = [ src ];
@@ -354,6 +393,32 @@ let repos = [
   }
 
   rec {
+    name = "clj-http/clj-http";
+    src = fetchMavenArtifact {
+      inherit repos;
+      artifactId = "clj-http";
+      groupId = "clj-http";
+      sha512 = "9884557d4f38068cb3234aec80acc0de8f9716645529693ffd9bd6db8221f5d1cf9e2d1b8bf7c7df4215d71372b02d83043ebf8fc27dc422552b32c9bdba1602";
+      version = "3.12.3";
+
+    };
+    paths = [ src ];
+  }
+
+  rec {
+    name = "httpcore/org.apache.httpcomponents";
+    src = fetchMavenArtifact {
+      inherit repos;
+      artifactId = "httpcore";
+      groupId = "org.apache.httpcomponents";
+      sha512 = "f16a652f4a7b87dbf7cb16f8590d54a3f719c4c7b2f8883ce59db2d73be4701b64f2ca8a2c45aca6a5dbeaddeedff0c280a03722f70c076e239b645faa54eff9";
+      version = "4.4.14";
+
+    };
+    paths = [ src ];
+  }
+
+  rec {
     name = "jetty-security/org.eclipse.jetty";
     src = fetchMavenArtifact {
       inherit repos;
@@ -361,6 +426,19 @@ let repos = [
       groupId = "org.eclipse.jetty";
       sha512 = "6f816f12e37e8242922f879b497f3f5642c8ece725f1b874e05dc5c30e396baca2908e3f832d040ca04f5f121c09cd3e05637082b6b8a3ea5949267cfe8c3d61";
       version = "9.4.44.v20210927";
+
+    };
+    paths = [ src ];
+  }
+
+  rec {
+    name = "httpclient-cache/org.apache.httpcomponents";
+    src = fetchMavenArtifact {
+      inherit repos;
+      artifactId = "httpclient-cache";
+      groupId = "org.apache.httpcomponents";
+      sha512 = "e150e8dc49c8c9972d8b324b56bb292b15e2f0e686f1292c4edac975615dfb16e5edb8ab325e614732a7d43a03061ca4fe93fe1e1f7487851a4d4d3af50a61f9";
+      version = "4.5.13";
 
     };
     paths = [ src ];
@@ -419,6 +497,19 @@ let repos = [
   }
 
   rec {
+    name = "clj-tuple/clj-tuple";
+    src = fetchMavenArtifact {
+      inherit repos;
+      artifactId = "clj-tuple";
+      groupId = "clj-tuple";
+      sha512 = "dd626944d0aba679a21b164ed0c77ea84449359361496cba810f83b9fdeab751e5889963888098ce4bf8afa112dbda0a46ed60348a9c01ad36a2e255deb7ab6d";
+      version = "0.2.2";
+
+    };
+    paths = [ src ];
+  }
+
+  rec {
     name = "hiccup/hiccup";
     src = fetchMavenArtifact {
       inherit repos;
@@ -445,6 +536,19 @@ let repos = [
   }
 
   rec {
+    name = "riddley/riddley";
+    src = fetchMavenArtifact {
+      inherit repos;
+      artifactId = "riddley";
+      groupId = "riddley";
+      sha512 = "b478ecba9d1ab9d38c84a42354586fcece763000907b40c97bc43c0f16dc560b0860144efe410193cb3b7cb0149fbc1724fdd737cc3ba53de23618f5b30e6f9f";
+      version = "0.1.12";
+
+    };
+    paths = [ src ];
+  }
+
+  rec {
     name = "opentracing-api/io.opentracing";
     src = fetchMavenArtifact {
       inherit repos;
@@ -465,6 +569,19 @@ let repos = [
       groupId = "org.javassist";
       sha512 = "ad65ee383ed83bedecc2073118cb3780b68b18d5fb79a1b2b665ff8529df02446ad11e68f9faaf4f2e980065f5946761a59ada379312cbb22d002625abed6a4f";
       version = "3.18.1-GA";
+
+    };
+    paths = [ src ];
+  }
+
+  rec {
+    name = "commons-logging/commons-logging";
+    src = fetchMavenArtifact {
+      inherit repos;
+      artifactId = "commons-logging";
+      groupId = "commons-logging";
+      sha512 = "ed00dbfabd9ae00efa26dd400983601d076fe36408b7d6520084b447e5d1fa527ce65bd6afdcb58506c3a808323d28e88f26cb99c6f5db9ff64f6525ecdfa557";
+      version = "1.2";
 
     };
     paths = [ src ];
@@ -556,6 +673,19 @@ let repos = [
       groupId = "ring";
       sha512 = "38b9775a794831b8afd8d66991a75aa5910cd50952c9035866bf9cc01353810aedafbc3f35d8f9e56981ebf9e5c37c00b968759ed087d2855348b3f46d8d0487";
       version = "1.1.3";
+
+    };
+    paths = [ src ];
+  }
+
+  rec {
+    name = "httpclient/org.apache.httpcomponents";
+    src = fetchMavenArtifact {
+      inherit repos;
+      artifactId = "httpclient";
+      groupId = "org.apache.httpcomponents";
+      sha512 = "3567739186e551f84cad3e4b6b270c5b8b19aba297675a96bcdff3663ff7d20d188611d21f675fe5ff1bfd7d8ca31362070910d7b92ab1b699872a120aa6f089";
+      version = "4.5.13";
 
     };
     paths = [ src ];
@@ -705,6 +835,19 @@ let repos = [
   }
 
   rec {
+    name = "potemkin/potemkin";
+    src = fetchMavenArtifact {
+      inherit repos;
+      artifactId = "potemkin";
+      groupId = "potemkin";
+      sha512 = "5abc050bf7ff0b27d8c45aaa5e378201980815b711b2db99735db73304576c17e285026ea48a714bf0b0df7ad7a008de38b7d182cdc0e8989f4be1e6b3afa8aa";
+      version = "0.4.5";
+
+    };
+    paths = [ src ];
+  }
+
+  rec {
     name = "slf4j-api/org.slf4j";
     src = fetchMavenArtifact {
       inherit repos;
@@ -803,6 +946,19 @@ let repos = [
       groupId = "org.eclipse.jetty";
       sha512 = "fb3e66406dd7fbaaebeb323dc7cf120b81e359f2d37f8b54cf21a0542bfd34b8a8931adce12c5928efc3a2ba196c660c8c842c3eacfac0bc25b03a114a4f7f62";
       version = "9.4.44.v20210927";
+
+    };
+    paths = [ src ];
+  }
+
+  rec {
+    name = "httpmime/org.apache.httpcomponents";
+    src = fetchMavenArtifact {
+      inherit repos;
+      artifactId = "httpmime";
+      groupId = "org.apache.httpcomponents";
+      sha512 = "e1b0ee84bce78576074dc1b6836a69d8f5518eade38562e6890e3ddaa72b7f54bf735c8e2286142c58cddf45f745da31261e5d73b7d8092eb6ecfb20946eb36c";
+      version = "4.5.13";
 
     };
     paths = [ src ];
