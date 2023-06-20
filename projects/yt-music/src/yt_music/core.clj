@@ -132,6 +132,48 @@
   (-> (:results input)
       (get-until-symbols [:recordings :releases :title])))
 
+(defn rate-limit-function
+  [msecs-period f]
+  (let [last-executed_ (atom 0)]
+    (fn wrapper [args]
+      (let [now (System/currentTimeMillis)
+           [old-executed new-executed]
+            (swap-vals!
+             last-executed_
+             (fn [last-executed]
+               (let [elapsed (- now last-executed)]
+                 (if (>= elapsed msecs-period)
+                   now
+                   last-executed))))
+            changed? (not= old-executed new-executed)]
+        (when changed?
+          (apply f args))))))
+
+(def rate-limited-client-get
+  (rate-limit-function 300 client/get))
+
+#_(map rate-limited-client-get ["google.fr" "google.fr"])
+#_ (rate-limited-client-get "google.fr")
+
+#_ (rate-limited-client-get "http://google.fr")
+
+; TODO:
+; - add rate limit on acoustid call
+;   see https://gist.github.com/danownsthisspace/45402226eca6e5848fce4fc143973d92
+; - add endpoint to batch upload musics
+; - Add simple CSS
+; - Add more proper frontend
+; - add subscribe WS for dled music
+; - cleanup code (ns, safer string concatenation, tests)
+; - Spotify exporter endpoint (track/playlist id)
+;   - get playlist ID
+;   - get name of each track
+;   - search it on yt (need token)
+; - Add secret deployment
+;
+; You can apparently use spotify recommendation engine outside of spotify
+
+
 (defn add-metadata
   [filename]
   (let [[music-signature music-duration] (fingerprint-duration filename)
