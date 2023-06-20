@@ -60,10 +60,6 @@
 
     myLib = import ./lib incompleteArgsNoLib;
 
-    # CI targets are currently opt-in since most of this repo doesn't build with
-    # Nix currently.
-    isCITarget = node: (node ? outPath) && (node.meta.ci.build or false);
-
     repo = self.my.${system};
   in rec {
 
@@ -71,7 +67,7 @@
       path = ./.;
       inherit args;
     };
-    ci.targets = repo.third_party.tvllib.mygather isCITarget my.${system};
+    ci.targets = myLib.getBuildTargets my.${system};
 
     ci.gcroot = pkgs.writeText "repo-gcroot"
       (builtins.concatStringsSep "\n"

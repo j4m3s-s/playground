@@ -1,6 +1,13 @@
 { lib, pkgs, system, repo, self, nix2container, ... } @ inputs:
 
 rec {
+  inherit (builtins)
+    filter
+    attrValues
+    attrNames
+    concatMap
+    typeOf
+  ;
   ## Users
   # Function to create non mutable user with initial password
   mkUser = { keys ? [], initialHashedPassword, username }: {
@@ -216,4 +223,19 @@ rec {
 
   # Small wrapper that adds it build to build target by default
   mkShell = args: pkgs.mkShell (args // { meta.ci.build = true; });
+
+  # dfs of all build targets, returns a list of them
+  dfsAttr = eligible: attr:
+    if typeOf attr == "set" then
+      # Include the attr itself it it is eligible
+      (if eligible attr then [ attr ] else [  ])
+      # Include values of current attr if they're eligible
+      ++ filter (val: eligible val) (attrValues attr)
+      # Recurse into childrens
+      ++ (if eligible attr then [ ]
+          else concatMap (dfsAttr eligible) (map (attrName: attr."${attrName}") (attrNames attr)))
+    else [  ]
+  ;
+
+  getBuildTargets = initialAttr: (dfsAttr (attr: (attr ? type && attr.type == "derivation") && (attr.meta.ci.build or false)) initialAttr);
 }
