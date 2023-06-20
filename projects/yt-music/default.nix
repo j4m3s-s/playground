@@ -93,24 +93,24 @@ rec {
   jar = mkJar "yt-music.jar" "yt-music.core";
   bin = mkNativeFromJar "yt-music" jar ./reflect-cfg.json;
   img-container = nix2container.buildImage {
-      name = "yt-music";
-      #config.cmd = ["${pkgs.jdk11}/bin/java -jar ${jar}"];
-      config.cmd = ["/bin/java" "-jar" jar];
-      copyToRoot = [
-        (pkgs.buildEnv {
-          name = "root";
-          paths = with pkgs; [
-            bashInteractive
-            coreutils
+    name = "yt-music";
+    #config.cmd = ["${pkgs.jdk11}/bin/java -jar ${jar}"];
+    config.cmd = ["/bin/java" "-jar" jar];
+    copyToRoot = [
+      (pkgs.buildEnv {
+        name = "root";
+        paths = with pkgs; [
+          bashInteractive
+          coreutils
 
-            jdk11
-          ] ++ ytMusicCliPkgs;
-          pathsToLink = [ "/bin" ];
-        })
-      ];
-      layers = [
-        (nix2container.buildLayer { deps = [jar]; })
-      ];
-    };
+          jdk11
+        ] ++ ytMusicCliPkgs;
+        pathsToLink = [ "/bin" ];
+      })
+    ];
+    layers = [
+      (nix2container.buildLayer { deps = [jar]; })
+    ];
+  };
   container-script = myLib.mkOCIUploadScript img-container "j4m3s/yt-music" version;
 }
