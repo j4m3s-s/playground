@@ -187,7 +187,9 @@ rec {
     name,
     entryJar,
     reflectionConfig,
-    classpath
+    classpath,
+    doCheck ? true,
+
   }: pkgs.stdenv.mkDerivation rec {
     inherit name;
 
@@ -206,7 +208,7 @@ rec {
       --no-fallback
     '';
 
-    doCheck = true;
+    inherit doCheck;
     checkPhase = ''
       echo "checking for existence of ${name}"
       [ -f ${name} ]
