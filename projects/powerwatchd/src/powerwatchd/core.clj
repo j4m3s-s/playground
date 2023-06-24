@@ -3,8 +3,7 @@
             [clojure.core.async :refer [timeout <! go chan <!!]])
   (:gen-class))
 
-;; Main constants
-
+;; Utils constants
 ; 5 minutes
 (def internet-timeout
   (* 1000 60 5))
@@ -31,10 +30,19 @@
   [service]
   (sh "systemctl" "start" service))
 
+(defn infinite-blocking-wait
+  []
+  (<!! (chan)))
+
 ;; State
 
 (def last-ping-1-1-1-1 (atom (now)))
 (def last-ping-8-8-8-8 (atom (now)))
+
+;; Main constants
+
+(def service-list
+  ["gitea" "k3s"])
 
 ;; Main Functions
 
@@ -44,9 +52,6 @@
     (when (not= 0 (:exit (sh "ping" "-c" "1" "-w" "1" addr)))
       (swap! atom (now))
       (async-wait-timeout))))
-
-(def service-list
-  ["gitea" "k3s"])
 
 (defn launch-power-watch
   []
@@ -65,4 +70,5 @@
     (launch-ping-watch last-ping-1-1-1-1 "1.1.1.1")
     (launch-ping-watch last-ping-8-8-8-8 "8.8.8.8")
     (launch-power-watch))
-  (<!! (chan)))
+  ; To avoid exiting the program after launching the coroutines
+  (infinite-blocking-wait))
