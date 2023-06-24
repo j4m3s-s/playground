@@ -1,4 +1,4 @@
 [{
-  "name":"java.io.File",
+  "name":"java.lang.System",
   "allPublicMethods":true
 }]

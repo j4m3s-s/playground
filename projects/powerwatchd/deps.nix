@@ -42,13 +42,26 @@ let repos = [
   }
 
   rec {
-    name = "depstar/seancorfield";
+    name = "tools.analyzer/org.clojure";
     src = fetchMavenArtifact {
       inherit repos;
-      artifactId = "depstar";
-      groupId = "seancorfield";
-      sha512 = "0f4458b39b8b1949755bc2fe64b239673a9efa3a0140998464bbbcab216ec847344c1b8920611f7c9ca07261850f3a08144ae221cc2c41813a080189e32f9c10";
-      version = "1.0.94";
+      artifactId = "tools.analyzer";
+      groupId = "org.clojure";
+      sha512 = "c51752a714848247b05c6f98b54276b4fe8fd44b3d970070b0f30cd755ac6656030fd8943a1ffd08279af8eeff160365be47791e48f05ac9cc2488b6e2dfe504";
+      version = "1.1.0";
+
+    };
+    paths = [ src ];
+  }
+
+  rec {
+    name = "core.specs.alpha/org.clojure";
+    src = fetchMavenArtifact {
+      inherit repos;
+      artifactId = "core.specs.alpha";
+      groupId = "org.clojure";
+      sha512 = "c1d2a740963896d97cd6b9a8c3dcdcc84459ea66b44170c05b8923e5fbb731b4b292b217ed3447bbc9e744c9a496552f77a6c38aea232e5e69f8faa627dea4b5";
+      version = "0.2.56";
 
     };
     paths = [ src ];
@@ -68,13 +81,104 @@ let repos = [
   }
 
   rec {
-    name = "core.specs.alpha/org.clojure";
+    name = "tools.analyzer.jvm/org.clojure";
     src = fetchMavenArtifact {
       inherit repos;
-      artifactId = "core.specs.alpha";
+      artifactId = "tools.analyzer.jvm";
       groupId = "org.clojure";
-      sha512 = "c1d2a740963896d97cd6b9a8c3dcdcc84459ea66b44170c05b8923e5fbb731b4b292b217ed3447bbc9e744c9a496552f77a6c38aea232e5e69f8faa627dea4b5";
-      version = "0.2.56";
+      sha512 = "36ad50a7a79c47dea16032fc4b927bd7b56b8bedcbd20cc9c1b9c85edede3a455369b8806509b56a48457dcd32e1f708f74228bce2b4492bd6ff6fc4f1219d56";
+      version = "1.2.2";
+
+    };
+    paths = [ src ];
+  }
+
+  rec {
+    name = "depstar/seancorfield";
+    src = fetchMavenArtifact {
+      inherit repos;
+      artifactId = "depstar";
+      groupId = "seancorfield";
+      sha512 = "0f4458b39b8b1949755bc2fe64b239673a9efa3a0140998464bbbcab216ec847344c1b8920611f7c9ca07261850f3a08144ae221cc2c41813a080189e32f9c10";
+      version = "1.0.94";
+
+    };
+    paths = [ src ];
+  }
+
+  rec {
+    name = "asm/org.ow2.asm";
+    src = fetchMavenArtifact {
+      inherit repos;
+      artifactId = "asm";
+      groupId = "org.ow2.asm";
+      sha512 = "876eac7406e60ab8b9bd6cd3c221960eaa53febea176a88ae02f4fa92dbcfe80a3c764ba390d96b909c87269a30a69b1ee037a4c642c2f535df4ea2e0dd499f2";
+      version = "9.2";
+
+    };
+    paths = [ src ];
+  }
+
+  rec {
+    name = "tools.reader/org.clojure";
+    src = fetchMavenArtifact {
+      inherit repos;
+      artifactId = "tools.reader";
+      groupId = "org.clojure";
+      sha512 = "3481259c7a1eac719db2921e60173686726a0c2b65879d51a64d516a37f6120db8ffbb74b8bd273404285d7b25143ab5c7ced37e7c0eaf4ab1e44586ccd3c651";
+      version = "1.3.6";
+
+    };
+    paths = [ src ];
+  }
+
+  rec {
+    name = "core.memoize/org.clojure";
+    src = fetchMavenArtifact {
+      inherit repos;
+      artifactId = "core.memoize";
+      groupId = "org.clojure";
+      sha512 = "67196537084b7cc34a01454d2a3b72de3fddce081b72d7a6dc1592d269a6c2728b79630bd2d52c1bf2d2f903c12add6f23df954c02ef8237f240d7394ccc3dde";
+      version = "1.0.253";
+
+    };
+    paths = [ src ];
+  }
+
+  rec {
+    name = "data.priority-map/org.clojure";
+    src = fetchMavenArtifact {
+      inherit repos;
+      artifactId = "data.priority-map";
+      groupId = "org.clojure";
+      sha512 = "bb8bc5dbfd3738c36b99a51880ac3f1381d6564e67601549ef5e7ae2b900e53cdcdfb8d0fa4bf32fb8ebc4de89d954bfa3ab7e8a1122bc34ee5073c7c707ac13";
+      version = "1.1.0";
+
+    };
+    paths = [ src ];
+  }
+
+  rec {
+    name = "core.cache/org.clojure";
+    src = fetchMavenArtifact {
+      inherit repos;
+      artifactId = "core.cache";
+      groupId = "org.clojure";
+      sha512 = "0a07ceffc2fa3a536b23773eefc7ef5e1108913b93c3a5416116a6566de76dd5c218f3fb0cc19415cbaa8843838de310b76282f20bf1fc3467006c9ec373667e";
+      version = "1.0.225";
+
+    };
+    paths = [ src ];
+  }
+
+  rec {
+    name = "core.async/org.clojure";
+    src = fetchMavenArtifact {
+      inherit repos;
+      artifactId = "core.async";
+      groupId = "org.clojure";
+      sha512 = "6c80a6ff6fe7ec8503c36a97684e4118ee1b103983b68c8ce21a398661ede02255e4b04a16fbabd112c8d57b7dd28967f6708e8d3461a5a393e019cda7ca4e96";
+      version = "1.6.673";
 
     };
     paths = [ src ];

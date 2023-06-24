@@ -41,6 +41,8 @@ rec {
     inherit
       classpath
     ;
+    # We don't check existence since this is a server and will run for ever
+    doCheck = false;
   };
   shell = myLib.mkShell {
     packages = with pkgs; [ hello ];
