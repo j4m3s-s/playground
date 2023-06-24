@@ -23,6 +23,14 @@
   []
   (<! (timeout wait-timeout)))
 
+(defn systemd-stop
+  [service]
+  (sh "systemctl" "stop" service))
+
+(defn systemd-start
+  [service]
+  (sh "systemctl" "start" service))
+
 ;; State
 
 (def last-ping-1-1-1-1 (atom (now)))
@@ -37,13 +45,19 @@
       (swap! atom (now))
       (async-wait-timeout))))
 
+(def service-list
+  ["gitea" "k3s"])
+
 (defn launch-power-watch
   []
   (while true
     (let [elapsed (- (now) @last-ping-8-8-8-8)]
       (if (> elapsed internet-timeout)
-        (println "Oh no")
-        (async-wait-timeout)))))
+       (map systemd-stop service-list)
+       ; It's idenpotent to call start on an already started unit
+       ; Except if it's simple and does not end semi-immediately
+       (map systemd-start service-list)))
+      (async-wait-timeout)))
 
 ; Entrypoint
 (defn -main [& args]
