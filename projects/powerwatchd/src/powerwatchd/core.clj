@@ -33,9 +33,9 @@
 (defn launch-ping-watch
   [atom addr]
   (while true
-    (if (not= 0 (:exit (sh "ping" "-c" "1" "-w" "1" addr)))
-      (do (swap! atom (now))
-          (async-wait-timeout)))))
+    (when (not= 0 (:exit (sh "ping" "-c" "1" "-w" "1" addr)))
+      (swap! atom (now))
+      (async-wait-timeout))))
 
 (defn launch-power-watch
   []
