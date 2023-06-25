@@ -1,0 +1,42 @@
+[
+    {
+        "name":"java.lang.System",
+        "allPublicMethods":true
+    },
+    {
+        "name":"java.lang.ClassLoader",
+        "allDeclaredConstructors": true,
+        "allPublicMethods": true,
+        "allDeclaredFields": true
+    },
+    {
+        "name": "clojure.lang.Var",
+        "allDeclaredConstructors": true,
+        "allPublicMethods": true,
+        "allDeclaredFields": true
+    },
+    {
+        "name": "clojure.lang.Symbol",
+        "allDeclaredConstructors": true,
+        "allPublicMethods": true,
+        "allDeclaredFields": true
+    },
+    {
+        "name": "clojure.lang.RT",
+        "allDeclaredConstructors": true,
+        "allPublicMethods": true,
+        "allDeclaredFields": true
+    },
+    {
+        "name":"clojure.core.specs.alpha",
+        "allDeclaredConstructors": true,
+        "allPublicMethods": true,
+        "allDeclaredFields": true
+    },
+    {
+        "name": "clojure.lang.PersistentList",
+        "allDeclaredConstructors": true,
+        "allPublicMethods": true,
+        "allDeclaredFields": true
+    }
+]

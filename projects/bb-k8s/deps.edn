@@ -4,6 +4,10 @@
            :ns-default "build"}}
  :deps {
         org.clojure/clojure {:mvn/version "1.11.1"}
+
+        ; Apparently needed for runtime
+        org.clojure/core.specs.alpha {:mvn/version "0.2.62"}
+
         clj-commons/clj-yaml {:mvn/version "1.0.26"}
         babashka/fs {:mvn/version "0.2.16"}
         cheshire/cheshire {:mvn/version "5.11.0"}

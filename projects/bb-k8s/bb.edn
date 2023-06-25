@@ -1,1 +1,2 @@
-{:tasks {native (shell "native-image --report-unsupported-elements-at-runtime --initialize-at-build-time --no-server --no-fallback  -jar target/b10s-0.1.0-standalone.jar -H:Name=b10s-exe")}}
+{:tasks {native (shell "native-image -jar target/b10s-0.1.0-standalone.jar -H:Name=b10s-exe -H:ReflectionConfigurationFiles=./reflect-cfg.json -Dclojure.spec.skip-macros=true -H:+ReportExceptionStackTraces")}
+ :paths ["src"]}

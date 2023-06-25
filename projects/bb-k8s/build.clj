@@ -45,6 +45,6 @@
   (b/uber {:class-dir jar-content                ; create uber file
            :uber-file uber-file-name
            :basis     basis
-           :main      'script.main})                ; here we specify the entry point for uberjar
+           :main      'b10s.main})                ; here we specify the entry point for uberjar
 
   (println (format "Uber file created: \"%s\"" uber-file-name)))
