@@ -243,4 +243,12 @@ rec {
   ;
 
   getBuildTargets = initialAttr: (dfsAttr (attr: (attr ? type && attr.type == "derivation") && (attr.meta.ci.build or false)) initialAttr);
+
+  # Add support for meta, use arguments as attrsets
+  writeScript = args: pkgs.writeTextFile ({
+    executable = true;
+    # Binary name
+    name = "bin";
+    # text = "";
+  } // args);
 }
