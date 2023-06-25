@@ -43,6 +43,15 @@ rec {
   #    classpath
   #  ;
   #};
+  bin = pkgs.writeShellApplication {
+    name = "b10s";
+
+    runtimeInputs = [ pkgs.jdk17 ];
+
+    text = ''
+      exec java -jar ${jar} "$@"
+    '';
+  };
   shell = myLib.mkShell {
     packages = with pkgs; [
       graalvm17-ce
