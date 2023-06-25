@@ -3,7 +3,8 @@
             [clj-yaml.core :as yaml]
             [babashka.fs :as fs]
             [clojure.edn :as edn]
-            [cheshire.core :as json])
+            [cheshire.core :as json]
+            [clojure.string :as str])
   (:gen-class))
 
 ;; k8s utils
@@ -37,6 +38,17 @@
    :metadata {:resourceVersion ""}})
 
 ;; Utils
+
+(def kustomize-binary
+  (if (not= (-> (.get (.command (.info (java.lang.ProcessHandle/current))))
+                (str/split #"/")
+                last)
+            "kustomize")
+    "kustomize"
+    (let [path (System/getenv "KUSTOMIZE_B10S_PATH")]
+      (if (nil? path)
+        (throw (Exception. "Error: KUSTOMIZE_B10S_PATH not defined"))
+        path))))
 
 (defn- get-current-directory
   []
@@ -80,7 +92,7 @@
 
 (defn kustomize-build
   [path]
-  (let [cmd (sh "kustomize" "build" (file path))
+  (let [cmd (sh kustomize-binary "build" (file path))
         exit (:exit cmd)]
     (if (= 0 exit)
       (do (.println System/err (:err cmd))
