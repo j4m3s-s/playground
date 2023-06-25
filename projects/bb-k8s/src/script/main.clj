@@ -67,7 +67,10 @@
       ))
 
 (defn -main [& args]
-  (let [path (first args)]
+  (let [; We assume it's used as kustomize build ...
+        _cmd (first args)
+
+        path (second args)]
     (println (b10s-exec path))
     ; FIXME: not sure why that's needed for faster exit
     (System/exit 0)))
