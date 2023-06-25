@@ -188,6 +188,7 @@ rec {
     entryJar,
     reflectionConfig,
     classpath,
+    # Check that binary runs
     doCheck ? true,
     # By default, don't generate an image that is not AOTed
     # If a class is missing at runtime, will fail
