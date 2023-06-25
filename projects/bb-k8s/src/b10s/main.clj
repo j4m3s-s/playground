@@ -80,7 +80,7 @@
 
 (defn kustomize-build
   [path]
-  (yaml/parse-string (:out (sh "kustomize" "build" path)) :load-all true))
+  (yaml/parse-string (:out (sh "kustomize" "build" (file path))) :load-all true))
 
 ;; Main
 
