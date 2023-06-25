@@ -25,7 +25,7 @@
 ; FIXME: what about non namespaced resources?
 (defn- k8s-merge-resources
   [resources]
-  (if (= nil (k8s-merge-resources-top #{} resources))
+  (when (= nil (k8s-merge-resources-top #{} resources))
     resources))
 
 (defn- mk-k8s-list
