@@ -62,7 +62,7 @@
 (defn b10s-exec
   [path]
   (let [b10s-edn-path (str path "/b10s.edn")]
-    (if (fs/exists? b10s-edn-path)
+    (when (fs/exists? b10s-edn-path)
       (json/generate-string (mk-k8s-list (b10s-edn-exec path b10s-edn-path))))
       ))
 
