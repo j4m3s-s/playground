@@ -91,6 +91,10 @@
 
 ; If there's a b10s.bb, load it
 ; Otherwise if there's a kustomization.yaml, switch to kustomize
+;
+; NB: Since we load scripts, we can refer to functions from this namespace.
+; Including kustomize-build, thus keeping compatibility with legacy kustomize
+; setups.
 (defn- -main [& args]
   (let [; We assume it's used as kustomize build ...
         _cmd (first args)
