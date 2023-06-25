@@ -80,7 +80,12 @@
 
 (defn kustomize-build
   [path]
-  (yaml/parse-string (:out (sh "kustomize" "build" (file path))) :load-all true))
+  (let [cmd (sh "kustomize" "build" (file path))
+        exit (:exit cmd)]
+    (if (= 0 exit)
+      (do (.println System/err (:err cmd))
+          (yaml/parse-string (:out cmd) :load-all true))
+      (throw (Exception. (str "Error: Running kustomize at path " (file path)))))))
 
 ;; Main
 
