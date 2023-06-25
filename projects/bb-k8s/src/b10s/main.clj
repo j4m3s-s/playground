@@ -94,7 +94,7 @@
      path
      (println (json/generate-string
                (if (fs/exists? (file "b10s.bb"))
-                 (b10s-exec (file "b10s.bb"))
+                 (b10s-exec "b10s.bb")
                  (if (fs/exists? (file "kustomization.yaml"))
                    (kustomize-build (file "kustomization.yaml"))
                    ; Error out otherwise
