@@ -189,7 +189,9 @@ rec {
     reflectionConfig,
     classpath,
     doCheck ? true,
-
+    # By default, don't generate an image that is not AOTed
+    # If a class is missing at runtime, will fail
+    noFallback ? true
   }: pkgs.stdenv.mkDerivation rec {
     inherit name;
 
@@ -202,10 +204,10 @@ rec {
       -cp ${classpath.prod} \
       -jar ${entryJar} \
       ${name} \
-      --initialize-at-build-time \
+      --verbose \
       -H:+ReportExceptionStackTraces \
       -H:ReflectionConfigurationFiles=${reflectionConfig} \
-      --no-fallback
+      ${if noFallback then "--no-fallback" else ""}
     '';
 
     inherit doCheck;
