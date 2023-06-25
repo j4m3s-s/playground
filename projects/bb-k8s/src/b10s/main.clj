@@ -23,12 +23,12 @@
         (recur (conj acc [kind name namespace]) remain)))))
 
 ; FIXME: what about non namespaced resources?
-(defn k8s-merge-resources
+(defn- k8s-merge-resources
   [resources]
   (if (= nil (k8s-merge-resources-top #{} resources))
     resources))
 
-(defn mk-k8s-list
+(defn- mk-k8s-list
   "Generates a List manifest as k8s wants it"
   [elements]
   {:kind "List"
@@ -38,7 +38,7 @@
 
 ;; Utils
 
-(defn get-current-directory
+(defn- get-current-directory
   []
   (.getCanonicalPath (java.io.File. ".")))
 
@@ -57,7 +57,7 @@
   [filename]
   (str *pwd* "/" filename))
 
-(defn get-ns-name
+(defn- get-ns-name
   [content]
   (-> (read-string content)
       second))
@@ -86,7 +86,7 @@
 
 ; If there's a b10s.bb, load it
 ; Otherwise if there's a kustomization.yaml, switch to kustomize
-(defn -main [& args]
+(defn- -main [& args]
   (let [; We assume it's used as kustomize build ...
         _cmd (first args)
         path (second args)]
