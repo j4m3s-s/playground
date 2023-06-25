@@ -41,11 +41,11 @@
   [path b10s-edn-path]
   (let [cfg (edn/read-string (slurp b10s-edn-path))]
     (k8s-merge-resources (flatten [
-                                   (if (contains? cfg :kustomize)
+                                   (when (contains? cfg :kustomize)
                                      (kustomize-build (str path "/" (first (:kustomize cfg)))))
-                                   (if (contains? cfg :resources)
+                                   (when (contains? cfg :resources)
                                      (:resources cfg))
-                                   (if (contains? cfg :b10s)
+                                   (when (contains? cfg :b10s)
                                      (eval (read-string
                                        (slurp (str path "/" (first (:b10s cfg)) "/b10s.bb")))))
                                    ]))
