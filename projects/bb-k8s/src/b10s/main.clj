@@ -1,4 +1,4 @@
-(ns script.main
+(ns b10s.main
   (:require [clojure.java.shell :refer [sh]]
             [clj-yaml.core :as yaml]
             [babashka.fs :as fs]
