@@ -6,9 +6,7 @@
             [cheshire.core :as json])
   (:gen-class))
 
-(defn kustomize-build
-  [path]
-  (yaml/parse-string (:out (sh "kustomize" "build" path)) :load-all true))
+;; k8s utils
 
 (defn- k8s-merge-resources-top
   [acc resources]
@@ -38,12 +36,68 @@
    :items elements
    :metadata {:resourceVersion ""}})
 
+;; Utils
 
+(defn get-current-directory
+  []
+  (.getCanonicalPath (java.io.File. ".")))
+
+; Changed dynamically via binding to reflect where the current working directory
+; is. Note that file opened need to concatenate manually this path since there's
+; no simple way to change current directory in Clojure/Java.
+(def ^:dynamic *pwd* (get-current-directory))
+
+(defmacro use-directory
+  "Dir must be a relative directory"
+  [dir form]
+  `(binding [*pwd* (str *pwd* "/" ~dir)]
+     ~form))
+
+(defn file
+  [filename]
+  (str *pwd* "/" filename))
+
+(defn get-ns-name
+  [content]
+  (-> (read-string content)
+      second))
+
+;; Main b10s functions
+
+(defn b10s-exec
+  [filename]
+  (let [content (slurp (file filename))
+        ns-name (get-ns-name content)
+        _ (if (re-find #"b10s" (str ns-name))
+            (do
+              (println (str "Error: File " filename " has a namespace which uses b10s, exiting"))
+              (System/exit 1))
+            (load-string content))
+        build-fn (ns-resolve ns-name (symbol "build"))]
+    (build-fn)))
+
+#_ (b10s-exec "/test/toto.clj")
+
+(defn kustomize-build
+  [path]
+  (yaml/parse-string (:out (sh "kustomize" "build" path)) :load-all true))
+
+;; Main
+
+; If there's a b10s.bb, load it
+; Otherwise if there's a kustomization.yaml, switch to kustomize
 (defn -main [& args]
   (let [; We assume it's used as kustomize build ...
         _cmd (first args)
-
         path (second args)]
-    (println (b10s-exec path))
+    (use-directory
+     path
+     (println (json/generate-string
+               (if (fs/exists? (file "b10s.bb"))
+                 (b10s-exec (file "b10s.bb"))
+                 (if (fs/exists? (file "kustomization.yaml"))
+                   (kustomize-build (file "kustomization.yaml"))
+                   ; Error out otherwise
+                   (System/exit 1))))))
     ; FIXME: not sure why that's needed for faster exit
     (System/exit 0)))
