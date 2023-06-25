@@ -101,7 +101,7 @@
                (if (fs/exists? (file "b10s.bb"))
                  (b10s-exec "b10s.bb")
                  (if (fs/exists? (file "kustomization.yaml"))
-                   (kustomize-build (file "kustomization.yaml"))
+                   (kustomize-build *pwd*)
                    ; Error out otherwise
                    (System/exit 1))))))
     ; FIXME: not sure why that's needed for faster exit
