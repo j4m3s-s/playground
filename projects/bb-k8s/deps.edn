@@ -1,7 +1,9 @@
 {:paths ["src" "."]
  :aliases {
-           :build {:deps {io.github.clojure/tools.build {:git/tag "v0.8.1" :git/sha "7d40500"}}
-           :ns-default "build"}}
+           :uberjar {:extra-deps {seancorfield/depstar {:mvn/version "1.0.94"}}
+                          :main-opts [ "-m" "hf.depstar.uberjar"]}
+           :old-uberjar {:extra-deps {io.github.clojure/tools.build  {:mvn/version "0.9.4"}}
+                         :ns-default "build"}}
  :deps {
         org.clojure/clojure {:mvn/version "1.11.1"}
 
