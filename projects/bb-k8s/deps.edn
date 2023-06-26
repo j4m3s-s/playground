@@ -1,15 +1,11 @@
-{:paths ["src" "."]
+{:paths ["src"]
  :aliases {
            :uberjar {:extra-deps {seancorfield/depstar {:mvn/version "1.0.94"}}
-                          :main-opts [ "-m" "hf.depstar.uberjar"]}}
- :deps {
-        org.clojure/clojure {:mvn/version "1.11.1"}
-
+                     :main-opts [ "-m" "hf.depstar.uberjar"]}}
+ :deps {org.clojure/clojure {:mvn/version "1.11.1"}
         ; Apparently needed for runtime
         org.clojure/core.specs.alpha {:mvn/version "0.2.62"}
 
         clj-commons/clj-yaml {:mvn/version "1.0.26"}
         babashka/fs {:mvn/version "0.2.16"}
-        cheshire/cheshire {:mvn/version "5.11.0"}
-        }
- }
+        cheshire/cheshire {:mvn/version "5.11.0"}}}
