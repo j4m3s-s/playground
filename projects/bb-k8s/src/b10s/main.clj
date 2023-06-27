@@ -118,12 +118,13 @@
         _subcmd (first args)
         path (second args)]
     (use-directory
-     path
+     ; Set *pwd* empty as it contains current dir by default
+     "."
      (println (json/generate-string
-               (if (fs/exists? (file "b10s.bb"))
-                 (b10s-exec "b10s.bb")
+               (if (fs/exists? (file path "b10s.bb"))
+                 (b10s-exec (mk-path path "b10s.bb"))
                  (if (fs/exists? (file "kustomization.yaml"))
-                   (kustomize-build *pwd*)
+                   (kustomize-build path)
                    ; Error out otherwise
                    (System/exit 1))))))
     ; FIXME: not sure why that's needed for faster exit
