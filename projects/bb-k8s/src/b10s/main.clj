@@ -66,8 +66,8 @@
      ~form))
 
 (defn file
-  [filename]
-  (str *pwd* "/" filename))
+  [& args]
+  (str *pwd* "/" (str/join "/" args)))
 
 (defn- get-ns-name
   [content]
