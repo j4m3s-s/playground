@@ -115,7 +115,7 @@
   (when (= 0 (count args))
     (System/exit 0))
   (let [; We assume it's used as kustomize build ...
-        _cmd (first args)
+        _subcmd (first args)
         path (second args)]
     (use-directory
      path
