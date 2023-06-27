@@ -5,4 +5,6 @@ like my main monorepo.
 
 ** Promoted projects
 - flashcard
+- bb-k8s
+  We'll test it our infra repo.
 ** Archived projects
