@@ -69,6 +69,10 @@
   [& args]
   (str *pwd* "/" (str/join "/" args)))
 
+(defn mk-path
+  [& args]
+  (str/join "/" args))
+
 (defn- get-ns-name
   [content]
   (-> (read-string content)
