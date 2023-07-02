@@ -20,4 +20,6 @@
 
         ;; Durable (atoms) data
         alandipert/enduro {:mvn/version "1.2.0"}
-        }}
+        }
+ :aliases {:uberjar {:extra-deps {seancorfield/depstar {:mvn/version "1.0.94"}}
+                     :main-opts [ "-m" "hf.depstar.uberjar"]}}}
