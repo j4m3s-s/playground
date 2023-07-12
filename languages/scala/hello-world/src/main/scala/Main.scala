@@ -63,6 +63,25 @@ object MemoizedFibo extends Fibonacci {
   }
 }
 
+trait Factorial {
+  def apply(n: Int): Int
+}
+
+object RecursiveFactorial extends Factorial {
+  override def apply(n: Int): Int = n match {
+    case 0 => 1
+    case _ => n * apply(n - 1)
+  }
+}
+
+object IterativeFactorial extends Factorial {
+  def _run(acc: Int, n: Int): Int = n match {
+    case 0 => acc
+    case _ => _run(acc * n, n - 1)
+  }
+  override def apply(n: Int): Int = _run(1, n)
+}
+
 object Main extends App {
   val nbs = 0 until 13
   for (i <- nbs) println(Months.months_to_string(i))
@@ -74,4 +93,10 @@ object Main extends App {
   )
 
   for (fn <- fns) println(fn(10))
+
+  val factorials = List(
+    RecursiveFactorial,
+    IterativeFactorial
+  )
+  for (fn <- factorials) println(fn(10))
 }
