@@ -7,7 +7,7 @@ node_modules
 .lsp
 
 # go main binary
-main
+./main
 
 # clojure class cache
 .cpcache
