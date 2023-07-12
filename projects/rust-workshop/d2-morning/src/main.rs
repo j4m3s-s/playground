@@ -135,6 +135,11 @@ impl Polygon {
 
         Some(p)
     }
+
+    // left_most_point -> Option<Point>
+}
+
+impl Perimeter for Polygon {
     fn perimeter(&self) -> f64 {
         let mut res: f64 = 0.0;
 
@@ -147,7 +152,6 @@ impl Polygon {
 
         res
     }
-    // left_most_point -> Option<Point>
 }
 
 pub struct Circle {
@@ -164,7 +168,9 @@ impl Circle {
             radius: r
         }
     }
+}
 
+impl Perimeter for Circle {
     fn perimeter(&self) -> f64 {
         2.0 * PI * self.radius as f64
     }
@@ -175,11 +181,15 @@ pub enum Shape {
     Circle(Circle),
 }
 
-impl Shape {
+trait Perimeter {
+    fn perimeter(&self) -> f64;
+}
+
+impl Perimeter for Shape {
     fn perimeter(&self) -> f64 {
         match self {
-            Shape::Polygon(p) => p.perimeter(),
-            Shape::Circle(c) => c.perimeter()
+            Shape::Circle(c) => c.perimeter(),
+            Shape::Polygon(p) => p.perimeter()
         }
     }
 }
