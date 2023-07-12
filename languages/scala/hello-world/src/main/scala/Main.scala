@@ -11,17 +11,21 @@ object Months {
   }
 }
 
-object NaiveFibo {
-  def fibonacci(n: Int): Int =
+trait Fibonacci {
+  def apply(n: Int): Int
+}
+
+class NaiveFibo extends Fibonacci {
+  override def apply(n: Int): Int =
     n match {
       case 0 => 0
       case 1 => 1
-      case _ => fibonacci(n - 1) + fibonacci(n - 2)
+      case _ => apply(n - 1) + apply(n - 2)
     }
 }
 
-object OptiFibo {
-  def fibonacci(n: Int): Int = {
+class OptiFibo extends Fibonacci {
+  override def apply(n: Int): Int = {
     var i = n - 1
     var current = 1
     var prev = 0
@@ -37,22 +41,22 @@ object OptiFibo {
   }
 }
 
-object OptiFunctionalFibo {
-  def fibo_rec(upto: Int, prev: Int, current: Int): Int = upto match {
+class OptiFunctionalFibo extends Fibonacci {
+  def _apply(upto: Int, prev: Int, current: Int): Int = upto match {
     case -1 => 0
     case 0  => current
-    case _  => fibo_rec(upto - 1, current, prev + current)
+    case _  => _apply(upto - 1, current, prev + current)
   }
-  def fibonacci(n: Int): Int = fibo_rec(n - 1, 0, 1)
+  override def apply(n: Int): Int = _apply(n - 1, 0, 1)
 }
 
-object MemoizedFibo {
-  var computed = scala.collection.mutable.Map(0 -> 0, 1 -> 1)
-  def fibonacci(n: Int): Int = {
+class MemoizedFibo extends Fibonacci {
+  private var computed = scala.collection.mutable.Map(0 -> 0, 1 -> 1)
+  override def apply(n: Int): Int = {
     if (computed.contains(n)) {
       computed(n)
     } else {
-      val res = fibonacci(n - 1) + fibonacci(n - 2)
+      val res = apply(n - 1) + apply(n - 2)
       computed += (n -> res)
       res
     }
@@ -62,8 +66,12 @@ object MemoizedFibo {
 object Main extends App {
   val nbs = 0 until 13
   for (i <- nbs) println(Months.months_to_string(i))
-  println(NaiveFibo.fibonacci(10))
-  println(OptiFibo.fibonacci(10))
-  println(MemoizedFibo.fibonacci(10))
-  println(OptiFunctionalFibo.fibonacci(10))
+  val fns = List(
+    new NaiveFibo(),
+    new OptiFibo(),
+    new MemoizedFibo(),
+    new OptiFunctionalFibo()
+  )
+
+  for (fn <- fns) println(fn(10))
 }
