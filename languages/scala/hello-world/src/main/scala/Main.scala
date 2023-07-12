@@ -15,7 +15,7 @@ trait Fibonacci {
   def apply(n: Int): Int
 }
 
-class NaiveFibo extends Fibonacci {
+object NaiveFibo extends Fibonacci {
   override def apply(n: Int): Int =
     n match {
       case 0 => 0
@@ -24,7 +24,7 @@ class NaiveFibo extends Fibonacci {
     }
 }
 
-class OptiFibo extends Fibonacci {
+object OptiFibo extends Fibonacci {
   override def apply(n: Int): Int = {
     var i = n - 1
     var current = 1
@@ -41,7 +41,7 @@ class OptiFibo extends Fibonacci {
   }
 }
 
-class OptiFunctionalFibo extends Fibonacci {
+object OptiFunctionalFibo extends Fibonacci {
   def _apply(upto: Int, prev: Int, current: Int): Int = upto match {
     case -1 => 0
     case 0  => current
@@ -50,7 +50,7 @@ class OptiFunctionalFibo extends Fibonacci {
   override def apply(n: Int): Int = _apply(n - 1, 0, 1)
 }
 
-class MemoizedFibo extends Fibonacci {
+object MemoizedFibo extends Fibonacci {
   private var computed = scala.collection.mutable.Map(0 -> 0, 1 -> 1)
   override def apply(n: Int): Int = {
     if (computed.contains(n)) {
@@ -67,10 +67,10 @@ object Main extends App {
   val nbs = 0 until 13
   for (i <- nbs) println(Months.months_to_string(i))
   val fns = List(
-    new NaiveFibo(),
-    new OptiFibo(),
-    new MemoizedFibo(),
-    new OptiFunctionalFibo()
+    NaiveFibo,
+    OptiFibo,
+    MemoizedFibo,
+    OptiFunctionalFibo
   )
 
   for (fn <- fns) println(fn(10))
