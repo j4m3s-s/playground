@@ -110,6 +110,29 @@ object Adder {
   def apply(x: Int)(y: Int): Int = x + y
 }
 
+// map, filter, reduce
+object MyMap {
+  def apply[A, B](f: A => B, list: List[A]): List[B] = list match {
+    case Nil => Nil
+    case head :: tail => f(head) :: apply(f, tail)
+  }
+}
+
+object MyFilter {
+  def apply[A](f: A => Boolean, list: List[A]): List[A] = list match {
+    case Nil => Nil
+    case head :: tail if f(head) => head :: apply(f, tail)
+    case head :: tail => apply(f, tail)
+  }
+}
+
+object MyReduce {
+  def apply[A](acc: A, f: (A,  A) => A, list: List[A]): A = list match {
+    case Nil => acc
+    case head :: tail => apply(f(acc, head), f, tail)
+  }
+}
+
 object Main extends App {
   val nbs = 0 until 13
   for (i <- nbs) println(Months.months_to_string(i))
