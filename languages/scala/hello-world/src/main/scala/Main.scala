@@ -82,6 +82,29 @@ object IterativeFactorial extends Factorial {
   override def apply(n: Int): Int = _run(1, n)
 }
 
+// String reversal
+
+trait StringReversal {
+  def apply(s: String): String
+}
+
+object IterativeStringReversal extends StringReversal {
+  override def apply(s: String): String = {
+    var res = new StringBuilder()
+    for (i <- s.length() - 1 to 0 by -1) {
+      res.append(s.charAt(i))
+    }
+    res.toString()
+  }
+}
+
+object RecursiveStringReversal extends StringReversal {
+  override def apply(s: String): String = s.length() match {
+    case 0 => ""
+    case _ => s.charAt(s.length() - 1) + apply(s.substring(0, s.length() - 1))
+  }
+}
+
 object Main extends App {
   val nbs = 0 until 13
   for (i <- nbs) println(Months.months_to_string(i))
@@ -99,4 +122,10 @@ object Main extends App {
     IterativeFactorial
   )
   for (fn <- factorials) println(fn(10))
+
+  val strReversal = List(
+    IterativeStringReversal,
+    RecursiveStringReversal
+  )
+  for (fn <- strReversal) println(fn("Test."))
 }
