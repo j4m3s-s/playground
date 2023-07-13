@@ -105,6 +105,11 @@ object RecursiveStringReversal extends StringReversal {
   }
 }
 
+// Higher Order Function
+object Adder {
+  def apply(x: Int)(y: Int): Int = x + y
+}
+
 object Main extends App {
   val nbs = 0 until 13
   for (i <- nbs) println(Months.months_to_string(i))
@@ -128,4 +133,6 @@ object Main extends App {
     RecursiveStringReversal
   )
   for (fn <- strReversal) println(fn("Test."))
+
+  println(Adder(5)(10))
 }
