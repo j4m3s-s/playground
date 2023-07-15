@@ -136,7 +136,10 @@ object MyReduce {
 object Lambda {
   def addThree(a: Int, b: Int, c: Int): Int = a + b + c
 
+  val anotherAddThree: (Int, Int, Int) => Int = (a: Int, b: Int, c: Int) => a + b + c
+
   val addThreeWithTwoUnknowns = addThree(3, _, _)
+  val anotherAddThreeWithTwoUnknowns = anotherAddThree(3, _, _)
 }
 
 object Main extends App {
@@ -165,4 +168,5 @@ object Main extends App {
 
   println(Adder(5)(10))
   println(Lambda.addThreeWithTwoUnknowns(10, 5))
+  println(Lambda.anotherAddThreeWithTwoUnknowns(10, 5))
 }
