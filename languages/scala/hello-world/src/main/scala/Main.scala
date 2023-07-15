@@ -133,6 +133,12 @@ object MyReduce {
   }
 }
 
+object Lambda {
+  def addThree(a: Int, b: Int, c: Int): Int = a + b + c
+
+  val addThreeWithTwoUnknowns = addThree(3, _, _)
+}
+
 object Main extends App {
   val nbs = 0 until 13
   for (i <- nbs) println(Months.months_to_string(i))
@@ -158,4 +164,5 @@ object Main extends App {
   for (fn <- strReversal) println(fn("Test."))
 
   println(Adder(5)(10))
+  println(Lambda.addThreeWithTwoUnknowns(10, 5))
 }
