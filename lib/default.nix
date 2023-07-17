@@ -182,7 +182,7 @@ rec {
   ## Create native binary w/ GraalVM. Note that this is expensive CPU-wise and
   ## quite slow if you build it everytime. Startup latency of those binaries is
   ## lower though.
-  ## Enterprise GraalVM has more features but it's currently
+  ## Enterprise GraalVM has more features but it's currently not in nixpkgs.
   mkNativeFromJar = {
     name,
     entryJar,
