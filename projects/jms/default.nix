@@ -43,7 +43,7 @@ in rec {
   bin = mkNativeFromJar {
     name = "jms";
     entryJar = jar;
-    reflectionConfig = ./reflect-cfg.json;
+    reflectionDir = ./reflect-config;
     inherit
       classpath
     ;

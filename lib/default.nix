@@ -186,7 +186,7 @@ rec {
   mkNativeFromJar = {
     name,
     entryJar,
-    reflectionConfig,
+    reflectionDir,
     classpath,
     # Check that binary runs
     doCheck ? true,
@@ -207,7 +207,7 @@ rec {
       ${name} \
       --verbose \
       -H:+ReportExceptionStackTraces \
-      -H:ReflectionConfigurationFiles=${reflectionConfig} \
+      -H:ConfigurationFileDirectories=${reflectionDir} \
       ${if noFallback then "--no-fallback" else ""}
     '';
 
