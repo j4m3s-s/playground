@@ -133,6 +133,19 @@ let repos = [
   }
 
   rec {
+    name = "graal-build-time/com.github.clj-easy";
+    src = fetchMavenArtifact {
+      inherit repos;
+      artifactId = "graal-build-time";
+      groupId = "com.github.clj-easy";
+      sha512 = "1a237ed35bb04e498384edee61898f8c3e8dc60788a706a26dd6948842ab2b96300445e2dedc72b78eea21d50001833337651e4861ac33df4a0df441899f8272";
+      version = "0.1.4";
+
+    };
+    paths = [ src ];
+  }
+
+  rec {
     name = "pedestal.jetty/io.pedestal";
     src = fetchMavenArtifact {
       inherit repos;

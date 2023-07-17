@@ -35,7 +35,10 @@
         metosin/malli {:mvn/version "0.8.4"}
 
         ;; Joda time wrapper
-        clj-time/clj-time {:mvn/version "0.15.2"}}
+        clj-time/clj-time {:mvn/version "0.15.2"}
+
+        ;; Initialization for graalvm stuff
+        com.github.clj-easy/graal-build-time {:mvn/version "0.1.4"}}
 
 
  :aliases {:test {:extra-paths ["test/jms"]

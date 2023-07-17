@@ -58,6 +58,11 @@
       <version>0.2.56</version>
     </dependency>
     <dependency>
+      <groupId>com.github.clj-easy</groupId>
+      <artifactId>graal-build-time</artifactId>
+      <version>0.1.4</version>
+    </dependency>
+    <dependency>
       <groupId>io.pedestal</groupId>
       <artifactId>pedestal.jetty</artifactId>
       <version>0.5.10</version>
