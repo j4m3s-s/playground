@@ -2,6 +2,9 @@
   (:require [jms.file-cmd :refer [subcommand-file]])
   (:gen-class))
 
+; For graalVM to warn on reflection
+(set! *warn-on-reflection* true)
+
 ; Entrypoint
 (defn -main [& args]
   (let [subcommand (first args)
